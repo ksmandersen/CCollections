@@ -18,6 +18,13 @@ More on this later
 
 More on this later
 
+## Acknowledgement
+
+This library was started and developed as student project at [IT University of Copenhagen](http://itu.dk/). 
+The project was supervised by [Peter Sestoft](http://itu.dk/people/sestoft) and Hans Henrik Sørensen. 
+
+This project is greatly insipired by [The C5 Generic Collection Library for C# and CLI](http://www.itu.dk/research/c5/).
+
 ## License 
 
 Copyright (c) 2012, [Ulrik Damm](http://github.com/ulrikdamm) and [Kristian Andersen](http://github.com/ksmandersen).
