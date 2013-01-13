@@ -7,8 +7,8 @@ The library provides a familiar and consistent interface to work with collection
 ## Memory management
 
 CCollections incorporates support for automatic garbage collection using Boehm's garbage collection library.
-Programmers who are new to the C programming language will not need to micro-manage their memory allocations by them selves
-while expirienced C programmers can take full control and manage their memory manually.
+Programmers who are new to the C programming language will not need to micro-manage their memory allocations by themselves
+while experienced C programmers can take full control and manage their memory manually.
 
 ## Installation
 
