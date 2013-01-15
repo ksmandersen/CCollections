@@ -26,6 +26,7 @@ The project was supervised by [Peter Sestoft](http://itu.dk/people/sestoft) and 
 This project is greatly insipired by [The C5 Generic Collection Library for C# and CLI](http://www.itu.dk/research/c5/).
 
 ## License 
+CCollections is licensed under the [BSD-2-Clause License (FreeBSD)](http://opensource.org/licenses/BSD-2-Clause).
 
 Copyright (c) 2012, [Ulrik Damm](http://github.com/ulrikdamm) and [Kristian Andersen](http://github.com/ksmandersen).
 All rights reserved.
