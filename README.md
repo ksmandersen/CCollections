@@ -9,7 +9,6 @@ The library provides a familiar and consistent interface to work with collection
 | Library | Consistent naming | Good documentation | Garbage collection |
 | :------ | :---------------- | :----------------- | :----------------- |
 | gdsl    | ✖                 | ✖                  | ✖                  |
-| Rikke   | ✔                 | ✔                  | ✔                  |
 | GLib    | ✔                 | ✔                  | ✖                  |
 
 
@@ -26,6 +25,7 @@ The library provides a familiar and consistent interface to work with collection
 * Well documented collections with the kind of documentation used for .NET and Java collection libraries.
 * Build-in support for garbage collection so developers need to worry about allocating memory.
 * The library should be able to build with any common ANSI C compiler like gcc, clang, lcc, etc.
+* Lots and lots of testing!
 
 The collection library will include the following collection types:
 
