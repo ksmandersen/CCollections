@@ -40,6 +40,20 @@ The collection library will include the following collection types:
 * SortedSet
 * Stack
 
+
+## Møde
+
+Check netlib.org
+Numerical recipes in c
+overvejelser i fht. udvidelse af Glib med boehms relevant
+tests imbefatter både performance og funktionalitet.
+Brug af cache i den rigtige rækkefølge
+OSX app Shark
+Automatiserede tests
+test cases fra c5 kap 11
+arbejdsplan med rækkefølge, også i fht. ambitioner og impletering + test af data strukturer
+boehms research paper - boehms hjemmeside
+
 ## Memory management
 
 CCollections incorporates support for automatic garbage collection using Boehm's garbage collection library.
