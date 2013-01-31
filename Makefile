@@ -16,7 +16,10 @@ else
 	CLEANUP = rm -f build/*.o ; rm -f $(TARGET)
 endif
 
-all: clean test
+all: clean documentation test
+
+documentation:
+	doxygen Doxyfile
 
 test:
 	$(C_COMPILER) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES) -o $(TARGET)
