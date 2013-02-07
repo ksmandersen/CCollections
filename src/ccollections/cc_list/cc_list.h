@@ -79,6 +79,11 @@ void cc_list_remove_last(cc_list *list);
  * \param list the linked list to be emptied */
 void cc_list_clear(cc_list *list);
 
+/*! \brief Merges two lists together by adding all objects
+ * from the first list to the second list.
+ * \param a_list the first list
+ * \param b_list the second list
+ * \returns The lists merged together */
 cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list);
 
 #endif

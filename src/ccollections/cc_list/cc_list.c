@@ -242,6 +242,11 @@ void cc_list_clear(cc_list *list)
   list->length = 0;
 }
 
+/*! \brief Merges two lists together by adding all objects
+ * from the first list to the second list.
+ * \param a_list the first list
+ * \param b_list the second list
+ * \returns The lists merged together */
 cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list)
 {
   cc_list_node *curr = b_list->head;
