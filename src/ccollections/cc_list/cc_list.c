@@ -1,4 +1,4 @@
-#include "linked_list.private.h"
+#include "cc_list.private.h"
 
 #include "gc/gc.h"
 
@@ -54,7 +54,7 @@ any_t cc_list_get(cc_list *list, int index)
 
 /*! \brief Get the first node in a linked list
  * \param list the linked list */
-any_t cc_list_get_front(cc_list *list)
+any_t cc_list_get_first(cc_list *list)
 {
   if (list == NULL || list->head == NULL)
     return NULL;
@@ -64,7 +64,7 @@ any_t cc_list_get_front(cc_list *list)
 
 /*! \brief Get the last node in a linked list
  * \param list the linked list */
-any_t cc_list_get_end(cc_list *list)
+any_t cc_list_get_last(cc_list *list)
 {
   if (list == NULL || list->tail == NULL)
     return NULL;
@@ -88,9 +88,9 @@ void cc_list_add(cc_list *list, int index, any_t *object)
   } else {
     if (index == 0)
     {
-      cc_list_add_front(list, object);
+      cc_list_add_first(list, object);
     } else if (index == list->length - 1) {
-      cc_list_add_end(list, object);
+      cc_list_add_last(list, object);
     } else {
       int i;
       for (i = 1; i < index; i++)
@@ -120,7 +120,7 @@ void cc_list_add(cc_list *list, int index, any_t *object)
 /*! \brief Insert a value as the first node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_front(cc_list *list, any_t object)
+void cc_list_add_first(cc_list *list, any_t object)
 {
   cc_list_node *temp = cc_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -143,7 +143,7 @@ void cc_list_add_front(cc_list *list, any_t object)
 /*! \brief Insert a value as the last node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_end(cc_list *list, any_t object)
+void cc_list_add_last(cc_list *list, any_t object)
 {
   cc_list_node *temp = cc_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -174,9 +174,9 @@ void cc_list_remove(cc_list *list, int index)
   if (list->length == 1) {
     cc_list_clear(list);
   } else if (index == 0) {
-    cc_list_remove_front(list);
+    cc_list_remove_first(list);
   } else if (index == list->length - 1) {
-    cc_list_remove_end(list);
+    cc_list_remove_last(list);
   } else {
 
     cc_list_node *curr = list->head;
@@ -198,7 +198,7 @@ void cc_list_remove(cc_list *list, int index)
 
 /*! \brief Remove the value from the front node in a linked list
  * \param list the linked list */
-void cc_list_remove_front(cc_list *list)
+void cc_list_remove_first(cc_list *list)
 {
   if (list == NULL || list->head == NULL)
     return;
@@ -215,7 +215,7 @@ void cc_list_remove_front(cc_list *list)
 
 /*! \brief Remove the value from the end node in a linked list
  * \param list the linked list */
-void cc_list_remove_end(cc_list *list)
+void cc_list_remove_last(cc_list *list)
 {
   if (list == NULL || list->tail == NULL)
     return;

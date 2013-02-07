@@ -40,11 +40,11 @@ any_t cc_list_get(cc_list *list, int index);
 
 /*! \brief Get the first node in a linked list
  * \param list the linked list */
-any_t cc_list_get_front(cc_list *list);
+any_t cc_list_get_first(cc_list *list);
 
 /*! \brief Get the last node in a linked list
  * \param list the linked list */
-any_t cc_list_get_end(cc_list *list);
+any_t cc_list_get_last(cc_list *list);
 
 /*! \brief Insert a value at a position in the linked list
  * \param list the linked list
@@ -55,12 +55,12 @@ void cc_list_add(cc_list *list, int index, any_t *object);
 /*! \brief Insert a value as the first node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_front(cc_list *list, any_t object);
+void cc_list_add_first(cc_list *list, any_t object);
 
 /*! \brief Insert a value as the last node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_end(cc_list *list, any_t object);
+void cc_list_add_last(cc_list *list, any_t object);
 
 /*! \brief Remove a value at a position in the linked list
  * \param list the linked list
@@ -69,11 +69,11 @@ void cc_list_remove(cc_list *list, int index);
 
 /*! \brief Remove the value from the front node in a linked list
  * \param list the linked list */
-void cc_list_remove_front(cc_list *list);
+void cc_list_remove_first(cc_list *list);
 
 /*! \brief Remove the value from the end node in a linked list
  * \param list the linked list */
-void cc_list_remove_end(cc_list *list);
+void cc_list_remove_last(cc_list *list);
 
 /*! \brief Removes all objects from a linked list
  * \param list the linked list to be emptied */

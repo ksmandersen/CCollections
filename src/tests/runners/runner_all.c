@@ -6,8 +6,8 @@ extern void setUp(void);
 extern void tearDown(void);
 
 extern void test_can_create_linked_list(void);
-extern void test_can_add_object_to_front(void);
-extern void test_can_add_object_to_end(void);
+extern void test_can_add_object_to_first(void);
+extern void test_can_add_object_to_last(void);
 extern void test_can_clear_list(void);
 
 
@@ -37,8 +37,8 @@ int main(void)
   UnityBegin();
 
   RUN_TEST(test_can_create_linked_list, 1);
-  RUN_TEST(test_can_add_object_to_front, 2);
-  RUN_TEST(test_can_add_object_to_end, 3);
+  RUN_TEST(test_can_add_object_to_first, 2);
+  RUN_TEST(test_can_add_object_to_last, 3);
   RUN_TEST(test_can_clear_list, 4);
 
   UnityEnd();
