@@ -54,3 +54,15 @@ void test_can_add_object_to_end(void)
   TEST_ASSERT_EQUAL(cc_list_get_end(list), val2);
   TEST_ASSERT_EQUAL(cc_list_get_front(list), val1);
 }
+
+void test_can_clear_list(void)
+{
+  int *val1 = GC_MALLOC(sizeof(int));
+  val1 = (int *)500;
+
+  cc_list_add_front(list, val1);
+  cc_list_clear(list);
+
+  TEST_ASSERT_EQUAL(cc_list_length(list), 0);
+  TEST_ASSERT_EQUAL(cc_list_get_front(list), NULL);
+}
