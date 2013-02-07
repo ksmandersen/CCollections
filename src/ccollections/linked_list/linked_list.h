@@ -1,87 +1,82 @@
-#include <stdlib.h>
-#include <stdio.h>
-
-/*! \brief A value container
- * Used when inserting objects into the linked list */
-struct object_struct {
-  int val;
-};
-
-typedef struct object_struct object;
+#ifndef CC_LINKED_LIST_H
+  #define CC_LINKED_LIST_H
 
 /*! \brief A value pointer */
 typedef void * any_t;
 
 /*! \brief A node in the linked list */
-struct node_struct
+struct cc_list_node_struct
 {
-  any_t *item;
-  struct node_struct *next;
+  any_t *object;
+  struct cc_list_node_struct *next;
+  struct cc_list_node_struct *prev;
 };
 
-typedef struct node_struct linked_node_t;
+typedef struct cc_list_node_struct cc_list_node;
 
 /*! \brief A linked list data structure */
-struct linked_list_struct
+struct cc_list_struct
 {
-  struct node_struct *head;
+  struct cc_list_node_struct *head;
+  struct cc_list_node_struct *tail;
 
   int length;
 };
 
-typedef struct linked_list_struct linked_list_t;
-
-/*! \brief Create a linked list node object
- * \param item the value of the node
- * \return A new linked list node object */
-linked_node_t *create_linked_node(any_t item);
+typedef struct cc_list_struct cc_list;
 
 /*! \brief Create a linked list object
  * \return A new linked list object */
-linked_list_t *create_linked_list();
+cc_list *cc_list_new();
 
-/*! \brief Removes all items from a linked list
- * \param list the linked list to be emptied */
-void empty_linked_list(linked_list_t *list);
- 
-/*! \brief Destroys a linked list
- * Call this when the list is no longer used to free up memory
- * \param list the linked list to be destroyed */
-void destroy_linked_list(linked_list_t *list);
-
-/*! \brief Get the first node in a linked list
- * \param list the linked list */
-any_t get_first(linked_list_t *list);
-
-/*! \brief Get the last node in a linked list
- * \param list the linked list */
-any_t get_last(linked_list_t *list);
+/*! \brief Get the length of the list
+ * \return The length of the list */
+int cc_list_length(cc_list *list);
 
 /*! \brief Get a node in a linked list
  * \param list the linked list
  * \param index the index of the node to get */
-any_t get(linked_list_t *list, int index);
+any_t cc_list_get(cc_list *list, int index);
 
-/*! \brief Insert a value as the first node in a linked list
- * \param list the linked list
- * \param item the value to insert */
-void insert_first(linked_list_t *list, any_t item);
+/*! \brief Get the first node in a linked list
+ * \param list the linked list */
+any_t cc_list_get_front(cc_list *list);
 
-/*! \brief Insert a value as the last node in a linked list
- * \param list the linked list
- * \param item the value to insert */
-void insert_last(linked_list_t *list, any_t item);
+/*! \brief Get the last node in a linked list
+ * \param list the linked list */
+any_t cc_list_get_end(cc_list *list);
 
 /*! \brief Insert a value at a position in the linked list
  * \param list the linked list
  * \param index the index at which to insert the object
- * \param item the item to insert */
-void insert_at(linked_list_t *list, int index, any_t *item);
+ * \param object the object to insert */
+void cc_list_add(cc_list *list, int index, any_t *object);
 
-/*! \brief Reverses the nodes in a linked list
- * \param list the linked list */
-void reverse_linked_list(linked_list_t *list);
+/*! \brief Insert a value as the first node in a linked list
+ * \param list the linked list
+ * \param object the value to insert */
+void cc_list_add_front(cc_list *list, any_t object);
 
-/*! \brief Prints the nodes in a linked list to stdout
+/*! \brief Insert a value as the last node in a linked list
+ * \param list the linked list
+ * \param object the value to insert */
+void cc_list_add_end(cc_list *list, any_t object);
+
+/*! \brief Remove a value at a position in the linked list
+ * \param list the linked list
+ * \param index the index at which to remove the object */
+void cc_list_remove(cc_list *list, int index);
+
+/*! \brief Remove the value from the front node in a linked list
  * \param list the linked list */
-void display_list(linked_list_t *list);
+void cc_list_remove_front(cc_list *list);
+
+/*! \brief Remove the value from the end node in a linked list
+ * \param list the linked list */
+void cc_list_remove_end(cc_list *list);
+
+/*! \brief Removes all objects from a linked list
+ * \param list the linked list to be emptied */
+void cc_list_clear(cc_list *list);
+
+#endif

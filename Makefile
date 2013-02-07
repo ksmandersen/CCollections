@@ -1,4 +1,4 @@
-C_COMPILER=gcc
+C_COMPILER=clang
 TARGET_BASE=build/test
 ifeq ($(OS),Windows_NT)
 	TARGET_EXTENSION=.exe

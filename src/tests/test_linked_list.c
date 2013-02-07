@@ -4,41 +4,53 @@
 #define GC_DEBUG
 #include "gc/gc.h"
 
-// extern linked_list_t *list;
+cc_list *list;
 
 void setUp(void)
 {
-  // list = create_linked_list();
+  list = cc_list_new();
 }
 
 void tearDown(void)
 {
-  // free(list);
+  list = NULL;
 }
 
 void test_can_create_linked_list(void)
 {
-  linked_list_t *list = create_linked_list();
   TEST_ASSERT_NOT_EQUAL(NULL, list);
-  // free(list);
 }
 
-void test_can_add_objects_to_linked_list(void)
+void test_can_add_object_to_front(void)
 {
-  linked_list_t *list = create_linked_list();
+  int *val1 = GC_MALLOC(sizeof(int));
+  val1 = (int *)500;
 
-  int i;
-  for(i = 0; i < 1000000000; i++)
-  {
-    int *val = GC_MALLOC(sizeof(int));
-    val = i * 10;
-    insert_last(list, val);
+  cc_list_add_front(list, val1);
 
-    if (i % 100 == 0)
-    {
-      empty_linked_list(list);
-    }
-  }
+  int *val2 = GC_MALLOC(sizeof(int));
+  val2 = (int *)200;
 
-  destroy_linked_list(list);
+  cc_list_add_front(list, val2);
+
+  TEST_ASSERT_EQUAL(cc_list_length(list), 2);
+  TEST_ASSERT_EQUAL(cc_list_get_front(list), val2);
+  TEST_ASSERT_EQUAL(cc_list_get_end(list), val1);
+}
+
+void test_can_add_object_to_end(void)
+{
+  int *val1 = GC_MALLOC(sizeof(int));
+  val1 = (int *)500;
+
+  cc_list_add_end(list, val1);
+
+  int *val2 = GC_MALLOC(sizeof(int));
+  val2 = (int *)200;
+
+  cc_list_add_end(list, val2);
+
+  TEST_ASSERT_EQUAL(cc_list_length(list), 2);
+  TEST_ASSERT_EQUAL(cc_list_get_end(list), val2);
+  TEST_ASSERT_EQUAL(cc_list_get_front(list), val1);
 }
