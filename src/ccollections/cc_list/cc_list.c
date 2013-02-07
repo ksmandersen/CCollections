@@ -242,6 +242,21 @@ void cc_list_clear(cc_list *list)
   list->length = 0;
 }
 
+cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list)
+{
+  cc_list_node *curr = b_list->head;
+  while (curr != NULL)
+  {
+    cc_list_add_last(a_list, curr->object);
+
+    curr = curr->next;
+  }
+
+  b_list = NULL;
+
+  return a_list;
+}
+
 
 // Internal functions
 

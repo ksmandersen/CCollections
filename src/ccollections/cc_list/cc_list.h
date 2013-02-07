@@ -79,4 +79,6 @@ void cc_list_remove_last(cc_list *list);
  * \param list the linked list to be emptied */
 void cc_list_clear(cc_list *list);
 
+cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list);
+
 #endif
