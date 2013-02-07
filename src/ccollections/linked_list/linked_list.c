@@ -1,8 +1,9 @@
 #include "linked_list.h"
+#include "gc/gc.h"
 
 linked_node_t *create_linked_node(any_t item)
 {
-  linked_node_t *node = malloc(sizeof(linked_node_t));
+  linked_node_t *node = GC_MALLOC(sizeof(linked_node_t));
   if (node == NULL)
     return NULL;
 
@@ -17,7 +18,9 @@ linked_list_t *create_linked_list()
 {
   linked_list_t *list;
 
-  if ((list = malloc(sizeof(linked_list_t))) == NULL)
+  GC_INIT();
+
+  if ((list = GC_MALLOC(sizeof(linked_list_t))) == NULL)
   {
     return NULL;
   }
@@ -33,26 +36,17 @@ void empty_linked_list(linked_list_t *list)
   if (list == NULL || list->head == NULL)
     return;
 
-  linked_node_t *next;
-  linked_node_t *node;
-  for (node = list->head; node != NULL; node = next)
-  {
-    next = node->next;
-    free(node->item);
-    free(node);
-  }
-
   list->head = NULL;
   list->length = 0;
 }
 
 void destroy_linked_list(linked_list_t *list)
 {
-  if (list == NULL)
-    return;
+  // if (list == NULL)
+  //   return;
 
-  empty_linked_list(list);
-  free(list);
+  // empty_linked_list(list);
+  // GC_FREE(list);
 }
 
 any_t get_first(linked_list_t *list)

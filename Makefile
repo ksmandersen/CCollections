@@ -8,7 +8,7 @@ endif
 TARGET = $(TARGET_BASE)$(TARGET_EXTENSION)
 SRC_FILES=src/lib/unity/src/unity.c  src/ccollections/**/*.c src/tests/*.c src/tests/runners/*.c
 INC_DIRS=-Isrc/ccollections
-SYMBOLS=-DTEST
+SYMBOLS=-DTEST -lgc
 
 ifeq ($(OS),Windows_NT)
 	CLEANUP = del /F /Q build\* && del /F /Q $(TARGET)

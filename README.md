@@ -40,6 +40,13 @@ The collection library will include the following collection types:
 * SortedSet
 * Stack
 
+## Hashing
+
+Til at starte med implementerer vi blot en simpel hashing metode til at test vores collections med. Senere kan vi
+kigge på at bruge eksisterende biblioteker med Perfect Hashing. Der er to meget udbredte:
+
+* [CMPH - C Minimal Perfect Hashing Library](http://cmph.sourceforge.net/)
+* [gperf - GNU Perfect hashing](http://www.gnu.org/software/gperf/#TOCintroduction)
 
 ## Møde
 

@@ -6,6 +6,7 @@ extern void setUp(void);
 extern void tearDown(void);
 
 extern void test_can_create_linked_list(void);
+extern void test_can_add_objects_to_linked_list(void);
 
 static void runTest(UnityTestFunction test)
 {
@@ -33,6 +34,7 @@ int main(void)
   UnityBegin();
 
   RUN_TEST(test_can_create_linked_list, 1);
+  RUN_TEST(test_can_add_objects_to_linked_list, 2);
 
   UnityEnd();
   return 0;
