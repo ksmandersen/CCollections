@@ -12,6 +12,6 @@ struct cc_list_node_struct
 };
 typedef struct cc_list_node_struct cc_list_node;
 
-cc_list_node *cc_list_node_new(any_t object);
+cc_list_node *cc_list_node_new(cc_object *object);
 
 #endif

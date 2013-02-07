@@ -22,15 +22,15 @@ int cc_list_length(cc_list *list);
 /*! \brief Get a node in a linked list
  * \param list the linked list
  * \param index the index of the node to get */
-cc_object cc_list_get(cc_list *list, int index);
+cc_object *cc_list_get(cc_list *list, int index);
 
 /*! \brief Get the first node in a linked list
  * \param list the linked list */
-cc_object cc_list_get_first(cc_list *list);
+cc_object *cc_list_get_first(cc_list *list);
 
 /*! \brief Get the last node in a linked list
  * \param list the linked list */
-cc_object cc_list_get_last(cc_list *list);
+cc_object *cc_list_get_last(cc_list *list);
 
 /*! \brief Insert a value at a position in the linked list
  * \param list the linked list
@@ -41,12 +41,12 @@ void cc_list_add(cc_list *list, int index, cc_object *object);
 /*! \brief Insert a value as the first node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_first(cc_list *list, cc_object object);
+void cc_list_add_first(cc_list *list, cc_object *object);
 
 /*! \brief Insert a value as the last node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_last(cc_list *list, cc_object object);
+void cc_list_add_last(cc_list *list, cc_object *object);
 
 /*! \brief Remove a value at a position in the linked list
  * \param list the linked list

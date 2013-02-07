@@ -1,4 +1,4 @@
-#include "../ccollections/cc_list/cc_list.h"
+#include "../ccollections/shared/cc.h"
 #include "../lib/unity/src/unity.h"
 
 #define GC_DEBUG
@@ -8,6 +8,8 @@ cc_list *list;
 
 void setUp(void)
 {
+  GC_INIT();
+  cc_init();
   list = cc_list_new();
 }
 
@@ -23,42 +25,37 @@ void test_can_create_linked_list(void)
 
 void test_can_add_object_to_first(void)
 {
-  int *val1 = GC_MALLOC(sizeof(int));
-  val1 = (int *)500;
+  cc_object *val1 = cc_object_with_int(100);
 
   cc_list_add_first(list, val1);
 
-  int *val2 = GC_MALLOC(sizeof(int));
-  val2 = (int *)200;
+  cc_object *val2 = cc_object_with_int(200);
 
   cc_list_add_first(list, val2);
 
   TEST_ASSERT_EQUAL(cc_list_length(list), 2);
-  TEST_ASSERT_EQUAL(cc_list_get_first(list), val2);
-  TEST_ASSERT_EQUAL(cc_list_get_last(list), val1);
+  TEST_ASSERT_EQUAL(cc_object_is_equal(cc_list_get_first(list), val2), true);
+  TEST_ASSERT_EQUAL(cc_object_is_equal(cc_list_get_last(list), val1), true);
 }
 
 void test_can_add_object_to_last(void)
 {
-  int *val1 = GC_MALLOC(sizeof(int));
-  val1 = (int *)500;
+  cc_object *val1 = cc_object_with_int(100);
 
   cc_list_add_last(list, val1);
 
-  int *val2 = GC_MALLOC(sizeof(int));
-  val2 = (int *)200;
+  cc_object *val2 = cc_object_with_int(200);
 
   cc_list_add_last(list, val2);
 
   TEST_ASSERT_EQUAL(cc_list_length(list), 2);
-  TEST_ASSERT_EQUAL(cc_list_get_last(list), val2);
-  TEST_ASSERT_EQUAL(cc_list_get_first(list), val1);
+  TEST_ASSERT_EQUAL(cc_object_is_equal(cc_list_get_last(list), val2), true);
+  TEST_ASSERT_EQUAL(cc_object_is_equal(cc_list_get_first(list), val1), true);
 }
 
 void test_can_clear_list(void)
 {
-  int *val1 = GC_MALLOC(sizeof(int));
-  val1 = (int *)500;
+  cc_object *val1 = cc_object_with_int(100);
 
   cc_list_add_first(list, val1);
   cc_list_clear(list);
@@ -69,12 +66,9 @@ void test_can_clear_list(void)
 
 void test_can_merge_lists(void)
 {
-  int *val1 = GC_MALLOC(sizeof(int));
-  int *val2 = GC_MALLOC(sizeof(int));
-  int *val3 = GC_MALLOC(sizeof(int));
-  val1 = (int *)100;
-  val2 = (int *)200;
-  val3 = (int *)300;
+  cc_object *val1 = cc_object_with_int(100);
+  cc_object *val2 = cc_object_with_int(200);
+  cc_object *val3 = cc_object_with_int(300);
 
   cc_list_add_last(list, val1);
   cc_list_add_last(list, val2);
@@ -82,12 +76,9 @@ void test_can_merge_lists(void)
 
   cc_list *list2 = cc_list_new();
 
-  int *val4 = GC_MALLOC(sizeof(int));
-  int *val5 = GC_MALLOC(sizeof(int));
-  int *val6 = GC_MALLOC(sizeof(int));
-  val4 = (int *)400;
-  val5 = (int *)500;
-  val6 = (int *)600;
+  cc_object *val4 = cc_object_with_int(400);
+  cc_object *val5 = cc_object_with_int(500);
+  cc_object *val6 = cc_object_with_int(600);
 
   cc_list_add_last(list2, val4);
   cc_list_add_last(list2, val5);
@@ -96,6 +87,6 @@ void test_can_merge_lists(void)
   cc_list_merge(list, list2);
 
   TEST_ASSERT_EQUAL(cc_list_length(list), 6);
-  TEST_ASSERT_EQUAL(cc_list_get_first(list), val1);
-  TEST_ASSERT_EQUAL(cc_list_get_last(list), val6);
+  TEST_ASSERT_EQUAL(cc_object_is_equal(cc_list_get_first(list), val1), true);
+  TEST_ASSERT_EQUAL(cc_object_is_equal(cc_list_get_last(list2), val6), true);
 }

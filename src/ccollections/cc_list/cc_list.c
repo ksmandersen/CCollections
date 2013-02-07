@@ -29,7 +29,7 @@ cc_list *cc_list_new()
   if ((list = GC_MALLOC(sizeof(cc_list))) == NULL)
     return NULL;
 
-  list->c.cc_enumerator_move_next = cc_list_enumerator_move_next;
+  list->c.enumerator_move_next = cc_list_enumerator_move_next;
 
   list->head = NULL;
   list->tail = NULL;
@@ -52,7 +52,7 @@ int cc_list_length(cc_list *list)
 /*! \brief Get a node in a linked list
  * \param list the linked list
  * \param index the index of the node to get */
-any_t cc_list_get(cc_list *list, int index)
+cc_object *cc_list_get(cc_list *list, int index)
 {
   if (list == NULL || list->head == NULL || index > list->length)
     return NULL;
@@ -72,7 +72,7 @@ any_t cc_list_get(cc_list *list, int index)
 
 /*! \brief Get the first node in a linked list
  * \param list the linked list */
-any_t cc_list_get_first(cc_list *list)
+cc_object * cc_list_get_first(cc_list *list)
 {
   if (list == NULL || list->head == NULL)
     return NULL;
@@ -82,7 +82,7 @@ any_t cc_list_get_first(cc_list *list)
 
 /*! \brief Get the last node in a linked list
  * \param list the linked list */
-any_t cc_list_get_last(cc_list *list)
+cc_object * cc_list_get_last(cc_list *list)
 {
   if (list == NULL || list->tail == NULL)
     return NULL;
@@ -94,7 +94,7 @@ any_t cc_list_get_last(cc_list *list)
  * \param list the linked list
  * \param index the index at which to insert the object
  * \param object the object to insert */
-void cc_list_add(cc_list *list, int index, any_t *object)
+void cc_list_add(cc_list *list, int index, cc_object *object)
 {
   cc_list_node *temp, *prev, *next, *curr;
 
@@ -138,7 +138,7 @@ void cc_list_add(cc_list *list, int index, any_t *object)
 /*! \brief Insert a value as the first node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_first(cc_list *list, any_t object)
+void cc_list_add_first(cc_list *list, cc_object *object)
 {
   cc_list_node *temp = cc_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -161,7 +161,7 @@ void cc_list_add_first(cc_list *list, any_t object)
 /*! \brief Insert a value as the last node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_last(cc_list *list, any_t object)
+void cc_list_add_last(cc_list *list, cc_object *object)
 {
   cc_list_node *temp = cc_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -288,16 +288,16 @@ bool cc_list_contains(cc_list *list, cc_object *obj)
 cc_enumerator *cc_list_get_enumerator(cc_list *list)
 {
   cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
-  e->cc_collection = (gc_collection *)list;
+  e->collection = (cc_collection *)list;
   e->data = GC_MALLOC(sizeof(cc_list_node));
-  *((cc_list_node *)e->data) = NULL;
+  // *((cc_list_node *)e->data) = NULL;
 
   return e;
 }
 
 bool cc_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
 {
-  int *marker = (cc_list_node *)e->data;
+  cc_list_node *marker = (cc_list_node *)e->data;
   *marker = *marker->next;
   cc_list *list = (cc_list *)collection;
 
@@ -305,10 +305,12 @@ bool cc_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
   // end of the list. Make a struct with a bool and a pointer
   // instead. The boolean indicating wether the enumeration has
   // yet begun.
-  if (*marker == NULL)
+  if (marker == NULL)
     return false;
 
-  e->curr = marker->object;
+  e->current = marker->object;
+
+  return true;
 }
 
 cc_object *cc_list_to_object(cc_list *list)
@@ -328,12 +330,12 @@ bool cc_list_compare(cc_object *obj1, cc_object *obj2)
   cc_list *list1 = cc_list_from_object(obj1);
   cc_list *list2 = cc_list_from_object(obj2);
 
-  cc_enumerator *e1 = cc_get_list_enumerator(list1);
-  cc_enumerator *e2 = cc_get_list_enumerator(list2);
+  cc_enumerator *e1 = cc_list_get_enumerator(list1);
+  cc_enumerator *e2 = cc_list_get_enumerator(list2);
   while (cc_enumerator_move_next(e1))
   {
     if (!cc_enumerator_move_next(e2)) return false;
-    if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return false
+    if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return false;
   }
 
   if (cc_enumerator_move_next(e2)) return false;
@@ -354,7 +356,7 @@ void cc_list_register_comparator()
 
 // Internal functions
 
-cc_list_node *cc_list_node_new(any_t object)
+cc_list_node *cc_list_node_new(cc_object *object)
 {
   cc_list_node *node = GC_MALLOC(sizeof(cc_list_node));
   if (node == NULL)
