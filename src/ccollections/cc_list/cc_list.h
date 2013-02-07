@@ -1,28 +1,14 @@
 #ifndef CC_LINKED_LIST_H
   #define CC_LINKED_LIST_H
 
-/*! \brief A value pointer */
-typedef void * any_t;
+#include "../shared/cc_private.h"
+#include "../shared/cc_object.h"
+#include "../shared/cc_enumerator.h"
 
-/*! \brief A node in the linked list */
-struct cc_list_node_struct
-{
-  any_t *object;
-  struct cc_list_node_struct *next;
-  struct cc_list_node_struct *prev;
-};
-
-typedef struct cc_list_node_struct cc_list_node;
+extern const char *const cc_list_type;
 
 /*! \brief A linked list data structure */
-struct cc_list_struct
-{
-  struct cc_list_node_struct *head;
-  struct cc_list_node_struct *tail;
-
-  int length;
-};
-
+struct cc_list_struct;
 typedef struct cc_list_struct cc_list;
 
 /*! \brief Create a linked list object
@@ -36,31 +22,31 @@ int cc_list_length(cc_list *list);
 /*! \brief Get a node in a linked list
  * \param list the linked list
  * \param index the index of the node to get */
-any_t cc_list_get(cc_list *list, int index);
+cc_object cc_list_get(cc_list *list, int index);
 
 /*! \brief Get the first node in a linked list
  * \param list the linked list */
-any_t cc_list_get_first(cc_list *list);
+cc_object cc_list_get_first(cc_list *list);
 
 /*! \brief Get the last node in a linked list
  * \param list the linked list */
-any_t cc_list_get_last(cc_list *list);
+cc_object cc_list_get_last(cc_list *list);
 
 /*! \brief Insert a value at a position in the linked list
  * \param list the linked list
  * \param index the index at which to insert the object
  * \param object the object to insert */
-void cc_list_add(cc_list *list, int index, any_t *object);
+void cc_list_add(cc_list *list, int index, cc_object *object);
 
 /*! \brief Insert a value as the first node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_first(cc_list *list, any_t object);
+void cc_list_add_first(cc_list *list, cc_object object);
 
 /*! \brief Insert a value as the last node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_last(cc_list *list, any_t object);
+void cc_list_add_last(cc_list *list, cc_object object);
 
 /*! \brief Remove a value at a position in the linked list
  * \param list the linked list
@@ -85,5 +71,11 @@ void cc_list_clear(cc_list *list);
  * \param b_list the second list
  * \returns The lists merged together */
 cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list);
+
+bool cc_list_contains(cc_list *list, cc_object *object);
+cc_enumerator *cc_list_get_enumerator(cc_list *list);
+
+cc_object *cc_list_to_object(cc_list *list);
+cc_list *cc_list_from_object(cc_object *object);
 
 #endif

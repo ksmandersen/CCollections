@@ -1,9 +1,9 @@
 #ifndef CC_SET_H
 #define CC_SET_H
 
-#include "cc_private.h"
-#include "cc_object.h"
-#include "cc_enumerator.h"
+#include "../shared/cc_private.h"
+#include "../shared/cc_object.h"
+#include "../shared/cc_enumerator.h"
 
 extern const char * const cc_set_type;
 

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['head',['head',['../structlinked__list__struct.html#a905c7a503a944a805a7b6999d2f19130',1,'linked_list_struct']]]
+  ['head',['head',['../structcc__list__struct.html#a87245dc4437872b2514ed71794ffbe64',1,'cc_list_struct']]],
+  ['heap',['heap',['../structcc__set__struct.html#aba3472db0fd27aae563df28adf01f8a5',1,'cc_set_struct']]]
 ];

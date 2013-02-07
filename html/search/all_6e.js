@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['next',['next',['../structnode__struct.html#a422f0e0d5603fbe0ec2281e2494583da',1,'node_struct']]],
-  ['node_5fstruct',['node_struct',['../structnode__struct.html',1,'']]]
+  ['next',['next',['../structcc__list__node__struct.html#a7a8ed059a5499e67b33cb0e6de761948',1,'cc_list_node_struct']]]
 ];

@@ -7,7 +7,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "cc_set.h"
+#include "../cc_set/cc_set.h"
+#include "../cc_list/cc_list.h"
 
 void cc_init();
 

@@ -1,6 +1,6 @@
-#include "cc_private.h"
+#include "../shared/cc_private.h"
 #include "cc_set.h"
-#include "cc_enumerator_private.h"
+#include "../shared/cc_enumerator_private.h"
 
 const char * const cc_set_type = "cc_set_type";
 

@@ -1,17 +1,35 @@
+#include "../shared/cc_private.h"
 #include "cc_list.private.h"
+#include "../shared/cc_enumerator_private.h"
 
-#include "gc/gc.h"
+const char * const cc_list_type = "cc_list_type";
+
+bool cc_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+bool cc_list_compare(cc_object *obj1, cc_object *obj2);
+void cc_list_register_comparator();
+
+struct cc_list_struct
+{
+  cc_collection c;
+
+  struct cc_list_node_struct *head;
+  struct cc_list_node_struct *tail;
+
+  int length;
+};
+
 
 /*! \brief Create a linked list object
  * \return A new linked list object */
 cc_list *cc_list_new()
 {
-  // TODO: Only do this, if it hasn't been done yet!
-  GC_INIT();\
+  cc_list_register_comparator();
 
   cc_list *list;
   if ((list = GC_MALLOC(sizeof(cc_list))) == NULL)
     return NULL;
+
+  list->c.cc_enumerator_move_next = cc_list_enumerator_move_next;
 
   list->head = NULL;
   list->tail = NULL;
@@ -262,6 +280,77 @@ cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list)
   return a_list;
 }
 
+bool cc_list_contains(cc_list *list, cc_object *obj)
+{
+  return false;
+}
+
+cc_enumerator *cc_list_get_enumerator(cc_list *list)
+{
+  cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
+  e->cc_collection = (gc_collection *)list;
+  e->data = GC_MALLOC(sizeof(cc_list_node));
+  *((cc_list_node *)e->data) = NULL;
+
+  return e;
+}
+
+bool cc_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
+{
+  int *marker = (cc_list_node *)e->data;
+  *marker = *marker->next;
+  cc_list *list = (cc_list *)collection;
+
+  // FIXME: This condition is met both at the beginning and
+  // end of the list. Make a struct with a bool and a pointer
+  // instead. The boolean indicating wether the enumeration has
+  // yet begun.
+  if (*marker == NULL)
+    return false;
+
+  e->curr = marker->object;
+}
+
+cc_object *cc_list_to_object(cc_list *list)
+{
+  return cc_object_with_data(list, sizeof(cc_list), cc_list_type);
+}
+
+cc_list *cc_list_from_object(cc_object *object)
+{
+  cc_list *list = cc_list_new();
+  cc_object_data_value(object, (void **)&list, sizeof(cc_list_type));
+  return list;
+}
+
+bool cc_list_compare(cc_object *obj1, cc_object *obj2)
+{
+  cc_list *list1 = cc_list_from_object(obj1);
+  cc_list *list2 = cc_list_from_object(obj2);
+
+  cc_enumerator *e1 = cc_get_list_enumerator(list1);
+  cc_enumerator *e2 = cc_get_list_enumerator(list2);
+  while (cc_enumerator_move_next(e1))
+  {
+    if (!cc_enumerator_move_next(e2)) return false;
+    if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return false
+  }
+
+  if (cc_enumerator_move_next(e2)) return false;
+
+  return true;
+}
+
+void cc_list_register_comparator()
+{
+  static bool first = true;
+
+  if (first)
+  {
+    first = false;
+    cc_object_register_comparator_for_type(cc_list_type, cc_list_compare);
+  }
+}
 
 // Internal functions
 

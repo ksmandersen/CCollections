@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['length',['length',['../structlinked__list__struct.html#a70d7abd7d9c4807c6cd6709227d843fc',1,'linked_list_struct']]],
-  ['linked_5flist_2ec',['linked_list.c',['../linked__list_8c.html',1,'']]],
-  ['linked_5flist_2eh',['linked_list.h',['../linked__list_8h.html',1,'']]],
-  ['linked_5flist_5fstruct',['linked_list_struct',['../structlinked__list__struct.html',1,'']]]
+  ['len',['len',['../structcc__object__struct.html#a7d5ff339328d7070e6aee6e3d9a26301',1,'cc_object_struct']]],
+  ['length',['length',['../structcc__list__struct.html#aaa875e5d7472cd738895416f46724445',1,'cc_list_struct']]]
 ];
