@@ -38,8 +38,8 @@ int main(void)
 
   RUN_TEST(test_can_create_linked_list, 1);
   RUN_TEST(test_can_add_object_to_front, 2);
-  RUN_TEST(test_can_add_object_to_end, 2);
-  RUN_TEST(test_can_clear_list, 2);
+  RUN_TEST(test_can_add_object_to_end, 3);
+  RUN_TEST(test_can_clear_list, 4);
 
   UnityEnd();
   return 0;
