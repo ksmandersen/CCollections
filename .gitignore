@@ -5,3 +5,7 @@ src/.DS_Store
 src/lib/.DS_Store
 
 *.out
+*.aux
+*.fdb_latexmk
+*.log
+*.synctex.gz
