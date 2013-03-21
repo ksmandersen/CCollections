@@ -1,4 +1,6 @@
 build/
+CCollections/
+CCollections/*
 
 .DS_Store
 src/.DS_Store
