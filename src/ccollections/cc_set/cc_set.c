@@ -2,7 +2,7 @@
 #include "cc_set.h"
 #include "../shared/cc_enumerator_private.h"
 
-static const char * const cc_set_type = "cc_set_type";
+const char * const cc_set_type = "cc_set_type";
 
 #define HEAP_IMPLEMENTATION 1
 #define LIST_IMPLEMENTATION 2
@@ -26,7 +26,8 @@ struct cc_set_struct {
 cc_set *cc_set_new() {
 	cc_set_register_comparator();
 	
-	if ((cc_set *set = GC_MALLOC(sizeof(cc_set))) == NULL) {
+	cc_set *set;
+	if ((set = GC_MALLOC(sizeof(cc_set))) == NULL) {
 		return NULL;
 	}
 	
@@ -71,7 +72,8 @@ void cc_set_add(cc_set *set, cc_object *obj) {
 }
 
 void cc_set_expand_heap(cc_set *set) {
-	set->heap = CG_REALLOC(set->heap, set->heap_size * 2);
+	set->heap_size *= 2;
+	set->heap = GC_REALLOC(set->heap, set->heap_size);
 }
 
 void cc_set_clear(cc_set *set) {
