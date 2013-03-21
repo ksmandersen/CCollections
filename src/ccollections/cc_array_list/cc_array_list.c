@@ -87,11 +87,12 @@ void cc_array_list_add(cc_array_list *list, int index, cc_object *object) {
   if (list->heap_size == list->count) cc_array_list_expand_heap(list);
   
   int i;
-  for (i = list->count; i >= index; i--) {
-    list->heap[i + 1] = list->heap[i]; 
+  for (i = list->count; i > index; i--) {
+    list->heap[i] = list->heap[i - 1];
   }
-  
+
   list->heap[i] = object;
+  list->count++;
 }
 
 /*! \brief Insert a value as the first node in a linked list
@@ -118,6 +119,8 @@ void cc_array_list_remove(cc_array_list *list, int index) {
   for (i = index; i < list->count; i++) {
     list->heap[i] = list->heap[i + 1];
   }
+
+  list->count--;
 }
 
 /*! \brief Remove the value from the front node in a linked list
@@ -145,14 +148,12 @@ void cc_array_list_clear(cc_array_list *list) {
  * \param b_list the second list
  * \returns The lists merged together */
 cc_array_list *cc_array_list_merge(cc_array_list *a_list, cc_array_list *b_list) {
-  cc_array_list *c_list = cc_array_list_new();
-
-  cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+  cc_enumerator *e = cc_array_list_get_enumerator(b_list);
   while (cc_enumerator_move_next(e)) {
-    cc_array_list_add_last(c_list, cc_enumerator_current(e));
+    cc_array_list_add_last(a_list, cc_enumerator_current(e));
   }
 
-  return c_list;
+  return a_list;
 }
 
 bool cc_array_list_contains(cc_array_list *list, cc_object *obj) {
