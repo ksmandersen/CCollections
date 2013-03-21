@@ -1,8 +1,8 @@
 #include "../shared/cc_private.h"
-#include "cc_list.private.h"
+#include "cc_linked_list.private.h"
 #include "../shared/cc_enumerator_private.h"
 
-const char * const cc_list_type = "cc_list_type";
+const char * const cc_linked_list_type = "cc_linked_list_type";
 
 #define HEAP_IMPLEMENTATION 1
 #define LINKED_LIST_IMPLEMENTATION 2
@@ -15,12 +15,12 @@ static bool cc_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
 static bool cc_list_compare(cc_object *obj1, cc_object *obj2);
 static void cc_list_register_comparator();
 
-struct cc_list_struct
+struct cc_linked_list_struct
 {
   cc_collection c;
 
-  struct cc_list_node_struct *head;
-  struct cc_list_node_struct *tail;
+  struct cc_linked_list_node_struct *head;
+  struct cc_linked_list_node_struct *tail;
 
   int length;
 };
@@ -28,15 +28,15 @@ struct cc_list_struct
 
 /*! \brief Create a linked list object
  * \return A new linked list object */
-cc_list *cc_list_new()
+cc_linked_list *cc_linked_list_new()
 {
-  cc_list_register_comparator();
+  cc_linked_list_register_comparator();
 
-  cc_list *list;
-  if ((list = GC_MALLOC(sizeof(cc_list))) == NULL)
+  cc_linked_list *list;
+  if ((list = GC_MALLOC(sizeof(cc_linked_list))) == NULL)
     return NULL;
 
-  list->c.enumerator_move_next = cc_list_enumerator_move_next;
+  list->c.enumerator_move_next = cc_linked_list_enumerator_move_next;
 
   list->head = NULL;
   list->tail = NULL;
@@ -47,7 +47,7 @@ cc_list *cc_list_new()
 
 /*! \brief Get the length of the list
  * \return The length of the list */
-int cc_list_length(cc_list *list)
+int cc_linked_list_length(cc_linked_list *list)
 {
   if (list == NULL)
     return 0;
@@ -59,12 +59,12 @@ int cc_list_length(cc_list *list)
 /*! \brief Get a node in a linked list
  * \param list the linked list
  * \param index the index of the node to get */
-cc_object *cc_list_get(cc_list *list, int index)
+cc_object *cc_linked_list_get(cc_linked_list *list, int index)
 {
   if (list == NULL || list->head == NULL || index >= list->length)
     return NULL;
 
-  cc_list_node *curr = list->head;
+  cc_linked_list_node *curr = list->head;
   int i;
   for (i = 1; i < index; i++)
   {
@@ -79,7 +79,7 @@ cc_object *cc_list_get(cc_list *list, int index)
 
 /*! \brief Get the first node in a linked list
  * \param list the linked list */
-cc_object * cc_list_get_first(cc_list *list)
+cc_object * cc_linked_list_get_first(cc_linked_list *list)
 {
   if (list == NULL || list->head == NULL)
     return NULL;
@@ -89,7 +89,7 @@ cc_object * cc_list_get_first(cc_list *list)
 
 /*! \brief Get the last node in a linked list
  * \param list the linked list */
-cc_object * cc_list_get_last(cc_list *list)
+cc_object * cc_linked_list_get_last(cc_linked_list *list)
 {
   if (list == NULL || list->tail == NULL)
     return NULL;
@@ -101,9 +101,9 @@ cc_object * cc_list_get_last(cc_list *list)
  * \param list the linked list
  * \param index the index at which to insert the object
  * \param object the object to insert */
-void cc_list_add(cc_list *list, int index, cc_object *object)
+void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
 {
-  cc_list_node *temp, *prev, *next, *curr;
+  cc_linked_list_node *temp, *prev, *next, *curr;
 
   curr = list->head;
   if (index > list->length + 1 || index < 0)
@@ -113,9 +113,9 @@ void cc_list_add(cc_list *list, int index, cc_object *object)
   } else {
     if (index == 0)
     {
-      cc_list_add_first(list, object);
+      cc_linked_list_add_first(list, object);
     } else if (index == list->length - 1) {
-      cc_list_add_last(list, object);
+      cc_linked_list_add_last(list, object);
     } else {
       int i;
       for (i = 1; i < index; i++)
@@ -126,7 +126,7 @@ void cc_list_add(cc_list *list, int index, cc_object *object)
 
       if (curr != NULL)
       {
-        if ((temp = cc_list_node_new(object)) == NULL)
+        if ((temp = cc_linked_list_node_new(object)) == NULL)
         {
           return;
         }
@@ -145,9 +145,9 @@ void cc_list_add(cc_list *list, int index, cc_object *object)
 /*! \brief Insert a value as the first node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_first(cc_list *list, cc_object *object)
+void cc_linked_list_add_first(cc_linked_list *list, cc_object *object)
 {
-  cc_list_node *temp = cc_list_node_new(object);
+  cc_linked_list_node *temp = cc_linked_list_node_new(object);
   if (list == NULL || temp == NULL)
     return;
 
@@ -168,9 +168,9 @@ void cc_list_add_first(cc_list *list, cc_object *object)
 /*! \brief Insert a value as the last node in a linked list
  * \param list the linked list
  * \param object the value to insert */
-void cc_list_add_last(cc_list *list, cc_object *object)
+void cc_linked_list_add_last(cc_linked_list *list, cc_object *object)
 {
-  cc_list_node *temp = cc_list_node_new(object);
+  cc_linked_list_node *temp = cc_linked_list_node_new(object);
   if (list == NULL || temp == NULL)
     return;
 
@@ -191,21 +191,21 @@ void cc_list_add_last(cc_list *list, cc_object *object)
 /*! \brief Remove a value at a position in the linked list
  * \param list the linked list
  * \param index the index at which to remove the object */
-void cc_list_remove(cc_list *list, int index)
+void cc_linked_list_remove(cc_linked_list *list, int index)
 {
   if (list == NULL || index > list->length - 1 || index < 0)
     return;
 
   if (list->length == 1) {
-    cc_list_clear(list);
+    cc_linked_list_clear(list);
   } else if (index == 0) {
-    cc_list_remove_first(list);
+    cc_linked_list_remove_first(list);
   } else if (index == list->length - 1) {
-    cc_list_remove_last(list);
+    cc_linked_list_remove_last(list);
   } else {
 
-    cc_list_node *curr = list->head;
-    cc_list_node *prev = NULL;
+    cc_linked_list_node *curr = list->head;
+    cc_linked_list_node *prev = NULL;
     int i;
     for (i = 1; i < index; i++)
     {
@@ -223,14 +223,14 @@ void cc_list_remove(cc_list *list, int index)
 
 /*! \brief Remove the value from the front node in a linked list
  * \param list the linked list */
-void cc_list_remove_first(cc_list *list)
+void cc_linked_list_remove_first(cc_linked_list *list)
 {
   if (list == NULL || list->head == NULL)
     return;
 
   if (list->length == 1)
   {
-    cc_list_clear(list);
+    cc_linked_list_clear(list);
   } else {
     list->head = list->head->next;
     list->head->prev = NULL;  
@@ -240,14 +240,14 @@ void cc_list_remove_first(cc_list *list)
 
 /*! \brief Remove the value from the end node in a linked list
  * \param list the linked list */
-void cc_list_remove_last(cc_list *list)
+void cc_linked_list_remove_last(cc_linked_list *list)
 {
   if (list == NULL || list->tail == NULL)
     return;
 
   if (list->length == 1)
   {
-    cc_list_clear(list);
+    cc_linked_list_clear(list);
   } else {
     list->tail = list->tail->prev;
     list->tail->next = NULL;  
@@ -257,7 +257,7 @@ void cc_list_remove_last(cc_list *list)
 
 /*! \brief Removes all objects from a linked list
  * \param list the linked list to be emptied */
-void cc_list_clear(cc_list *list)
+void cc_linked_list_clear(cc_linked_list *list)
 {
   if (list == NULL)
     return;
@@ -272,12 +272,12 @@ void cc_list_clear(cc_list *list)
  * \param a_list the first list
  * \param b_list the second list
  * \returns The lists merged together */
-cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list)
+cc_linked_list *cc_linked_list_merge(cc_linked_list *a_list, cc_linked_list *b_list)
 {
-  cc_list_node *curr = b_list->head;
+  cc_linked_list_node *curr = b_list->head;
   while (curr != NULL)
   {
-    cc_list_add_last(a_list, curr->object);
+    cc_linked_list_add_last(a_list, curr->object);
 
     curr = curr->next;
   }
@@ -287,26 +287,26 @@ cc_list *cc_list_merge(cc_list *a_list, cc_list *b_list)
   return a_list;
 }
 
-bool cc_list_contains(cc_list *list, cc_object *obj)
+bool cc_linked_list_contains(cc_linked_list *list, cc_object *obj)
 {
   return false;
 }
 
-cc_enumerator *cc_list_get_enumerator(cc_list *list)
+cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list)
 {
   cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
   e->collection = (cc_collection *)list;
-  e->data = GC_MALLOC(sizeof(cc_list_node));
-  // *((cc_list_node *)e->data) = NULL;
+  e->data = GC_MALLOC(sizeof(cc_linked_list_node));
+  // *((cc_linked_list_node *)e->data) = NULL;
 
   return e;
 }
 
-bool cc_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
+bool cc_linked_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
 {
-  cc_list_node *marker = (cc_list_node *)e->data;
+  cc_linked_list_node *marker = (cc_linked_list_node *)e->data;
   *marker = *marker->next;
-  cc_list *list = (cc_list *)collection;
+  cc_linked_list *list = (cc_linked_list *)collection;
 
   // FIXME: This condition is met both at the beginning and
   // end of the list. Make a struct with a bool and a pointer
@@ -320,25 +320,25 @@ bool cc_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
   return true;
 }
 
-cc_object *cc_list_to_object(cc_list *list)
+cc_object *cc_linked_list_to_object(cc_linked_list *list)
 {
-  return cc_object_with_data(list, sizeof(cc_list), cc_list_type);
+  return cc_object_with_data(list, sizeof(cc_linked_list), cc_linked_list_type);
 }
 
-cc_list *cc_list_from_object(cc_object *object)
+cc_linked_list *cc_linked_list_from_object(cc_object *object)
 {
-  cc_list *list = cc_list_new();
-  cc_object_data_value(object, (void **)&list, sizeof(cc_list_type));
+  cc_linked_list *list = cc_linked_list_new();
+  cc_object_data_value(object, (void **)&list, sizeof(cc_linked_list_type));
   return list;
 }
 
-bool cc_list_compare(cc_object *obj1, cc_object *obj2)
+bool cc_linked_list_compare(cc_object *obj1, cc_object *obj2)
 {
-  cc_list *list1 = cc_list_from_object(obj1);
-  cc_list *list2 = cc_list_from_object(obj2);
+  cc_linked_list *list1 = cc_linked_list_from_object(obj1);
+  cc_linked_list *list2 = cc_linked_list_from_object(obj2);
 
-  cc_enumerator *e1 = cc_list_get_enumerator(list1);
-  cc_enumerator *e2 = cc_list_get_enumerator(list2);
+  cc_enumerator *e1 = cc_linked_list_get_enumerator(list1);
+  cc_enumerator *e2 = cc_linked_list_get_enumerator(list2);
   while (cc_enumerator_move_next(e1))
   {
     if (!cc_enumerator_move_next(e2)) return false;
@@ -350,22 +350,22 @@ bool cc_list_compare(cc_object *obj1, cc_object *obj2)
   return true;
 }
 
-void cc_list_register_comparator()
+void cc_linked_list_register_comparator()
 {
   static bool first = true;
 
   if (first)
   {
     first = false;
-    cc_object_register_comparator_for_type(cc_list_type, cc_list_compare);
+    cc_object_register_comparator_for_type(cc_linked_list_type, cc_linked_list_compare);
   }
 }
 
 // Internal functions
 
-cc_list_node *cc_list_node_new(cc_object *object)
+cc_linked_list_node *cc_linked_list_node_new(cc_object *object)
 {
-  cc_list_node *node = GC_MALLOC(sizeof(cc_list_node));
+  cc_linked_list_node *node = GC_MALLOC(sizeof(cc_linked_list_node));
   if (node == NULL)
       return NULL;
 
