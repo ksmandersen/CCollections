@@ -5,7 +5,6 @@
 const char *const cc_array_list_type = "cc_array_list_type";
 
 static bool cc_array_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
-static bool cc_array_list_compare(cc_object *obj1, cc_object *obj2);
 static void cc_array_list_register_comparator();
 static void cc_array_list_expand_heap(cc_array_list *list);
 
