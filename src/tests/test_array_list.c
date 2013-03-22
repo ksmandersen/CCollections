@@ -19,6 +19,15 @@ void tearDown(void)
   list = NULL;
 }
 
+void populateList(cc_array_list *l)
+{
+  int i;
+  for(i = 1; i < 120; i++) {
+    cc_object *v = cc_object_with_int(i * 100);
+    cc_array_list_add_last(l, v);
+  }
+}
+
 void test_can_create_array_list(void)
 {
   TEST_ASSERT_NOT_EQUAL(NULL, list);
@@ -117,6 +126,30 @@ void test_can_merge_lists_together(void)
   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret6, val6));
 }
 
+void test_can_merge_empty_list_with_non_empty_list(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+  cc_array_list *b_list = cc_array_list_new();
+
+  populateList(b_list);
+  cc_array_list_merge(a_list, b_list);
+
+  TEST_ASSERT_EQUAL(true, cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list)));
+}
+
+void test_merge_non_empty_list_with_empty_list(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+  cc_array_list *b_list = cc_array_list_new();
+  cc_array_list *c_list = cc_array_list_new();
+
+  populateList(a_list);
+  populateList(c_list);
+  cc_array_list_merge(a_list, b_list);
+
+  TEST_ASSERT_EQUAL(true, cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(c_list)));
+}
+
 void test_can_clear_list(void)
 {
   cc_object *val1 = cc_object_with_int(100);
@@ -130,4 +163,75 @@ void test_can_clear_list(void)
   cc_array_list_clear(list);
 
   TEST_ASSERT_EQUAL(0, cc_array_list_length(list));
+}
+
+void test_can_list_compare_equal(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+  cc_array_list *b_list = cc_array_list_new();
+  populateList(a_list);
+  populateList(b_list);
+
+  bool compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
+
+  TEST_ASSERT_EQUAL(true, compare);
+}
+
+void test_can_list_compare_non_equal(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+  cc_array_list *b_list = cc_array_list_new();
+  populateList(a_list);
+  populateList(b_list);
+
+  cc_object *obj = cc_object_with_int(5000);
+  cc_array_list_add_last(a_list, obj);
+
+  bool compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
+
+  TEST_ASSERT_EQUAL(false, compare);
+}
+
+void test_can_enumerate_list(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+  populateList(a_list);
+
+  int i = 1;
+  cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+  while (cc_enumerator_move_next(e)) {
+    TEST_ASSERT_EQUAL(true, cc_object_is_equal(cc_enumerator_current(e), cc_object_with_int(i * 100)));
+    i++;
+  }
+}
+
+void test_can_add_and_get_identical_objects(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+  populateList(a_list);
+
+  cc_object *obj = cc_object_with_int(100);
+  cc_array_list_add_last(list, obj);
+
+  TEST_ASSERT_EQUAL(true, cc_object_is_equal(obj, cc_array_list_get_last(list)));
+  TEST_ASSERT_EQUAL(true, cc_object_is_equal(obj, cc_array_list_get_first(list)));
+}
+
+void test_can_find_contained_objects_in_list(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+  populateList(a_list);  
+
+  cc_object *obj = cc_object_with_int(100);
+
+  TEST_ASSERT_EQUAL(true, cc_array_list_contains(a_list, obj));
+}
+
+void test_cannot_find_object_in_list_without_object(void)
+{
+  cc_array_list *a_list = cc_array_list_new();
+
+  cc_object *obj = cc_object_with_int(100);
+
+  TEST_ASSERT_EQUAL(false, cc_array_list_contains(a_list, obj));
 }
