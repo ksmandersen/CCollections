@@ -9,16 +9,29 @@ bool cc_object_int_comparator(cc_object *obj1, cc_object *obj2);
 bool cc_object_float_comparator(cc_object *obj1, cc_object *obj2);
 bool cc_object_string_comparator(cc_object *obj1, cc_object *obj2);
 
+cc_hash cc_object_int_hash_func(cc_object *obj);
+cc_hash cc_object_float_hash_func(cc_object *obj);
+cc_hash cc_object_string_hash_func(cc_object *obj);
+
 typedef struct {
 	const char *type;
 	cc_object_comparator comparator;
 } cc_object_registered_comparator;
 
+typedef struct {
+	const char *type;
+	cc_object_hash_func hash_func;
+} cc_object_registered_hash_func;
+
 static unsigned int registered_comparators_count = 0;
 static cc_object_registered_comparator registered_comparators[256];
 
+static unsigned int registered_hash_funcs_count = 0;
+static cc_object_registered_hash_func registered_hash_funcs[256];
+
 struct cc_object_struct {
 	const char *type;
+	cc_object_hash_func hash_func;
 	
 	union {
 		int i;
@@ -91,6 +104,17 @@ void cc_object_register_comparator_for_type(const char *type, cc_object_comparat
 	};
 }
 
+void cc_object_register_hash_func_for_type(const char *type, cc_object_hash_func hash_func) {
+	if (registered_hash_funcs_count >= sizeof(registered_hash_funcs) / sizeof(registered_hash_funcs[0])) {
+		printf("registered hash funcs overflow\n");
+	}
+	
+	registered_hash_funcs[registered_hash_funcs_count++] = (cc_object_registered_hash_func) {
+		.type = type,
+		.hash_func = hash_func,
+	};
+}
+
 
 const char *cc_object_string_value(cc_object *obj) {
 	return obj->value.str;
@@ -113,14 +137,28 @@ size_t cc_object_data_value(cc_object *obj, void **data, size_t max) {
 }
 
 
-const char *cc_object_hash(cc_object *obj) {
-	return "some hash 123";
+cc_hash cc_object_hash(cc_object *obj) {
+	const char *type = obj->type;
+	
+	int i;
+	for (i = 0; i < registered_hash_funcs_count; i++) {
+		cc_object_registered_hash_func reg = registered_hash_funcs[i];
+		
+		if (strcmp(reg.type, type) == 0) {
+			return reg.hash_func(obj);
+		}
+	}
+	
+	printf("Unregistered type '%s'\n", type);
+	return false;
 }
 
 void cc_object_register_default_comparators() {
 	cc_object_register_comparator_for_type(cc_object_type_int, cc_object_int_comparator);
 	cc_object_register_comparator_for_type(cc_object_type_float, cc_object_float_comparator);
 	cc_object_register_comparator_for_type(cc_object_type_string, cc_object_string_comparator);
+	
+	cc_object_register_hash_func_for_type(cc_object_type_int, cc_object_int_hash_func);
 }
 
 bool cc_object_int_comparator(cc_object *obj1, cc_object *obj2) {
@@ -133,4 +171,18 @@ bool cc_object_float_comparator(cc_object *obj1, cc_object *obj2) {
 
 bool cc_object_string_comparator(cc_object *obj1, cc_object *obj2) {
 	return (strcmp(cc_object_string_value(obj1), cc_object_string_value(obj2)) == 0);
+}
+
+cc_hash cc_object_int_hash_func(cc_object *obj) {
+	int i = cc_object_int_value(obj);
+	return cc_hash_from_data(&i, sizeof(int));
+}
+
+cc_hash cc_object_float_hash_func(cc_object *obj) {
+	float f = cc_object_float_value(obj);
+	return cc_hash_from_data(&f, sizeof(float));
+}
+
+cc_hash cc_object_string_hash_func(cc_object *obj) {
+	return cc_hash_from_string(cc_object_string_value(obj));
 }
