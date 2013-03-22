@@ -33,6 +33,7 @@ cc_set *cc_set_new() {
 	
 	set->c.enumerator_move_next = cc_set_enumerator_move_next;
 	set->heap_size = 128;
+	set->count = 0;
 	set->heap = GC_MALLOC(sizeof(cc_object *) * set->heap_size);
 	return set;
 }
@@ -43,6 +44,11 @@ cc_enumerator *cc_set_get_enumerator(cc_set *set) {
 	e->data = GC_MALLOC(sizeof(int));
 	*((int *)e->data) = -1;
 	return e;
+}
+
+int cc_set_count(cc_set *set)
+{
+	return set->count;
 }
 
 bool cc_set_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
@@ -62,10 +68,13 @@ void cc_set_add(cc_set *set, cc_object *obj) {
 	if (!cc_set_contains(set, obj)) {
 		int i;
 		for (i = 0; i < set->heap_size; i++) {
+			if (i == set->heap_size) {
+				cc_set_expand_heap(set);
+			}
 			if (set->heap[i] == NULL) {
 				set->heap[i] = obj;
-			} else if (i == set->heap_size) {
-				cc_set_expand_heap(set);
+				set->count++;
+				break;
 			}
 		}
 	}
@@ -103,6 +112,7 @@ void cc_set_remove(cc_set *set, cc_object *obj) {
 	for (i = 0; i < set->count; i++) {
 		if (cc_object_is_equal(obj, set->heap[i])) {
 			set->heap[i] = NULL;
+			set->count--;
 		}
 	}
 }

@@ -1,6 +1,14 @@
 #include "cc_hash.h"
 #include <string.h>
 
+cc_hash cc_hash_from_int(i) {
+  return cc_hash_from_data(&i, sizeof(int));
+}
+
+cc_hash cc_hash_from_float(f) {
+  return cc_hash_from_data(&f, sizeof(float));
+}
+
 cc_hash cc_hash_from_string(const char *str) {
 	return cc_hash_from_data(str, strlen(str) + 1);
 }

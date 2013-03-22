@@ -76,6 +76,9 @@ const char *cc_object_get_type(cc_object *obj) {
 }
 
 bool cc_object_is_equal(cc_object *obj1, cc_object *obj2) {
+	if ((obj1 == NULL && obj2 != NULL) | (obj1 != NULL && obj2 == NULL)) return false;
+	if (obj1 == NULL && obj2 == NULL) return true;
+	
 	if (strcmp(obj1->type, obj2->type) != 0) return false;
 	
 	const char *type = obj1->type;
