@@ -41,7 +41,7 @@ int main(void)
   RUN_TEST(test_can_add_object_to_first, 2);
   RUN_TEST(test_can_add_object_to_last, 3);
   RUN_TEST(test_can_clear_list, 4);
-  // RUN_TEST(test_can_merge_lists, 5);
+  RUN_TEST(test_can_merge_lists, 5);
 
   UnityEnd();
   return 0;
