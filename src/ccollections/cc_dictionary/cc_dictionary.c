@@ -19,6 +19,7 @@ struct cc_dictionary_struct {
 	
 	cc_linked_list **heap;
 	cc_array_list *keys;
+	int count;
 };
 
 cc_dictionary *cc_dictionary_new() {
@@ -35,8 +36,14 @@ cc_dictionary *cc_dictionary_new() {
 	memset(dictionary->heap, 0, size);
 	
 	dictionary->keys = cc_array_list_new();
+	dictionary->count = 0;
 		
 	return dictionary;
+}
+
+int cc_dictionary_count(cc_dictionary *dictionary)
+{
+	return dictionary->count;
 }
 
 void cc_dictionary_add(cc_dictionary *dictionary, const char *key, cc_object *obj) {
@@ -50,10 +57,12 @@ void cc_dictionary_add(cc_dictionary *dictionary, const char *key, cc_object *ob
 	}
 	
 	cc_linked_list_add_last(linked_list, obj);
+	dictionary->count++;
 }
 
 void cc_dictionary_clear(cc_dictionary *dictionary) {
 	memset(dictionary->heap, 0, sizeof(cc_linked_list *) * DICT_HEAP_SIZE);
+	dictionary->count = 0;
 }
 
 bool cc_dictionary_contains_key(cc_dictionary *dictionary, const char *key) {
@@ -104,6 +113,7 @@ void cc_dictionary_remove(cc_dictionary *dictionary, const char *key) {
 	int index = cc_hash_from_string(key) % DICT_HEAP_SIZE;
 	if (dictionary->heap[index] != NULL) {
 		cc_linked_list_clear(dictionary->heap[index]);
+		dictionary->count--;
 	}
 }
 
