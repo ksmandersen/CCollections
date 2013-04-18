@@ -14,6 +14,7 @@ cc_stack *cc_stack_new();
 void cc_stack_push(cc_stack *stack, cc_object *obj);
 cc_object *cc_stack_pop(cc_stack *stack);
 cc_object *cc_stack_peek(cc_stack *stack);
+int cc_stack_size(cc_stack *stack);
 void cc_stack_clear(cc_stack *stack);
 
 cc_object *cc_stack_to_object(cc_set *set);

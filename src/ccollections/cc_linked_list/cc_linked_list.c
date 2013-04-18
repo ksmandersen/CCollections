@@ -4,10 +4,6 @@
 
 const char * const cc_linked_list_type = "cc_linked_list_type";
 
-static bool cc_linked_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
-static bool cc_linked_list_compare(cc_object *obj1, cc_object *obj2);
-static void cc_linked_list_register_comparator();
-
 struct cc_linked_list_struct {
   cc_collection c;
 
