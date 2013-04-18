@@ -28,7 +28,7 @@ void cc_object_register_hash_func_for_type(const char *type, cc_object_hash_func
 const char *cc_object_string_value(cc_object *obj);
 int cc_object_int_value(cc_object *obj);
 float cc_object_float_value(cc_object *obj);
-size_t cc_object_data_value(cc_object *obj, void **data, size_t max);
+void *cc_object_data_value(cc_object *obj);
 
 cc_hash cc_object_hash(cc_object *obj);
 

@@ -122,8 +122,7 @@ cc_object *cc_set_to_object(cc_set *set) {
 }
 
 cc_set *cc_set_from_object(cc_object *obj) {
-	cc_set *set = cc_set_new();
-	cc_object_data_value(obj, (void **)&set, sizeof(cc_set));
+	cc_set *set = cc_object_data_value(obj);
 	return set;
 }
 

@@ -1,0 +1,15 @@
+build/
+<<<<<<< HEAD
+=======
+html/
+CCollections/
+CCollections/*
+>>>>>>> e63b95e2a11f9222794a6b2aedac8fae43ea88b0
+
+.DS_Store
+
+*.out
+*.aux
+*.fdb_latexmk
+*.log
+*.synctex.gz
