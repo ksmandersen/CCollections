@@ -289,27 +289,27 @@ cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list)
 {
   cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
   e->collection = (cc_collection *)list;
-  e->data = GC_MALLOC(sizeof(cc_linked_list_node));
-  // *((cc_linked_list_node *)e->data) = NULL;
+  e->data = NULL;
 
   return e;
 }
 
 bool cc_linked_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
 {
-  cc_linked_list_node *marker = (cc_linked_list_node *)e->data;
-  *marker = *marker->next;
   cc_linked_list *list = (cc_linked_list *)collection;
-
-  // FIXME: This condition is met both at the beginning and
-  // end of the list. Make a struct with a bool and a pointer
-  // instead. The boolean indicating wether the enumeration has
-  // yet begun.
-  if (marker == NULL)
-    return false;
-
-  e->current = marker->object;
-
+  cc_linked_list_node *prev_node = (cc_linked_list_node *)e->data;
+  
+  if (!prev_node) {
+	  e->data = list->head;
+  } else if (prev_node->next) {
+	  e->data = prev_node->next;
+  } else {
+	  return false;
+  }
+  
+  cc_linked_list_node *current_node = (cc_linked_list_node *)e->data;
+  e->current = current_node->object;
+  
   return true;
 }
 
