@@ -36,8 +36,8 @@ struct cc_object_struct {
 	union {
 		int i;
 		float f;
-		const char *str;
-		struct { const void *data; size_t len; } data;
+		char *str;
+		struct { void *data; size_t len; } data;
 	} value;
 };
 
@@ -57,14 +57,18 @@ cc_object *cc_object_with_float(float f) {
 
 cc_object *cc_object_with_string(const char *str) {
 	cc_object *obj = GC_MALLOC(sizeof(cc_object));
-	obj->value.str = str;
+	
+	size_t str_size = strlen(str) + 1;
+	obj->value.str = GC_MALLOC(str_size);
+	memcpy(obj->value.str, str, str_size);
 	obj->type = cc_object_type_string;
 	return obj;
 }
 
 cc_object *cc_object_with_data(const void *data, size_t len, const char *typeid) {
 	cc_object *obj = GC_MALLOC(sizeof(cc_object));
-	obj->value.data.data = data;
+	obj->value.data.data = GC_MALLOC(len);
+	memcpy(obj->value.data.data, data, len);
 	obj->value.data.len = len;
 	obj->type = typeid;
 	return obj;
