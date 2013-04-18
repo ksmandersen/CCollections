@@ -9,6 +9,7 @@
 
 #include "../cc_set/cc_set.h"
 #include "../cc_linked_list/cc_linked_list.h"
+#include "../cc_dictionary/cc_dictionary.h"
 
 void cc_init();
 

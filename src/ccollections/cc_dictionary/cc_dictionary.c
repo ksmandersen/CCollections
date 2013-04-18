@@ -14,6 +14,11 @@ static bool cc_dictionary_compare(cc_object *obj1, cc_object *obj2);
 static void cc_dictionary_register_comparator();
 static void cc_dictionary_expand_heap(cc_dictionary *list);
 
+typedef struct {
+	const char *key;
+	cc_object *value;
+} cc_key_value_pair;
+
 struct cc_dictionary_struct {
 	cc_collection c;
 	
@@ -56,8 +61,26 @@ void cc_dictionary_add(cc_dictionary *dictionary, const char *key, cc_object *ob
 		dictionary->heap[index] = linked_list;
 	}
 	
-	cc_linked_list_add_last(linked_list, obj);
+	cc_key_value_pair pair = (cc_key_value_pair) { .key = key, .value = obj };
+	cc_object *key_value_pair = cc_object_with_data(&pair, sizeof(cc_key_value_pair), "cc_key_value_pair");
+	cc_linked_list_add_last(linked_list, key_value_pair);
 	dictionary->count++;
+}
+
+cc_object *cc_dictionary_get(cc_dictionary *dictionary, const char *key) {
+	int index = cc_hash_from_string(key) % DICT_HEAP_SIZE;
+	cc_linked_list *linked_list = dictionary->heap[index];
+	
+	if (!linked_list) return NULL;
+	cc_enumerator *e = cc_linked_list_get_enumerator(linked_list);
+	while (cc_enumerator_move_next(e)) {
+		cc_key_value_pair *key_value_pair = (cc_key_value_pair *)cc_object_data_value(e->current);
+		if (strcmp(key, key_value_pair->key) == 0) {
+			return key_value_pair->value;
+		}
+	}
+	
+	return NULL;
 }
 
 void cc_dictionary_clear(cc_dictionary *dictionary) {
@@ -77,9 +100,9 @@ bool cc_dictionary_contains_value(cc_dictionary *dictionary, cc_object *obj) {
 		
 		cc_enumerator *e2 = cc_linked_list_get_enumerator(list);
 		while (cc_enumerator_move_next(e2)) {
-			cc_object *obj2 = e2->current;
+			cc_key_value_pair *key_value_pair = cc_object_data_value(e2->current);
 			
-			if (cc_object_is_equal(obj, obj2)) {
+			if (cc_object_is_equal(obj, key_value_pair->value)) {
 				return true;
 			}
 		}

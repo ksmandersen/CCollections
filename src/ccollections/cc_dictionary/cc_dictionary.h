@@ -12,6 +12,7 @@ typedef struct cc_dictionary_struct cc_dictionary;
 
 cc_dictionary *cc_dictionary_new();
 void cc_dictionary_add(cc_dictionary *dictionary, const char *key, cc_object *obj);
+cc_object *cc_dictionary_get(cc_dictionary *dictionary, const char *key);
 void cc_dictionary_clear(cc_dictionary *dictionary);
 bool cc_dictionary_contains_key(cc_dictionary *dictionary, const char *key);
 bool cc_dictionary_contains_value(cc_dictionary *dictionary, cc_object *obj);
