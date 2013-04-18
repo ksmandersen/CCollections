@@ -278,8 +278,10 @@ bool cc_linked_list_enumerator_move_next(cc_collection *collection, cc_enumerato
   } else if (prev_node->next) {
 	  e->data = prev_node->next;
   } else {
-	  return false;
+	  e->data = NULL;
   }
+  
+  if (!e->data) return false;
   
   cc_linked_list_node *current_node = (cc_linked_list_node *)e->data;
   e->current = current_node->object;
