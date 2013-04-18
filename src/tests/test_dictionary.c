@@ -53,3 +53,17 @@ void test_can_set_value_for_key_in_dictionary(void)
 	TEST_ASSERT_NOT_EQUAL(NULL, out_value);
 	TEST_ASSERT_EQUAL(0, strcmp(cc_object_string_value(value), cc_object_string_value(out_value)));
 }
+
+void test_can_change_value_for_key(void)
+{
+	cc_dictionary *a_dict = cc_dictionary_new();
+	cc_object *value1 = cc_object_with_string("test_value_1");
+	cc_object *value2 = cc_object_with_string("test_value_2");
+	cc_dictionary_add(a_dict, "test_key", value1);
+	cc_dictionary_add(a_dict, "test_key", value2);
+	cc_object *out_value = cc_dictionary_get(a_dict, "test_key");
+	TEST_ASSERT_NOT_EQUAL(NULL, out_value);
+	TEST_ASSERT_EQUAL(0, strcmp(cc_object_string_value(value2), cc_object_string_value(out_value)));
+}
+
+

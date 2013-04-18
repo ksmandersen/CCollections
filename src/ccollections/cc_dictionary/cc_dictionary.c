@@ -9,7 +9,7 @@
 
 const char * const cc_dictionary_type = "cc_dictionary_type";
 
-static bool cc_dictionary_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+//static bool cc_dictionary_enumerator_move_next(cc_collection *c, cc_enumerator *e);
 static bool cc_dictionary_compare(cc_object *obj1, cc_object *obj2);
 static void cc_dictionary_register_comparator();
 static void cc_dictionary_expand_heap(cc_dictionary *list);
@@ -35,7 +35,7 @@ cc_dictionary *cc_dictionary_new() {
 		return NULL;
 	}
 	
-	dictionary->c.enumerator_move_next = cc_dictionary_enumerator_move_next;
+//	dictionary->c.enumerator_move_next = cc_dictionary_enumerator_move_next;
 	size_t size = sizeof(cc_linked_list *) * DICT_HEAP_SIZE;
 	dictionary->heap = GC_MALLOC(size);
 	memset(dictionary->heap, 0, size);
@@ -46,8 +46,7 @@ cc_dictionary *cc_dictionary_new() {
 	return dictionary;
 }
 
-int cc_dictionary_count(cc_dictionary *dictionary)
-{
+int cc_dictionary_count(cc_dictionary *dictionary) {
 	return dictionary->count;
 }
 
@@ -61,10 +60,25 @@ void cc_dictionary_add(cc_dictionary *dictionary, const char *key, cc_object *ob
 		dictionary->heap[index] = linked_list;
 	}
 	
-	cc_key_value_pair pair = (cc_key_value_pair) { .key = key, .value = obj };
+	size_t key_len = strlen(key) + 1;
+	char *key_copy = GC_MALLOC(key_len);
+	memcpy(key_copy, key, key_len);
+	
+	cc_enumerator *e = cc_linked_list_get_enumerator(linked_list);
+	while (cc_enumerator_move_next(e)) {
+		cc_key_value_pair *key_value_pair = (cc_key_value_pair *)cc_object_data_value(e->current);
+		if (strcmp(key, key_value_pair->key) == 0) {
+			key_value_pair->value = obj;
+			goto found;
+		}
+	}
+	
+	cc_key_value_pair pair = (cc_key_value_pair) { .key = key_copy, .value = obj };
 	cc_object *key_value_pair = cc_object_with_data(&pair, sizeof(cc_key_value_pair), "cc_key_value_pair");
 	cc_linked_list_add_last(linked_list, key_value_pair);
 	dictionary->count++;
+	
+	found: return;
 }
 
 cc_object *cc_dictionary_get(cc_dictionary *dictionary, const char *key) {
@@ -112,24 +126,7 @@ bool cc_dictionary_contains_value(cc_dictionary *dictionary, cc_object *obj) {
 }
 
 cc_enumerator *cc_dictionary_get_enumerator(cc_dictionary *dictionary) {
-	cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
-	e->collection = (cc_collection *)dictionary;
-	*((int *)e->data) = -1;
-	return e;
-}
-
-bool cc_dictionary_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
-	int *index = (int *)e->data;
-	*index = *index + 1;
-	
-	cc_dictionary *dictionary = (cc_dictionary *)c;
-	
-	if (*index >= cc_array_list_length(dictionary->keys)) {
-		return false;
-	}
-	
-	e->current = cc_array_list_get(dictionary->keys, *index);
-	return true;
+	return cc_array_list_get_enumerator(dictionary->keys);
 }
 
 void cc_dictionary_remove(cc_dictionary *dictionary, const char *key) {
