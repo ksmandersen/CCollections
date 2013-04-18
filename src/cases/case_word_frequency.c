@@ -6,6 +6,18 @@
 #include <stdio.h>   /* required for file operations */
 #include <string.h>
 
+void string_to_lower(char *str) {
+    int i;
+    for (i = 0; str[i]; i++) {
+        str[i] = tolower(str[i]);
+    }
+}
+
+void choppy( char *s )
+{
+    s[strcspn ( s, "\n" )] = '\0';
+}
+
 
 int main(void)
 {
@@ -23,6 +35,8 @@ int main(void)
     char line [ 128 ]; /* or other suitable maximum line size */
     while ( fgets ( line, sizeof line, file ) != NULL ) {
         // fputs ( line, stdout ); /* write the line */
+      string_to_lower(line);
+      choppy(line);
         
         // split the line by whitespace
         char tokens[] = " .,!?";
@@ -45,7 +59,7 @@ int main(void)
 
     cc_enumerator *e = cc_dictionary_get_enumerator(dict);
     while (cc_enumerator_move_next(e)) {
-       
+
 
     fclose ( file );
   } else {
