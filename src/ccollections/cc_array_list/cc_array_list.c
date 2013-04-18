@@ -193,8 +193,7 @@ cc_object *cc_array_list_to_object(cc_array_list *list) {
 }
 
 cc_array_list *cc_array_list_from_object(cc_object *object) {
-  cc_array_list *list = cc_array_list_new();
-  cc_object_data_value(object, (void **)&list, sizeof(cc_array_list_type));
+  cc_array_list *list = cc_object_data_value(object);
   return list;
 }
 

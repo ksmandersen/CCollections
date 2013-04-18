@@ -37,7 +37,7 @@ struct cc_object_struct {
 		int i;
 		float f;
 		char *str;
-		struct { void *data; size_t len; } data;
+		void *data;
 	} value;
 };
 
@@ -67,9 +67,8 @@ cc_object *cc_object_with_string(const char *str) {
 
 cc_object *cc_object_with_data(const void *data, size_t len, const char *typeid) {
 	cc_object *obj = GC_MALLOC(sizeof(cc_object));
-	obj->value.data.data = GC_MALLOC(len);
-	memcpy(obj->value.data.data, data, len);
-	obj->value.data.len = len;
+	obj->value.data = GC_MALLOC(len);
+	memcpy(obj->value.data, data, len);
 	obj->type = typeid;
 	return obj;
 }
@@ -135,12 +134,8 @@ float cc_object_float_value(cc_object *obj) {
 	return obj->value.f;
 }
 
-size_t cc_object_data_value(cc_object *obj, void **data, size_t max) {
-	const void *d = obj->value.data.data;
-	size_t len = obj->value.data.len;
-	len = (max > len? max: len);
-	memcpy(*data, d, len);
-	return len;
+void *cc_object_data_value(cc_object *obj) {
+	return obj->value.data;
 }
 
 
