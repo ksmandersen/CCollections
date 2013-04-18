@@ -66,4 +66,10 @@ void test_can_change_value_for_key(void)
 	TEST_ASSERT_EQUAL(0, strcmp(cc_object_string_value(value2), cc_object_string_value(out_value)));
 }
 
-
+void test_can_find_key_in_dictionary(void)
+{
+	cc_dictionary *a_dict = cc_dictionary_new();
+	cc_object *value1 = cc_object_with_string("test_value");
+	cc_dictionary_add(a_dict, "test_key", value1);
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_key(a_dict, "test_key"));
+}

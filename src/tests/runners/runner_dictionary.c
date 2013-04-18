@@ -9,6 +9,7 @@ extern void test_can_create_dictionary(void);
 extern void test_can_add_object_to_dictionary(void);
 extern void test_can_set_value_for_key_in_dictionary(void);
 extern void test_can_change_value_for_key(void);
+extern void test_can_find_key_in_dictionary(void);
 
 static void runTest(UnityTestFunction test)
 {
@@ -39,6 +40,7 @@ int main(void)
   RUN_TEST(test_can_add_object_to_dictionary, 1);
   RUN_TEST(test_can_set_value_for_key_in_dictionary, 1);
   RUN_TEST(test_can_change_value_for_key, 1);
+  RUN_TEST(test_can_find_key_in_dictionary, 1);
 
   UnityEnd();
   return 0;
