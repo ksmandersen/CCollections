@@ -90,14 +90,14 @@ void test_can_enumerate_keys_in_dictionary(void)
 	bool key_5_found = false;
 	
 	cc_enumerator *e = cc_dictionary_get_enumerator(a_dict);
-	while (cc_enumerator_get_next(e)) {
+	while (cc_enumerator_move_next(e)) {
 		const char *key = cc_object_string_value(cc_enumerator_current(e));
 		
-		if (strcmp(key, "key1") == 0) key_1_found = true;
-		if (strcmp(key, "key2") == 0) key_2_found = true;
-		if (strcmp(key, "key3") == 0) key_3_found = true;
-		if (strcmp(key, "key4") == 0) key_4_found = true;
-		if (strcmp(key, "key5") == 0) key_5_found = true;
+		if (strcmp(key, "key1") == 0) { TEST_ASSERT_EQUAL(key_1_found, false); key_1_found = true; }
+		if (strcmp(key, "key2") == 0) { TEST_ASSERT_EQUAL(key_2_found, false); key_2_found = true; }
+		if (strcmp(key, "key3") == 0) { TEST_ASSERT_EQUAL(key_3_found, false); key_3_found = true; }
+		if (strcmp(key, "key4") == 0) { TEST_ASSERT_EQUAL(key_4_found, false); key_4_found = true; }
+		if (strcmp(key, "key5") == 0) { TEST_ASSERT_EQUAL(key_5_found, false); key_5_found = true; }
 	}
 	
 	TEST_ASSERT_EQUAL(key_1_found, true);
