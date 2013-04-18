@@ -3,8 +3,6 @@ html/
 /CCollections
 
 .DS_Store
-src/.DS_Store
-src/lib/.DS_Store
 
 *.out
 *.aux
