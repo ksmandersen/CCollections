@@ -86,7 +86,8 @@ cc_object *cc_stack_to_object(cc_set *set) {
 }
 
 cc_stack *cc_stack_from_object(cc_object *obj) {
-  cc_stack *stack = cc_stack_new();
-  cc_object_data_value(obj, (void **)&stack, sizeof(cc_stack_type));
-  return stack;
+  // cc_stack *stack = cc_stack_new();
+  // cc_object_with_data(obj, (void **)&stack, sizeof(cc_stack_type));
+  // return stack;
+  return NULL;
 }

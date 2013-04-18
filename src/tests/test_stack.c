@@ -19,7 +19,7 @@ void tearDown(void)
   stack = NULL;
 }
 
-void populatStack(cc_stack *s, int count)
+void populate_stack(cc_stack *s, int count)
 {
   int i;
   for(i = 1; i <= count; i++) {
@@ -34,7 +34,9 @@ void test_can_create_stack(void)
 }
 
 void test_can_add_objects_to_stack(void) {
-  populatStack(stack, 3);
+  populate_stack(stack, 3);
+
+  TEST_ASSERT_EQUAL(cc_stack_size(stack), 3);
 
   cc_object *top = cc_stack_peek(stack);
   cc_object *val = cc_object_with_int(300);
