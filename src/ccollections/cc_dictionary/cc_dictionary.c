@@ -103,7 +103,7 @@ void cc_dictionary_clear(cc_dictionary *dictionary) {
 }
 
 bool cc_dictionary_contains_key(cc_dictionary *dictionary, const char *key) {
-	return (dictionary->heap[cc_hash_from_string(key) % DICT_HEAP_SIZE] != NULL);
+	return cc_array_list_contains(dictionary->keys, cc_object_with_string(key));
 }
 
 bool cc_dictionary_contains_value(cc_dictionary *dictionary, cc_object *obj) {

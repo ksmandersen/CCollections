@@ -66,4 +66,43 @@ void test_can_change_value_for_key(void)
 	TEST_ASSERT_EQUAL(0, strcmp(cc_object_string_value(value2), cc_object_string_value(out_value)));
 }
 
+void test_can_find_key_in_dictionary(void)
+{
+	cc_dictionary *a_dict = cc_dictionary_new();
+	cc_object *value1 = cc_object_with_string("test_value");
+	cc_dictionary_add(a_dict, "test_key", value1);
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_key(a_dict, "test_key"));
+}
 
+void test_can_enumerate_keys_in_dictionary(void)
+{
+	cc_dictionary *a_dict = cc_dictionary_new();
+	cc_dictionary_add(a_dict, "key1", cc_object_with_string("value1"));
+	cc_dictionary_add(a_dict, "key2", cc_object_with_string("value2"));
+	cc_dictionary_add(a_dict, "key3", cc_object_with_string("value3"));
+	cc_dictionary_add(a_dict, "key4", cc_object_with_string("value4"));
+	cc_dictionary_add(a_dict, "key5", cc_object_with_string("value5"));
+	
+	bool key_1_found = false;
+	bool key_2_found = false;
+	bool key_3_found = false;
+	bool key_4_found = false;
+	bool key_5_found = false;
+	
+	cc_enumerator *e = cc_dictionary_get_enumerator(a_dict);
+	while (cc_enumerator_move_next(e)) {
+		const char *key = cc_object_string_value(cc_enumerator_current(e));
+		
+		if (strcmp(key, "key1") == 0) { TEST_ASSERT_EQUAL(key_1_found, false); key_1_found = true; }
+		if (strcmp(key, "key2") == 0) { TEST_ASSERT_EQUAL(key_2_found, false); key_2_found = true; }
+		if (strcmp(key, "key3") == 0) { TEST_ASSERT_EQUAL(key_3_found, false); key_3_found = true; }
+		if (strcmp(key, "key4") == 0) { TEST_ASSERT_EQUAL(key_4_found, false); key_4_found = true; }
+		if (strcmp(key, "key5") == 0) { TEST_ASSERT_EQUAL(key_5_found, false); key_5_found = true; }
+	}
+	
+	TEST_ASSERT_EQUAL(key_1_found, true);
+	TEST_ASSERT_EQUAL(key_2_found, true);
+	TEST_ASSERT_EQUAL(key_3_found, true);
+	TEST_ASSERT_EQUAL(key_4_found, true);
+	TEST_ASSERT_EQUAL(key_5_found, true);
+}
