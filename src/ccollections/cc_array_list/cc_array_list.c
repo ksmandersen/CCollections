@@ -82,7 +82,6 @@ cc_object * cc_array_list_get_last(cc_array_list *list) {
  * \param object the object to insert */
 void cc_array_list_add(cc_array_list *list, int index, cc_object *object) {
   if (list == NULL || object == NULL || index > list->count) return;
-  
   if (list->heap_size == list->count) cc_array_list_expand_heap(list);
   
   int i;

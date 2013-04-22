@@ -106,3 +106,17 @@ void test_can_enumerate_keys_in_dictionary(void)
 	TEST_ASSERT_EQUAL(key_4_found, true);
 	TEST_ASSERT_EQUAL(key_5_found, true);
 }
+
+void test_can_insert_and_enumerate_many_objects(void) {
+	cc_dictionary *a_dict = cc_dictionary_new();
+
+	int i;
+  for(i = 1; i <= 1000; i++) {
+	  cc_object *v = cc_object_with_int(i * 100);
+		char key[128];
+		sprintf(key, "key_%i", i);
+	  cc_dictionary_add(a_dict, key, v);
+  }
+
+
+}

@@ -67,7 +67,7 @@ bool cc_set_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
 void cc_set_add(cc_set *set, cc_object *obj) {
 	if (!cc_set_contains(set, obj)) {
 		int i;
-		for (i = 0; i < set->heap_size; i++) {
+		for (i = 0; i <= set->heap_size; i++) {
 			if (i == set->heap_size) {
 				cc_set_expand_heap(set);
 			}
@@ -80,9 +80,9 @@ void cc_set_add(cc_set *set, cc_object *obj) {
 	}
 }
 
-void cc_set_expand_heap(cc_set *set) {
-	set->heap_size *= 2;
-	set->heap = GC_REALLOC(set->heap, set->heap_size);
+void cc_set_expand_heap(cc_set *set) {    
+    set->heap_size = 2 * set->heap_size;
+    set->heap = GC_REALLOC(set->heap, sizeof(cc_object *) * set->heap_size);
 }
 
 void cc_set_clear(cc_set *set) {

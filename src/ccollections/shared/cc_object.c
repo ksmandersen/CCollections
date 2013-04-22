@@ -81,6 +81,7 @@ const char *cc_object_get_type(cc_object *obj) {
 bool cc_object_is_equal(cc_object *obj1, cc_object *obj2) {
 	if ((obj1 == NULL && obj2 != NULL) | (obj1 != NULL && obj2 == NULL)) return false;
 	if (obj1 == NULL && obj2 == NULL) return true;
+    
 	
 	if (strcmp(obj1->type, obj2->type) != 0) return false;
 	
@@ -145,7 +146,7 @@ cc_hash cc_object_hash(cc_object *obj) {
 	int i;
 	for (i = 0; i < registered_hash_funcs_count; i++) {
 		cc_object_registered_hash_func reg = registered_hash_funcs[i];
-		
+    
 		if (strcmp(reg.type, type) == 0) {
 			return reg.hash_func(obj);
 		}

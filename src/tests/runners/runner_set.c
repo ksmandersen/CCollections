@@ -12,6 +12,7 @@ extern void test_can_find_contained_objects_in_set(void);
 extern void test_cannot_find_uncontained_objects_in_set(void);
 extern void test_can_remove_objects_from_set(void);
 extern void test_set_only_contains_unique_objects(void);
+extern void test_can_insert_many_objects(void);
 
 static void runTest(UnityTestFunction test)
 {
@@ -45,6 +46,7 @@ int main(void)
   RUN_TEST(test_cannot_find_uncontained_objects_in_set, 1);
   RUN_TEST(test_can_remove_objects_from_set, 1);
   RUN_TEST(test_set_only_contains_unique_objects, 1);
+  RUN_TEST(test_can_insert_many_objects, 1);
 
   UnityEnd();
   return 0;

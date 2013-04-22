@@ -23,7 +23,7 @@ struct cc_dictionary_struct {
 	cc_collection c;
 	
 	cc_linked_list **heap;
-	cc_array_list *keys;
+	cc_set *keys;
 	int count;
 };
 
@@ -40,7 +40,7 @@ cc_dictionary *cc_dictionary_new() {
 	dictionary->heap = GC_MALLOC(size);
 	memset(dictionary->heap, 0, size);
 	
-	dictionary->keys = cc_array_list_new();
+	dictionary->keys = cc_set_new();
 	dictionary->count = 0;
 		
 	return dictionary;
@@ -56,13 +56,14 @@ void cc_dictionary_add(cc_dictionary *dictionary, const char *key, cc_object *ob
 	cc_linked_list *linked_list = dictionary->heap[index];
 	if (linked_list == NULL) {
 		linked_list = cc_linked_list_new();
-		cc_array_list_add_last(dictionary->keys, cc_object_with_string(key));
 		dictionary->heap[index] = linked_list;
 	}
 	
 	size_t key_len = strlen(key) + 1;
 	char *key_copy = GC_MALLOC(key_len);
 	memcpy(key_copy, key, key_len);
+    
+    cc_set_add(dictionary->keys, cc_object_with_string(key));
 	
 	cc_enumerator *e = cc_linked_list_get_enumerator(linked_list);
 	while (cc_enumerator_move_next(e)) {
@@ -103,7 +104,8 @@ void cc_dictionary_clear(cc_dictionary *dictionary) {
 }
 
 bool cc_dictionary_contains_key(cc_dictionary *dictionary, const char *key) {
-	return cc_array_list_contains(dictionary->keys, cc_object_with_string(key));
+//	return cc_array_list_contains(dictionary->keys, cc_object_with_string(key));
+    return cc_set_contains(dictionary->keys, cc_object_with_string(key));
 }
 
 bool cc_dictionary_contains_value(cc_dictionary *dictionary, cc_object *obj) {
@@ -126,7 +128,8 @@ bool cc_dictionary_contains_value(cc_dictionary *dictionary, cc_object *obj) {
 }
 
 cc_enumerator *cc_dictionary_get_enumerator(cc_dictionary *dictionary) {
-	return cc_array_list_get_enumerator(dictionary->keys);
+//	return cc_array_list_get_enumerator(dictionary->keys);
+    return cc_set_get_enumerator(dictionary->keys);
 }
 
 void cc_dictionary_remove(cc_dictionary *dictionary, const char *key) {

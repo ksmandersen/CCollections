@@ -113,3 +113,15 @@ void test_set_only_contains_unique_objects(void)
 
   TEST_ASSERT_EQUAL(1, foundCount);
 }
+
+void test_can_insert_many_objects(void)
+{
+  cc_set *a_set = cc_set_new();
+
+  int i;
+  for(i = 1; i <= 1000; i++) {
+    cc_object *v = cc_object_with_int(i * 100);
+    cc_set_add(a_set, v);
+  }
+
+}
