@@ -10,7 +10,7 @@
 const char * const cc_dictionary_type = "cc_dictionary_type";
 
 //static bool cc_dictionary_enumerator_move_next(cc_collection *c, cc_enumerator *e);
-static bool cc_dictionary_compare(cc_object *obj1, cc_object *obj2);
+static int cc_dictionary_compare(cc_object *obj1, cc_object *obj2);
 static void cc_dictionary_register_comparator();
 static void cc_dictionary_expand_heap(cc_dictionary *list);
 
@@ -148,8 +148,8 @@ cc_dictionary *cc_dictionary_from_object(cc_object *obj) {
 	return NULL;
 }
 
-bool cc_dictionary_compare(cc_object *obj1, cc_object *obj2) {
-	return false;
+int cc_dictionary_compare(cc_object *obj1, cc_object *obj2) {
+	return -1;
 }
 
 void cc_dictionary_register_comparator() {

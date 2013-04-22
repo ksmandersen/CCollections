@@ -8,7 +8,7 @@
 const char * const cc_stack_type = "cc_stack_type";
 
 static bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e);
-static bool cc_stack_compare(cc_object *obj1, cc_object *obj2);
+static int cc_stack_compare(cc_object *obj1, cc_object *obj2);
 static void cc_stack_register_comparator();
 
 struct cc_stack_struct {
@@ -65,7 +65,7 @@ bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
   return cc_linked_list_enumerator_move_next(c, e);
 }
 
-bool cc_stack_compare(cc_object *obj1, cc_object *obj2) {
+int cc_stack_compare(cc_object *obj1, cc_object *obj2) {
   cc_stack *a_stack = (cc_stack *)obj1;
   cc_stack *b_stack = (cc_stack *)obj2;
 

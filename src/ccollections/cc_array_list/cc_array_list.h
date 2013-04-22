@@ -73,7 +73,7 @@ void cc_array_list_clear(cc_array_list *list);
 cc_array_list *cc_array_list_merge(cc_array_list *a_list, cc_array_list *b_list);
 
 bool cc_array_list_contains(cc_array_list *list, cc_object *object);
-bool cc_array_list_compare(cc_object *obj1, cc_object *obj2);
+int cc_array_list_compare(cc_object *obj1, cc_object *obj2);
 
 cc_enumerator *cc_array_list_get_enumerator(cc_array_list *list);
 

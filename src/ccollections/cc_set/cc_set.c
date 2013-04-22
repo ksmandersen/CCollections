@@ -12,7 +12,7 @@ const char * const cc_set_type = "cc_set_type";
 #if CURRENT_IMPLEMENTATION == HEAP_IMPLEMENTATION
 
 static bool cc_set_enumerator_move_next(cc_collection *c, cc_enumerator *e);
-static bool cc_set_compare(cc_object *obj1, cc_object *obj2);
+static int cc_set_compare(cc_object *obj1, cc_object *obj2);
 static void cc_set_register_comparator();
 static void cc_set_expand_heap(cc_set *set);
 
@@ -126,19 +126,19 @@ cc_set *cc_set_from_object(cc_object *obj) {
 	return set;
 }
 
-bool cc_set_compare(cc_object *obj1, cc_object *obj2) {
+int cc_set_compare(cc_object *obj1, cc_object *obj2) {
 	cc_set *set1 = cc_set_from_object(obj1);
 	cc_set *set2 = cc_set_from_object(obj2);
 	
 	cc_enumerator *e1 = cc_set_get_enumerator(set1);
 	cc_enumerator *e2 = cc_set_get_enumerator(set2);
 	while (cc_enumerator_move_next(e1)) {
-		if (!cc_enumerator_move_next(e2)) return false;
-		if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return false;
+		if (!cc_enumerator_move_next(e2)) return -1;
+		if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return -1;
 	}
 	
-	if (cc_enumerator_move_next(e2)) return false;
-	return true;
+	if (cc_enumerator_move_next(e2)) return 1;
+	return 0;
 }
 
 void cc_set_register_comparator() {

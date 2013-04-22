@@ -299,7 +299,7 @@ cc_linked_list *cc_linked_list_from_object(cc_object *object)
   return list;
 }
 
-bool cc_linked_list_compare(cc_object *obj1, cc_object *obj2) {
+int cc_linked_list_compare(cc_object *obj1, cc_object *obj2) {
   cc_linked_list *list1 = cc_linked_list_from_object(obj1);
   cc_linked_list *list2 = cc_linked_list_from_object(obj2);
 
@@ -307,11 +307,11 @@ bool cc_linked_list_compare(cc_object *obj1, cc_object *obj2) {
   cc_enumerator *e2 = cc_linked_list_get_enumerator(list2);
   while (cc_enumerator_move_next(e1))
   {
-    if (!cc_enumerator_move_next(e2)) return false;
-    if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return false;
+    if (!cc_enumerator_move_next(e2)) return -1;
+    if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return -1;
   }
 
-  if (cc_enumerator_move_next(e2)) return false;
+  if (cc_enumerator_move_next(e2)) return 0;
 
   return true;
 }

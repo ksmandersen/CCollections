@@ -196,20 +196,20 @@ cc_array_list *cc_array_list_from_object(cc_object *object) {
   return list;
 }
 
-bool cc_array_list_compare(cc_object *obj1, cc_object *obj2) {
+int cc_array_list_compare(cc_object *obj1, cc_object *obj2) {
   cc_array_list *list1 = cc_array_list_from_object(obj1);
   cc_array_list *list2 = cc_array_list_from_object(obj2);
 
   cc_enumerator *e1 = cc_array_list_get_enumerator(list1);
   cc_enumerator *e2 = cc_array_list_get_enumerator(list2);
   while (cc_enumerator_move_next(e1)) {
-    if (!cc_enumerator_move_next(e2)) return false;
-    if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return false;
+    if (!cc_enumerator_move_next(e2)) return -1;
+    if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return -1;
   }
 
-  if (cc_enumerator_move_next(e2)) return false;
+  if (cc_enumerator_move_next(e2)) return 1;
 
-  return true;
+  return 0;
 }
 
 void cc_array_list_register_comparator() {
