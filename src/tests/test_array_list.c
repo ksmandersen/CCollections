@@ -134,7 +134,11 @@ void test_can_merge_empty_list_with_non_empty_list(void)
   populateList(b_list);
   cc_array_list_merge(a_list, b_list);
 
-  TEST_ASSERT_EQUAL(true, cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list)));
+  cc_object *a_obj = cc_array_list_to_object(a_list);
+  cc_object *b_obj = cc_array_list_to_object(b_list);
+
+  bool lists_equals = cc_object_is_equal(a_obj, b_obj);
+  TEST_ASSERT_EQUAL(true, lists_equals);
 }
 
 void test_merge_non_empty_list_with_empty_list(void)
@@ -147,7 +151,7 @@ void test_merge_non_empty_list_with_empty_list(void)
   populateList(c_list);
   cc_array_list_merge(a_list, b_list);
 
-  TEST_ASSERT_EQUAL(true, cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(c_list)));
+  TEST_ASSERT_EQUAL(0, cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(c_list)));
 }
 
 void test_can_clear_list(void)
@@ -172,9 +176,9 @@ void test_can_list_compare_equal(void)
   populateList(a_list);
   populateList(b_list);
 
-  bool compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
+  int compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
 
-  TEST_ASSERT_EQUAL(true, compare);
+  TEST_ASSERT_EQUAL(0, compare);
 }
 
 void test_can_list_compare_non_equal(void)
@@ -187,9 +191,9 @@ void test_can_list_compare_non_equal(void)
   cc_object *obj = cc_object_with_int(5000);
   cc_array_list_add_last(a_list, obj);
 
-  bool compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
+  int compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
 
-  TEST_ASSERT_EQUAL(false, compare);
+  TEST_ASSERT_NOT_EQUAL(0, compare);
 }
 
 void test_can_enumerate_list(void)

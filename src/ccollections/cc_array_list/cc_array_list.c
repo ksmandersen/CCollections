@@ -199,6 +199,9 @@ cc_array_list *cc_array_list_from_object(cc_object *object) {
 int cc_array_list_compare(cc_object *obj1, cc_object *obj2) {
   cc_array_list *list1 = cc_array_list_from_object(obj1);
   cc_array_list *list2 = cc_array_list_from_object(obj2);
+    
+  if (list1->count < list2->count) return -1;
+  if (list1->count > list2->count) return 1;
 
   cc_enumerator *e1 = cc_array_list_get_enumerator(list1);
   cc_enumerator *e2 = cc_array_list_get_enumerator(list2);
