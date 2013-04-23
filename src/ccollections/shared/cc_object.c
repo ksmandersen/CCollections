@@ -166,6 +166,8 @@ void cc_object_register_default_comparators() {
 	cc_object_register_comparator_for_type(cc_object_type_string, cc_object_string_compare);
 	
 	cc_object_register_hash_func_for_type(cc_object_type_int, cc_object_int_hash_func);
+	cc_object_register_hash_func_for_type(cc_object_type_float, cc_object_float_hash_func);
+	cc_object_register_hash_func_for_type(cc_object_type_string, cc_object_string_hash_func);
 }
 
 // Compare methods
