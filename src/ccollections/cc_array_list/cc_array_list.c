@@ -223,3 +223,52 @@ void cc_array_list_register_comparator() {
     cc_object_register_comparator_for_type(cc_array_list_type, cc_array_list_compare);
   }
 }
+
+void cc_array_list_sort(cc_array_list *list) {
+  cc_array_list_quicksort(list, 0, list->count - 1);
+}
+
+void cc_array_list_quicksort(cc_array_list *list, int left, int right) {
+  if (list == NULL || list->count <= 1)
+    return;
+
+
+  if (right <= left) return;
+  int i = cc_array_list_partition(list, left, right);
+  cc_array_list_quicksort(list, left, i - 1);
+  cc_array_list_quicksort(list, i + 1, right);
+}
+
+int cc_array_list_partition(cc_array_list *list, int left, int right) {
+  int i = left - 1;
+  int j = right;
+
+  while (true) {
+    cc_object *first = cc_array_list_get_first(list);
+    cc_object_comparator comp = cc_get_comperator_for_object(first);
+    while (comp(list->heap[++i], list->heap[right]) > 0)
+      ;
+    while (comp(list->heap[right], list->heap[--j]) > 0)
+      if (j == left) break;
+
+    if (i >= j) break;
+    cc_array_list_swap(list, i, j);
+  }
+  cc_array_list_swap(list, i, right);
+  return i;
+}
+
+void cc_array_list_swap(cc_array_list *list, int i, int j) {
+  cc_object *swap = list->heap[i];
+  list->heap[i] = list->heap[j];
+  list->heap[j] = swap;
+}
+
+void cc_array_list_shuffle(cc_array_list *list) {
+  int N = list->count;
+  int i;
+  for (i = 0; i < N; i++) {
+    int r = rand() % N;
+    cc_array_list_swap(list, i, r);
+  }
+}

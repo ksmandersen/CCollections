@@ -239,3 +239,41 @@ void test_cannot_find_object_in_list_without_object(void)
 
   TEST_ASSERT_EQUAL(false, cc_array_list_contains(a_list, obj));
 }
+
+void test_can_shuffle_array_with_objects(void) {
+  cc_array_list *a_list = cc_array_list_new();
+  populateList(a_list);
+
+  cc_array_list_shuffle(a_list);
+  cc_array_list_sort(a_list);
+
+  cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+  while (cc_enumerator_move_next(e)) {
+    cc_object *obj = cc_enumerator_current(e);
+    int i = cc_object_int_value(obj);
+    printf("%i\n", i);
+  }
+}
+
+void test_can_sort_array_with_objects(void) {
+  cc_array_list *a_list = cc_array_list_new();
+  cc_array_list_add_last(a_list, cc_object_with_string("q"));
+  cc_array_list_add_last(a_list, cc_object_with_string("w"));
+  cc_array_list_add_last(a_list, cc_object_with_string("e"));
+  cc_array_list_add_last(a_list, cc_object_with_string("r"));
+  cc_array_list_add_last(a_list, cc_object_with_string("t"));
+  cc_array_list_add_last(a_list, cc_object_with_string("y"));
+  cc_array_list_add_last(a_list, cc_object_with_string("u"));
+  cc_array_list_add_last(a_list, cc_object_with_string("i"));
+  cc_array_list_add_last(a_list, cc_object_with_string("o"));
+  cc_array_list_add_last(a_list, cc_object_with_string("p"));
+
+  cc_array_list_sort(a_list);
+
+  cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+  while (cc_enumerator_move_next(e)) {
+    cc_object *obj = cc_enumerator_current(e);
+    const char *s = cc_object_string_value(obj);
+    printf("%s\n", s);
+  }
+}
