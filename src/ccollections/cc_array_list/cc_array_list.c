@@ -4,18 +4,6 @@
 
 const char *const cc_array_list_type = "cc_array_list_type";
 
-static bool cc_array_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
-static void cc_array_list_register_comparator();
-static void cc_array_list_expand_heap(cc_array_list *list);
-
-struct cc_array_list_struct {
-  cc_collection c;
-  
-  cc_object **heap;
-  int count;
-  int heap_size;
-};
-
 
 /*! \brief Create a linked list object
  * \return A new linked list object */
@@ -223,6 +211,8 @@ void cc_array_list_register_comparator() {
     cc_object_register_comparator_for_type(cc_array_list_type, cc_array_list_compare);
   }
 }
+
+// Sorting
 
 void cc_array_list_sort(cc_array_list *list) {
   cc_array_list_quicksort(list, 0, list->count - 1);
