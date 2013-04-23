@@ -24,6 +24,7 @@ bool cc_object_is_equal(cc_object *obj1, cc_object *obj2);
 
 void cc_object_register_comparator_for_type(const char *type, cc_object_comparator comparator); // <- not thread safe; only run on main thread
 void cc_object_register_hash_func_for_type(const char *type, cc_object_hash_func hash_func);
+cc_object_comparator cc_get_comperator_for_object(cc_object *obj);
 
 const char *cc_object_string_value(cc_object *obj);
 int cc_object_int_value(cc_object *obj);

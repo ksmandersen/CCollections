@@ -18,6 +18,8 @@ extern void test_can_find_contained_objects_in_list(void);
 extern void test_can_merge_empty_list_with_non_empty_list(void);
 extern void test_merge_non_empty_list_with_empty_list(void);
 extern void test_cannot_find_object_in_list_without_object(void);
+extern void test_can_shuffle_array_with_objects(void);
+extern void test_can_sort_array_with_objects(void);
 
 
 static void runTest(UnityTestFunction test)
@@ -58,6 +60,8 @@ int main(void)
   RUN_TEST(test_can_merge_empty_list_with_non_empty_list, 11);
   RUN_TEST(test_merge_non_empty_list_with_empty_list, 12);
   RUN_TEST(test_cannot_find_object_in_list_without_object, 13);
+  RUN_TEST(test_can_shuffle_array_with_objects, 13);
+  RUN_TEST(test_can_sort_array_with_objects, 13);
 
   UnityEnd();
   return 0;

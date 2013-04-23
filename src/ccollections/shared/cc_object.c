@@ -115,6 +115,23 @@ void cc_object_register_comparator_for_type(const char *type, cc_object_comparat
 	};
 }
 
+cc_object_comparator cc_get_comperator_for_object(cc_object *obj) {
+	if (obj == NULL || obj->type == NULL) return NULL;
+
+	const char *type = obj->type;
+
+  int i;
+	for (i = 0; i < registered_comparators_count; i++) {
+		cc_object_registered_comparator reg = registered_comparators[i];
+		
+		if (strcmp(reg.type, type) == 0) {
+			return reg.comparator;
+		}
+	}
+  
+  return NULL;
+}
+
 void cc_object_register_hash_func_for_type(const char *type, cc_object_hash_func hash_func) {
 	if (registered_hash_funcs_count >= sizeof(registered_hash_funcs) / sizeof(registered_hash_funcs[0])) {
 		printf("registered hash funcs overflow\n");
@@ -196,7 +213,10 @@ int cc_object_float_compare(cc_object *obj1, cc_object *obj2) {
 }
 
 int cc_object_string_compare(cc_object *obj1, cc_object *obj2) {
-	return strcmp(cc_object_string_value(obj1), cc_object_string_value(obj2));
+	int compare = strcmp(cc_object_string_value(obj1), cc_object_string_value(obj2));
+	if (compare > 0) return -1;
+	if (compare < 0) return 1;
+	return 0;
 }
 
 // Equals methods

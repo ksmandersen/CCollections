@@ -80,4 +80,9 @@ cc_enumerator *cc_array_list_get_enumerator(cc_array_list *list);
 cc_object *cc_array_list_to_object(cc_array_list *list);
 cc_array_list *cc_array_list_from_object(cc_object *object);
 
+// Sorting
+
+void cc_array_list_sort(cc_array_list *list);
+void cc_array_list_shuffle(cc_array_list *list);
+
 #endif
