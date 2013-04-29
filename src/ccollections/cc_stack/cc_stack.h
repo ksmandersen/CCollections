@@ -70,9 +70,21 @@ void cc_stack_clear(cc_stack *stack);
  * \returns an enumerator for the list */
 cc_enumerator *cc_stack_get_enumerator(cc_stack *stack);
 
+/*! \brief Determines whether two stacks are equal
+ * \param a_stack the first stack
+ * \param b_stack the second stack
+ * \returns true if the two stacks are equal to eachother; otherwise, false */
+bool cc_stack_equals(cc_stack *a_stack, cc_stack *b_stack);
+
+/*! \brief Determines whether an object is on the stack
+ * \param stack the stack to search
+ * \param object the object to search the stack for
+ * \returns true if the object is found on the stack; otherwise, false */
+bool cc_stack_contains(cc_stack *stack, cc_object *obj);
+
 /*! \brief Make a cc_object from a given stack
  * \param list the stack */
-cc_object *cc_stack_to_object(cc_set *set);
+cc_object *cc_stack_to_object(cc_stack *stack);
 
 /*! \brief Make a stack from a cc_object
  * \param object the object */

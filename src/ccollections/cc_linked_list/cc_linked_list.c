@@ -271,6 +271,10 @@ bool cc_linked_list_contains(cc_linked_list *list, cc_object *obj) {
   return false;
 }
 
+bool cc_linked_list_equals(cc_linked_list *a_list, cc_linked_list *b_list) {
+  return cc_linked_list_compare(cc_linked_list_to_object(a_list), cc_linked_list_to_object(b_list)) == 0;
+}
+
 cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list) {
   cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
   e->collection = (cc_collection *)list;
@@ -321,9 +325,9 @@ int cc_linked_list_compare(cc_object *obj1, cc_object *obj2) {
     if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return -1;
   }
 
-  if (cc_enumerator_move_next(e2)) return 0;
+  if (cc_enumerator_move_next(e2)) return 1;
 
-  return true;
+  return 0;
 }
 
 void cc_linked_list_register_comparator() {

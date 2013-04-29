@@ -114,6 +114,12 @@ bool cc_linked_list_contains(cc_linked_list *list, cc_object *object);
  * \returns an enumerator for the list */
 cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list);
 
+/*! \brief Determines whether two lists are equal
+ * \param a_list the first list
+ * \param b_list the second list
+ * \returns true if the two lists are equal to eachother; otherwise, false */
+bool cc_linked_list_equals(cc_linked_list *a_list, cc_linked_list *b_list);
+
 /*! \brief Make a cc_object from an linked list
  * \param list the linked list */
 cc_object *cc_linked_list_to_object(cc_linked_list *list);

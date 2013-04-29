@@ -88,6 +88,10 @@ cc_enumerator *cc_stack_get_enumerator(cc_stack *stack) {
   return cc_linked_list_get_enumerator(stack->items);
 }
 
+bool cc_stack_equals(cc_stack *a_stack, cc_stack *b_stack) {
+  return cc_linked_list_equals(a_stack->items, b_stack->items);
+}
+
 bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
   return cc_linked_list_enumerator_move_next(c, e);
 }
@@ -108,8 +112,8 @@ void cc_stack_register_comparator() {
   }
 }
 
-cc_object *cc_stack_to_object(cc_set *set) {
-  return cc_object_with_data(set, sizeof(cc_stack), cc_stack_type);
+cc_object *cc_stack_to_object(cc_stack *stack) {
+  return cc_object_with_pointer(stack, cc_stack_type);
 }
 
 cc_stack *cc_stack_from_object(cc_object *obj) {

@@ -44,7 +44,7 @@
 #include "../cc_dictionary/cc_dictionary.h"
 #include "../cc_binary_tree/cc_binary_tree.h"
 #include "../cc_sorted_list/cc_sorted_list.h"
-#include "../cc_stack/cc_stack.h"
+#include "../cc_stack/cc_stack.private.h"
 
 void cc_init();
 

@@ -7,17 +7,21 @@ extern void tearDown(void);
 
 extern void test_can_create_stack(void);
 extern void test_can_add_objects_to_stack(void);
-// extern void test_can_remove_objects_from_list(void);
-// extern void test_can_merge_lists_together(void);
-// extern void test_can_clear_list(void);
-// extern void test_can_list_compare_equal(void);
-// extern void test_can_list_compare_non_equal(void);
-// extern void test_can_enumerate_list(void);
-// extern void test_can_add_and_get_identical_objects(void);
-// extern void test_can_find_contained_objects_in_list(void);
-// extern void test_can_merge_empty_list_with_non_empty_list(void);
-// extern void test_merge_non_empty_list_with_empty_list(void);
-// extern void test_cannot_find_object_in_list_without_object(void);
+extern void test_can_peek_at_objects_on_stack(void);
+extern void test_can_pop_objects_from_stack(void);
+extern void test_can_clear_stack(void);
+extern void test_can_enumerate_stack(void);
+extern void test_can_push_and_pop_many_objects(void);
+extern void test_peek_on_empty_stack_returns_null(void);
+extern void test_pop_on_empty_stack_returns_null(void);
+extern void test_move_next_on_empty_stack_returns_null(void);
+extern void test_size_on_empty_list_is_zero(void);
+extern void test_can_create_cc_object_from_stack(void);
+extern void test_can_create_stack_from_cc_object(void);
+extern void test_can_determine_if_stacks_are_equal(void);
+extern void test_can_determine_if_stacks_are_unequal(void);
+extern void test_can_determine_stack_contains_object(void);
+extern void test_can_determine_stack_does_not_contain_object(void);
 
 
 static void runTest(UnityTestFunction test)
@@ -46,18 +50,22 @@ int main(void)
   UnityBegin();
 
   RUN_TEST(test_can_create_stack, 1);
-  RUN_TEST(test_can_add_objects_to_stack, 2);
-  // RUN_TEST(test_can_remove_objects_from_list, 3);
-  // RUN_TEST(test_can_merge_lists_together, 4);
-  // RUN_TEST(test_can_clear_list, 5);
-  // RUN_TEST(test_can_list_compare_equal, 6);
-  // RUN_TEST(test_can_list_compare_non_equal, 7);
-  // RUN_TEST(test_can_enumerate_list, 8);
-  // RUN_TEST(test_can_add_and_get_identical_objects, 9);
-  // RUN_TEST(test_can_find_contained_objects_in_list, 10);
-  // RUN_TEST(test_can_merge_empty_list_with_non_empty_list, 11);
-  // RUN_TEST(test_merge_non_empty_list_with_empty_list, 12);
-  // RUN_TEST(test_cannot_find_object_in_list_without_object, 13);
+  RUN_TEST(test_can_add_objects_to_stack, 1);
+  RUN_TEST(test_can_peek_at_objects_on_stack, 1);
+  RUN_TEST(test_can_pop_objects_from_stack, 1);
+  RUN_TEST(test_can_clear_stack, 1);
+  RUN_TEST(test_can_enumerate_stack, 1);
+  RUN_TEST(test_can_push_and_pop_many_objects, 1);
+  RUN_TEST(test_peek_on_empty_stack_returns_null, 1);
+  RUN_TEST(test_pop_on_empty_stack_returns_null, 1);
+  RUN_TEST(test_move_next_on_empty_stack_returns_null, 1);
+  RUN_TEST(test_size_on_empty_list_is_zero, 1);
+  RUN_TEST(test_can_create_cc_object_from_stack, 1);
+  RUN_TEST(test_can_create_stack_from_cc_object, 1);
+  RUN_TEST(test_can_determine_if_stacks_are_equal, 1);
+  RUN_TEST(test_can_determine_if_stacks_are_unequal, 1);
+  RUN_TEST(test_can_determine_stack_contains_object, 1);
+  RUN_TEST(test_can_determine_stack_does_not_contain_object, 1);
 
   UnityEnd();
   return 0;
