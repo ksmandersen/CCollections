@@ -107,7 +107,7 @@ void cc_array_list_clear(cc_array_list *list);
  * from the b_list to the a_list
  * \param a_list the first list
  * \param b_list the second list
- * \returns The lists merged together */
+ * \return The lists merged together */
 cc_array_list *cc_array_list_merge(cc_array_list *a_list, cc_array_list *b_list);
 
 /*! \brief Determines whether an object is in the array list

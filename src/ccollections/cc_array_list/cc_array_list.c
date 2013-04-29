@@ -171,12 +171,11 @@ bool cc_array_list_enumerator_move_next(cc_collection *collection, cc_enumerator
 }
 
 cc_object *cc_array_list_to_object(cc_array_list *list) {
-  return cc_object_with_data(list, sizeof(cc_array_list), cc_array_list_type);
+  return cc_object_with_pointer(list, cc_array_list_type);
 }
 
 cc_array_list *cc_array_list_from_object(cc_object *object) {
-  cc_array_list *list = cc_object_data_value(object);
-  return list;
+  return cc_object_pointer_value(object);
 }
 
 int cc_array_list_compare(cc_object *obj1, cc_object *obj2) {

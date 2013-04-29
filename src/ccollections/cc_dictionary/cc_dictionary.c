@@ -140,12 +140,12 @@ void cc_dictionary_remove(cc_dictionary *dictionary, const char *key) {
 	}
 }
 
-cc_object *cc_dictionary_to_object(cc_set *set) {
-	return NULL;
+cc_object *cc_dictionary_to_object(cc_dictionary *dictionary) {
+	return cc_object_with_pointer(dictionary, cc_dictionary_type);
 }
 
 cc_dictionary *cc_dictionary_from_object(cc_object *obj) {
-	return NULL;
+	return cc_object_pointer_value(obj);
 }
 
 int cc_dictionary_compare(cc_object *obj1, cc_object *obj2) {
