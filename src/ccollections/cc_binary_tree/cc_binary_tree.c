@@ -1,7 +1,10 @@
 #include "cc_binary_tree.h"
 #include "../shared/cc_private.h"
 
+const char * const cc_binary_tree_type = "cc_binary_tree_type";
+
 static bool cc_binary_tree_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+static int cc_queue_compare(cc_object *obj1, cc_object *obj2);
 static void cc_binary_tree_register_comparator();
 
 static bool cc_binary_tree_depth_first_enumerator_move_next(cc_collection *c, cc_enumerator *e);
@@ -70,7 +73,7 @@ void cc_binary_tree_set_right_branch(cc_binary_tree *tree, cc_binary_tree *branc
 }
 
 cc_object *cc_binary_tree_to_object(cc_binary_tree *tree) {
-	return cc_object_with_pointer(tree);
+	return cc_object_with_pointer(tree, cc_binary_tree_type);
 }
 
 cc_binary_tree *cc_binary_tree_from_object(cc_object *object) {
@@ -193,6 +196,37 @@ bool cc_binary_tree_breadth_first_enumerator_move_next(cc_collection *c, cc_enum
 	}
 }
 
-void cc_binary_tree_register_comparator() {
+int cc_binary_tree_compare(cc_object *obj1, cc_object *obj2) {
+	cc_binary_tree *tree1 = cc_binary_tree_from_object(obj1);
+	cc_binary_tree *tree2 = cc_binary_tree_from_object(obj2);
 	
+	cc_enumerator *e1 = cc_binary_tree_get_depth_first_enumerator(tree1);
+	cc_enumerator *e2 = cc_binary_tree_get_depth_first_enumerator(tree2);
+	
+	while (true) {
+		bool e1_has_next = cc_enumerator_move_next(e1);
+		bool e2_has_next = cc_enumerator_move_next(e2);
+		
+		if (e1_has_next && !e2_has_next) {
+			return -1;
+		} else if (!e1_has_next && e2_has_next) {
+			return 1;
+		}
+		
+		int diff = cc_object_compare(cc_enumerator_current(e1), cc_enumerator_current(e2));
+		if (diff != 0) {
+			return diff;
+		}
+	}
+	
+	return 0;
+}
+
+void cc_binary_tree_register_comparator() {
+	static bool first = true;
+	
+	if (first) {
+		first = false;
+		cc_object_register_comparator_for_type(cc_binary_tree_type, cc_binary_tree_compare);
+	}
 }

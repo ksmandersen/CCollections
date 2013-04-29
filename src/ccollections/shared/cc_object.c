@@ -4,22 +4,18 @@
 const char * const cc_object_type_int = "cc_object_type_int";
 const char * const cc_object_type_float = "cc_object_type_float";
 const char * const cc_object_type_string = "cc_object_type_string";
-const char * const cc_object_type_pointer = "cc_object_type_pointer";
 
 int cc_object_int_compare(cc_object *obj1, cc_object *obj2);
 int cc_object_float_compare(cc_object *obj1, cc_object *obj2);
 int cc_object_string_compare(cc_object *obj1, cc_object *obj2);
-int cc_object_pointer_compare(cc_object *obj1, cc_object *obj2);
 
 bool cc_object_int_equals(cc_object *obj1, cc_object *obj2);
 bool cc_object_float_equals(cc_object *obj1, cc_object *obj2);
 bool cc_object_string_equals(cc_object *obj1, cc_object *obj2);
-bool cc_object_pointer_equals(cc_object *obj1, cc_object *obj2);
 
 cc_hash cc_object_int_hash_func(cc_object *obj);
 cc_hash cc_object_float_hash_func(cc_object *obj);
 cc_hash cc_object_string_hash_func(cc_object *obj);
-cc_hash cc_object_pointer_hash_func(cc_object *obj);
 
 typedef struct {
 	const char *type;
@@ -64,10 +60,10 @@ cc_object *cc_object_with_float(float f) {
 	return obj;
 }
 
-cc_object *cc_object_with_pointer(void *ptr) {
+cc_object *cc_object_with_pointer(void *ptr, const char *typeid) {
 	cc_object *obj = GC_MALLOC(sizeof(cc_object));
 	obj->value.ptr = ptr;
-	obj->type = cc_object_type_pointer;
+	obj->type = typeid;
 	return obj;
 }
 
@@ -94,12 +90,21 @@ const char *cc_object_get_type(cc_object *obj) {
 	return obj->type;
 }
 
-bool cc_object_is_equal(cc_object *obj1, cc_object *obj2) {
-	if ((obj1 == NULL && obj2 != NULL) | (obj1 != NULL && obj2 == NULL)) return false;
-	if (obj1 == NULL && obj2 == NULL) return true;
-    
+int cc_object_compare(cc_object *obj1, cc_object *obj2) {
+	if (obj1 == obj2) {
+		return 0;
+	}
 	
-	if (strcmp(obj1->type, obj2->type) != 0) return false;
+	if (obj1 == NULL && obj2 != NULL) {
+		return -1;
+	}
+	
+	if (obj1 != NULL && obj2 == NULL) {
+		return 1;
+	}
+	
+	int type_diff = strcmp(obj1->type, obj2->type);
+	if (type_diff != 0) return type_diff;
 	
 	const char *type = obj1->type;
 	
@@ -108,12 +113,16 @@ bool cc_object_is_equal(cc_object *obj1, cc_object *obj2) {
 		cc_object_registered_comparator reg = registered_comparators[i];
 		
 		if (strcmp(reg.type, type) == 0) {
-			return reg.comparator(obj1, obj2) == 0;
+			return reg.comparator(obj1, obj2);
 		}
 	}
 	
 	printf("Unregistered type '%s'\n", type);
 	return false;
+}
+
+bool cc_object_is_equal(cc_object *obj1, cc_object *obj2) {
+	return (cc_object_compare(obj1, obj2) == 0);
 }
 
 void cc_object_register_comparator_for_type(const char *type, cc_object_comparator comparator) {
@@ -197,12 +206,10 @@ void cc_object_register_default_comparators() {
 	cc_object_register_comparator_for_type(cc_object_type_int, cc_object_int_compare);
 	cc_object_register_comparator_for_type(cc_object_type_float, cc_object_float_compare);
 	cc_object_register_comparator_for_type(cc_object_type_string, cc_object_string_compare);
-	cc_object_register_comparator_for_type(cc_object_type_pointer, cc_object_pointer_compare);
 	
 	cc_object_register_hash_func_for_type(cc_object_type_int, cc_object_int_hash_func);
 	cc_object_register_hash_func_for_type(cc_object_type_float, cc_object_float_hash_func);
 	cc_object_register_hash_func_for_type(cc_object_type_string, cc_object_string_hash_func);
-	cc_object_register_hash_func_for_type(cc_object_type_pointer, cc_object_pointer_hash_func);
 }
 
 // Compare methods
@@ -230,16 +237,6 @@ int cc_object_float_compare(cc_object *obj1, cc_object *obj2) {
     return 0;
 }
 
-int cc_object_pointer_compare(cc_object *obj1, cc_object *obj2) {
-	void *obj1_val = cc_object_pointer_value(obj1);
-    void *obj2_val = cc_object_pointer_value(obj2);
-    
-    if (obj1_val > obj2_val) return -1;
-    if (obj1_val < obj2_val) return 1;
-    
-    return 0;
-}
-
 int cc_object_string_compare(cc_object *obj1, cc_object *obj2) {
 	int compare = strcmp(cc_object_string_value(obj1), cc_object_string_value(obj2));
 	if (compare > 0) return -1;
@@ -256,11 +253,6 @@ bool cc_object_int_equals(cc_object *obj1, cc_object *obj2) {
 bool cc_object_float_equals(cc_object *obj1, cc_object *obj2) {
     return (cc_object_float_compare(obj1, obj2) == 0);
 }
-
-bool cc_object_pointer_equals(cc_object *obj1, cc_object *obj2) {
-    return (cc_object_pointer_compare(obj1, obj2) == 0);
-}
-
 bool cc_object_string_equals(cc_object *obj1, cc_object *obj2) {
 	return cc_object_string_compare(obj1, obj2) == 0;
 }
@@ -275,11 +267,6 @@ cc_hash cc_object_int_hash_func(cc_object *obj) {
 cc_hash cc_object_float_hash_func(cc_object *obj) {
 	float f = cc_object_float_value(obj);
 	return cc_hash_from_data(&f, sizeof(float));
-}
-
-cc_hash cc_object_pointer_hash_func(cc_object *obj) {
-	void *ptr = cc_object_pointer_value(obj);
-	return cc_hash_from_data(ptr, sizeof(void *));
 }
 
 cc_hash cc_object_string_hash_func(cc_object *obj) {
