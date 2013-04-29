@@ -183,8 +183,8 @@ bool cc_binary_tree_breadth_first_enumerator_move_next(cc_collection *c, cc_enum
 	choose_tree: {
 		e->current = cc_binary_tree_to_object(selected_tree);
 		
-		cc_binary_tree *left_branch = cc_binary_tree_get_left_branch((cc_binary_tree *)e->current);
-		cc_binary_tree *right_branch = cc_binary_tree_get_right_branch((cc_binary_tree *)e->current);
+		cc_binary_tree *left_branch = cc_binary_tree_get_left_branch(selected_tree);
+		cc_binary_tree *right_branch = cc_binary_tree_get_right_branch(selected_tree);
 		
 		if (left_branch) cc_array_list_add_last(marked, cc_binary_tree_to_object(left_branch));
 		if (right_branch) cc_array_list_add_last(marked, cc_binary_tree_to_object(right_branch));
