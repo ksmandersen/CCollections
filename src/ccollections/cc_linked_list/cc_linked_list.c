@@ -86,9 +86,10 @@ cc_object * cc_linked_list_get_last(cc_linked_list *list)
  * \param object the object to insert */
 void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
 {
-  cc_linked_list_node *temp, *prev, *next, *curr;
+  cc_linked_list_node *temp, *prev, *curr;
 
   curr = list->head;
+  prev = NULL;
   if (index > list->length + 1 || index < 0) {
     // Exception?
     return;
@@ -112,8 +113,10 @@ void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
         temp->object = object;
 
         list->length++;
-
-        prev->next = temp;
+        
+        if (prev)
+          prev->next = temp;
+        
         temp->next = curr;
         curr->prev = temp;
       }
