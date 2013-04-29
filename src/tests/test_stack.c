@@ -124,7 +124,7 @@ void test_move_next_on_empty_stack_returns_null() {
   TEST_ASSERT_EQUAL(NULL, cc_enumerator_move_next(e));
 }
 
-void test_size_on_empty_list_is_zero(void) {
+void test_size_on_empty_stack_is_zero(void) {
   cc_stack *a_stack = cc_stack_new();
 
   TEST_ASSERT_EQUAL(0, cc_stack_size(a_stack));
@@ -198,6 +198,13 @@ void test_can_determine_if_stacks_are_unequal(void) {
   TEST_ASSERT_EQUAL(false, cc_stack_equals(e_stack, f_stack));
 }
 
+void test_can_determine_if_empty_stacks_are_equal(void) {
+  cc_stack *a_stack = cc_stack_new();
+  cc_stack *b_stack = cc_stack_new();
+
+  TEST_ASSERT_EQUAL(true, cc_stack_equals(a_stack, b_stack));
+}
+
 void test_can_determine_stack_contains_object(void) {
   cc_stack *a_stack = cc_stack_new();
   populate_stack(a_stack, 200);
@@ -210,4 +217,9 @@ void test_can_determine_stack_does_not_contain_object(void) {
   populate_stack(a_stack, 200);
 
   TEST_ASSERT_NOT_EQUAL(true, cc_stack_contains(a_stack, cc_object_with_int(201)));
+}
+
+void test_can_determine_empty_stack_does_not_contain_object(void) {
+  cc_stack *a_stack = cc_stack_new();
+  TEST_ASSERT_NOT_EQUAL(true, cc_stack_contains(a_stack, cc_object_with_int(0)));
 }
