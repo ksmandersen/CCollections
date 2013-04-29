@@ -1,5 +1,5 @@
 /*
- * CC_STACK.H
+ * CC_ARRAY_LIST.PRIVATE.H
  * 
  * This file is part of the CCollections library.
  *
@@ -29,53 +29,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CC_STACK_H
-#define CC_STACK_H
+#ifndef CC_STACK_PRIVATE_H
+  #define CC_STACK_PRIVATE_H
 
-#include "../shared/cc_private.h"
-#include "../shared/cc_object.h"
-#include "../shared/cc_enumerator.h"
+#include "cc_stack.h"
 
-extern const char * const cc_stack_type;
+// Enumerator & comperator
+extern void cc_stack_register_comparator();
+extern bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e);
 
-struct cc_stack_struct;
-typedef struct cc_stack_struct cc_stack;
-
-/*! \brief Creates a new empty stack
- * \return A new empty stack */
-cc_stack *cc_stack_new();
-
-/*! \brief Pushes a given object to on to the top of a given stack
- * \param stack the stack
- * \param obj the object */
-void cc_stack_push(cc_stack *stack, cc_object *obj);
-
-/*! \brief Pops the top-most object from the given stack
- * \return the top-most object that has been popped from the stack */
-cc_object *cc_stack_pop(cc_stack *stack);
-
-/*! \brief Peeks at the top-most object on a given stack
- * \return the top-most object on the stack */
-cc_object *cc_stack_peek(cc_stack *stack);
-
-/*! \brief Get the size of a given stack
- * \return The size of the stack */
-int cc_stack_size(cc_stack *stack);
-
-/*! \brief Removes all the objects from a given stack */
-void cc_stack_clear(cc_stack *stack);
-
-/*! \brief Get an enumerator for an instance of a stack
- * \param stack the stack
- * \returns an enumerator for the list */
-cc_enumerator *cc_stack_get_enumerator(cc_stack *stack);
-
-/*! \brief Make a cc_object from a given stack
- * \param list the stack */
-cc_object *cc_stack_to_object(cc_set *set);
-
-/*! \brief Make a stack from a cc_object
- * \param object the object */
-cc_stack *cc_stack_from_object(cc_object *obj);
+// Compare two stacks agains each other.
+// This function doesn't make a lot of sense since it's not
+// good design to say that a stack is smaller or bigger than
+// another list apart from size.
+// The function is used for determining whether two stacks are
+// equal (i.e. contains all ofthe same elements).
+int cc_stack_compare(cc_object *obj1, cc_object *obj2) {
 
 #endif
+
+

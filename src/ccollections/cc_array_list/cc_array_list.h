@@ -49,8 +49,7 @@ struct cc_array_list_struct;
 typedef struct cc_array_list_struct cc_array_list;
 
 /*! \brief Creates a new empty instance of an array list.
- *  \return A new array list object
- */
+ * \return A new array list object */
 cc_array_list *cc_array_list_new();
 
 /*! \brief Get the length of the list
