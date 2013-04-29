@@ -118,11 +118,11 @@ void cc_set_remove(cc_set *set, cc_object *obj) {
 }
 
 cc_object *cc_set_to_object(cc_set *set) {
-	return cc_object_with_data(set, sizeof(cc_set), cc_set_type);
+	return cc_object_with_pointer(set, cc_set_type);
 }
 
 cc_set *cc_set_from_object(cc_object *obj) {
-	cc_set *set = cc_object_data_value(obj);
+	cc_set *set = cc_object_pointer_value(obj);
 	return set;
 }
 

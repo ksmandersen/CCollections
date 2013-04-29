@@ -20,7 +20,7 @@ cc_enumerator *cc_dictionary_get_enumerator(cc_dictionary *dictionary);
 void cc_dictionary_remove(cc_dictionary *dictionary, const char *key);
 int cc_dictionary_count(cc_dictionary *dictionary);
 
-cc_object *cc_dictionary_to_object(cc_set *set);
+cc_object *cc_dictionary_to_object(cc_dictionary *dictionary);
 cc_dictionary *cc_dictionary_from_object(cc_object *obj);
 
 #endif
