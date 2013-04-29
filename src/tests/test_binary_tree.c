@@ -117,7 +117,7 @@ void test_can_enumerate_breadth_first(void)
 	// expected order: 0, 1, 2, 3, 4, 5
 	
 	cc_binary_tree *tree = generate_complicated_binary_tree();
-	/*
+	
 	cc_enumerator *e = cc_binary_tree_get_breadth_first_enumerator(tree);
 	TEST_ASSERT_EQUAL(cc_enumerator_move_next(e), true);
 	cc_binary_tree *tree0 = cc_binary_tree_from_object(cc_enumerator_current(e));
@@ -144,5 +144,5 @@ void test_can_enumerate_breadth_first(void)
 	TEST_ASSERT_EQUAL(2, cc_object_int_value(cc_binary_tree_get_object(tree2)));
 	TEST_ASSERT_EQUAL(3, cc_object_int_value(cc_binary_tree_get_object(tree3)));
 	TEST_ASSERT_EQUAL(4, cc_object_int_value(cc_binary_tree_get_object(tree4)));
-	TEST_ASSERT_EQUAL(5, cc_object_int_value(cc_binary_tree_get_object(tree5)));*/
+	TEST_ASSERT_EQUAL(5, cc_object_int_value(cc_binary_tree_get_object(tree5)));
 }
