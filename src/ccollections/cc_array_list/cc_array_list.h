@@ -69,7 +69,7 @@ void cc_array_list_clear(cc_array_list *list);
  * from the first list to the second list.
  * \param a_list the first list
  * \param b_list the second list
- * \returns The lists merged together */
+ * \return The lists merged together */
 cc_array_list *cc_array_list_merge(cc_array_list *a_list, cc_array_list *b_list);
 
 bool cc_array_list_contains(cc_array_list *list, cc_object *object);
