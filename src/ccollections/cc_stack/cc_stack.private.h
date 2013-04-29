@@ -44,7 +44,7 @@ extern bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e);
 // another list apart from size.
 // The function is used for determining whether two stacks are
 // equal (i.e. contains all ofthe same elements).
-int cc_stack_compare(cc_object *obj1, cc_object *obj2) {
+int cc_stack_compare(cc_object *obj1, cc_object *obj2);
 
 #endif
 

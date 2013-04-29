@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "cc_stack.h"
+#include "cc_stack.private.h"
 #include "../cc_linked_list/cc_linked_list.private.h"
 #include "../cc_array_list/cc_array_list.h"
 #include "../shared/cc_hash.h"

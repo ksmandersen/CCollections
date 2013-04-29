@@ -38,54 +38,54 @@
 
 extern const char *const cc_sorted_list_type;
 
-/*! \brief A linked list data structure that stays sorted with insertions. 
+/*! \brief A sorted list data structure that stays sorted with insertions. 
  * Sorting is performed using inserted objects comperator. It is therefore
  * important that all inserted objects have the same type. */
 struct cc_sorted_list_struct;
 typedef struct cc_sorted_list_struct cc_sorted_list;
 
-/*! \brief Create a linked list object
- * \return A new linked list object */
+/*! \brief Create a sorted list object
+ * \return A new sorted list object */
 cc_sorted_list *cc_sorted_list_new();
 
 /*! \brief Get the length of the list
  * \return The length of the list */
 int cc_sorted_list_length(cc_sorted_list *list);
 
-/*! \brief Get a node in a linked list
- * \param list the linked list
+/*! \brief Get a node in a sorted list
+ * \param list the sorted list
  * \param index the index of the node to get */
 cc_object *cc_sorted_list_get(cc_sorted_list *list, int index);
 
-/*! \brief Get the first node in a linked list
- * \param list the linked list */
+/*! \brief Get the first node in a sorted list
+ * \param list the sorted list */
 cc_object *cc_sorted_list_get_first(cc_sorted_list *list);
 
-/*! \brief Get the last node in a linked list
- * \param list the linked list */
+/*! \brief Get the last node in a sorted list
+ * \param list the sorted list */
 cc_object *cc_sorted_list_get_last(cc_sorted_list *list);
 
-/*! \brief Insert a value at a position in the linked list
- * \param list the linked list
+/*! \brief Insert a value at a position in the sorted list
+ * \param list the sorted list
  * \param index the index at which to insert the object
  * \param object the object to insert */
 void cc_sorted_list_add(cc_sorted_list *list, cc_object *object);
 
-/*! \brief Remove a value at a position in the linked list
- * \param list the linked list
+/*! \brief Remove a value at a position in the sorted list
+ * \param list the sorted list
  * \param index the index at which to remove the object */
 void cc_sorted_list_remove(cc_sorted_list *list, int index);
 
-/*! \brief Remove the value from the front node in a linked list
- * \param list the linked list */
+/*! \brief Remove the value from the front node in a sorted list
+ * \param list the sorted list */
 void cc_sorted_list_remove_first(cc_sorted_list *list);
 
-/*! \brief Remove the value from the end node in a linked list
- * \param list the linked list */
+/*! \brief Remove the value from the end node in a sorted list
+ * \param list the sorted list */
 void cc_sorted_list_remove_last(cc_sorted_list *list);
 
-/*! \brief Removes all objects from a linked list
- * \param list the linked list to be emptied */
+/*! \brief Removes all objects from a sorted list
+ * \param list the sorted list to be emptied */
 void cc_sorted_list_clear(cc_sorted_list *list);
 
 /*! \brief Merges two lists together by adding all objects

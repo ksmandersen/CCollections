@@ -34,7 +34,12 @@
 
 #include "cc_linked_list.h"
 
-/*! \brief A node in the linked list */
+/*
+ *  This data structure represents each node
+ *  in a linked list. Nodes are only exposed in the
+ *  internal interface to ease the enumeration pattern
+ *  of CCollections.
+ */
 struct cc_linked_list_node_struct
 {
   cc_object *object;
@@ -43,10 +48,19 @@ struct cc_linked_list_node_struct
 };
 typedef struct cc_linked_list_node_struct cc_linked_list_node;
 
+// Create a new linked list node from a cc_object.
 cc_linked_list_node *cc_linked_list_node_new(cc_object *object);
 
-extern bool cc_linked_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+// Compare two lists agains each other.
+// This function doesn't make a lot of sense since it's not
+// good design to say that a list is smaller or bigger than
+// another list apart from size.
+// The function is used for determining whether two lists are
+// equal (i.e. contains all ofthe same elements).
 extern int cc_linked_list_compare(cc_object *obj1, cc_object *obj2);
+
+// Enumerator & comperator
+extern bool cc_linked_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
 extern void cc_linked_list_register_comparator();
 
 #endif

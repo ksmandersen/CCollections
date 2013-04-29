@@ -42,7 +42,7 @@ extern const char *const cc_linked_list_type;
 struct cc_linked_list_struct;
 typedef struct cc_linked_list_struct cc_linked_list;
 
-/*! \brief Create a linked list object
+/*! \brief Creates a new empty linked list
  * \return A new linked list object */
 cc_linked_list *cc_linked_list_new();
 
@@ -50,45 +50,45 @@ cc_linked_list *cc_linked_list_new();
  * \return The length of the list */
 int cc_linked_list_length(cc_linked_list *list);
 
-/*! \brief Get a node in a linked list
+/*! \brief Get an object from a given index in an linked list
  * \param list the linked list
- * \param index the index of the node to get */
+ * \param index the index of the object to get */
 cc_object *cc_linked_list_get(cc_linked_list *list, int index);
 
-/*! \brief Get the first node in a linked list
+/*! \brief Get the first object in an linked list
  * \param list the linked list */
 cc_object *cc_linked_list_get_first(cc_linked_list *list);
 
-/*! \brief Get the last node in a linked list
+/*! \brief Get the last node in an linked list
  * \param list the linked list */
 cc_object *cc_linked_list_get_last(cc_linked_list *list);
 
-/*! \brief Insert a value at a position in the linked list
+/*! \brief Adds an object to a given index in an linked list
  * \param list the linked list
- * \param index the index at which to insert the object
- * \param object the object to insert */
+ * \param index the index at wich to add the object in the list
+ * \param object the object to add */
 void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object);
 
-/*! \brief Insert a value as the first node in a linked list
+/*! \brief Adds an object to the beginning of an linked list
  * \param list the linked list
- * \param object the value to insert */
+ * \param object the value to add */
 void cc_linked_list_add_first(cc_linked_list *list, cc_object *object);
 
-/*! \brief Insert a value as the last node in a linked list
+/*! \brief Adds an object to the end of an linked list
  * \param list the linked list
- * \param object the value to insert */
+ * \param object the value to add */
 void cc_linked_list_add_last(cc_linked_list *list, cc_object *object);
 
-/*! \brief Remove a value at a position in the linked list
+/*! \brief Removes an object at a given index from an linked list
  * \param list the linked list
  * \param index the index at which to remove the object */
 void cc_linked_list_remove(cc_linked_list *list, int index);
 
-/*! \brief Remove the value from the front node in a linked list
+/*! \brief Removes the first object from an linked list
  * \param list the linked list */
 void cc_linked_list_remove_first(cc_linked_list *list);
 
-/*! \brief Remove the value from the end node in a linked list
+/*! \brief Removes the last object from an linked list
  * \param list the linked list */
 void cc_linked_list_remove_last(cc_linked_list *list);
 
@@ -97,16 +97,29 @@ void cc_linked_list_remove_last(cc_linked_list *list);
 void cc_linked_list_clear(cc_linked_list *list);
 
 /*! \brief Merges two lists together by adding all objects
- * from the first list to the second list.
+ * from the b_list to the a_list
  * \param a_list the first list
  * \param b_list the second list
- * \returns The lists merged together */
+ * \return The lists merged together */
 cc_linked_list *cc_linked_list_merge(cc_linked_list *a_list, cc_linked_list *b_list);
 
+/*! \brief Determines whether an object is in the linked list
+ * \param list the linked list to search
+ * \param object the object to search the list for
+ * \returns true if the object is found in the linked list; otherwise, false */
 bool cc_linked_list_contains(cc_linked_list *list, cc_object *object);
+
+/*! \brief Get an enumerator for an instance of an linked list
+ * \param list the linked list
+ * \returns an enumerator for the list */
 cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list);
 
+/*! \brief Make a cc_object from an linked list
+ * \param list the linked list */
 cc_object *cc_linked_list_to_object(cc_linked_list *list);
+
+/*! \brief Make an linked list from a cc_object
+ * \param object the object */
 cc_linked_list *cc_linked_list_from_object(cc_object *object);
 
 #endif

@@ -46,8 +46,6 @@ struct cc_linked_list_struct {
 };
 
 
-/*! \brief Create a linked list object
- * \return A new linked list object */
 cc_linked_list *cc_linked_list_new() {
   cc_linked_list_register_comparator();
 
@@ -64,8 +62,6 @@ cc_linked_list *cc_linked_list_new() {
   return list;
 }
 
-/*! \brief Get the length of the list
- * \return The length of the list */
 int cc_linked_list_length(cc_linked_list *list) {
   if (list == NULL)
     return 0;
@@ -93,8 +89,6 @@ cc_object *cc_linked_list_get(cc_linked_list *list, int index) {
   return curr->object;
 }
 
-/*! \brief Get the first node in a linked list
- * \param list the linked list */
 cc_object * cc_linked_list_get_first(cc_linked_list *list) {
   if (list == NULL || list->head == NULL)
     return NULL;
@@ -102,8 +96,6 @@ cc_object * cc_linked_list_get_first(cc_linked_list *list) {
   return list->head->object;
 }
 
-/*! \brief Get the last node in a linked list
- * \param list the linked list */
 cc_object * cc_linked_list_get_last(cc_linked_list *list)
 {
   if (list == NULL || list->tail == NULL)
@@ -112,10 +104,6 @@ cc_object * cc_linked_list_get_last(cc_linked_list *list)
   return list->tail->object; 
 }
 
-/*! \brief Insert a value at a position in the linked list
- * \param list the linked list
- * \param index the index at which to insert the object
- * \param object the object to insert */
 void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
 {
   cc_linked_list_node *temp, *prev, *curr;
@@ -156,9 +144,6 @@ void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
   }
 }
 
-/*! \brief Insert a value as the first node in a linked list
- * \param list the linked list
- * \param object the value to insert */
 void cc_linked_list_add_first(cc_linked_list *list, cc_object *object) {
   cc_linked_list_node *temp = cc_linked_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -177,9 +162,6 @@ void cc_linked_list_add_first(cc_linked_list *list, cc_object *object) {
   }
 }
 
-/*! \brief Insert a value as the last node in a linked list
- * \param list the linked list
- * \param object the value to insert */
 void cc_linked_list_add_last(cc_linked_list *list, cc_object *object) {
   cc_linked_list_node *temp = cc_linked_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -199,9 +181,6 @@ void cc_linked_list_add_last(cc_linked_list *list, cc_object *object) {
   list->length++;
 }
 
-/*! \brief Remove a value at a position in the linked list
- * \param list the linked list
- * \param index the index at which to remove the object */
 void cc_linked_list_remove(cc_linked_list *list, int index) {
   if (list == NULL || index > list->length - 1 || index < 0)
     return;
@@ -230,8 +209,6 @@ void cc_linked_list_remove(cc_linked_list *list, int index) {
   }
 }
 
-/*! \brief Remove the value from the front node in a linked list
- * \param list the linked list */
 void cc_linked_list_remove_first(cc_linked_list *list) {
   if (list == NULL || list->head == NULL)
     return;
@@ -246,8 +223,6 @@ void cc_linked_list_remove_first(cc_linked_list *list) {
   }
 }
 
-/*! \brief Remove the value from the end node in a linked list
- * \param list the linked list */
 void cc_linked_list_remove_last(cc_linked_list *list) {
   if (list == NULL || list->tail == NULL)
     return;
@@ -261,8 +236,6 @@ void cc_linked_list_remove_last(cc_linked_list *list) {
   }
 }
 
-/*! \brief Removes all objects from a linked list
- * \param list the linked list to be emptied */
 void cc_linked_list_clear(cc_linked_list *list) {
   if (list == NULL)
     return;
@@ -272,11 +245,6 @@ void cc_linked_list_clear(cc_linked_list *list) {
   list->length = 0;
 }
 
-/*! \brief Merges two lists together by adding all objects
- * from the first list to the second list.
- * \param a_list the first list
- * \param b_list the second list
- * \returns The lists merged together */
 cc_linked_list *cc_linked_list_merge(cc_linked_list *a_list, cc_linked_list *b_list) {
   cc_linked_list_node *curr = b_list->head;
   while (curr != NULL) {

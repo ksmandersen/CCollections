@@ -48,7 +48,7 @@ extern const char *const cc_array_list_type;
 struct cc_array_list_struct;
 typedef struct cc_array_list_struct cc_array_list;
 
-/*! \brief Creates a new empty instance of an array list.
+/*! \brief Creates a new empty array list.
  * \return A new array list object */
 cc_array_list *cc_array_list_new();
 
