@@ -96,7 +96,7 @@ void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
   } else {
     if (index == 0) {
       cc_linked_list_add_first(list, object);
-    } else if (index == list->length - 1) {
+    } else if (index == list->length) {
       cc_linked_list_add_last(list, object);
     } else {
       int i;
@@ -259,7 +259,15 @@ cc_linked_list *cc_linked_list_merge(cc_linked_list *a_list, cc_linked_list *b_l
 }
 
 bool cc_linked_list_contains(cc_linked_list *list, cc_object *obj) {
-  // TODO
+  cc_enumerator *e = cc_linked_list_get_enumerator(list);
+  while (cc_enumerator_move_next(e)) {
+    cc_object *obj2 = cc_enumerator_current(e);
+    
+    if (cc_object_is_equal(obj, obj2)) {
+      return true;
+    }
+  }
+  
   return false;
 }
 
