@@ -10,7 +10,6 @@ extern void test_can_add_object_to_first(void);
 extern void test_can_add_object_to_last(void);
 extern void test_can_clear_list(void);
 extern void test_can_merge_lists(void);
-extern void test_can_enumerate_list(void);
 
 
 static void runTest(UnityTestFunction test)
@@ -35,7 +34,7 @@ void resetTest()
 
 int main(void)
 {
-  Unity.TestFile = "test_linked_list.c";
+  Unity.TestFile = "test_sorted_list.c";
   UnityBegin();
 
   RUN_TEST(test_can_create_linked_list, 1);
@@ -43,7 +42,6 @@ int main(void)
   RUN_TEST(test_can_add_object_to_last, 3);
   RUN_TEST(test_can_clear_list, 4);
   RUN_TEST(test_can_merge_lists, 5);
-  RUN_TEST(test_can_enumerate_list, 5);
 
   UnityEnd();
   return 0;

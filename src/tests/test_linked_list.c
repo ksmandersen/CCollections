@@ -6,6 +6,14 @@
 
 cc_linked_list *list;
 
+void populate_list(cc_linked_list *list, int count) {
+  int i;
+  for (i = 1; i <= count; i++) {
+    cc_object *o = cc_object_with_int(i);
+    cc_linked_list_add_last(list, o);
+  }
+}
+
 void setUp(void)
 {
   GC_INIT();
@@ -89,4 +97,17 @@ void test_can_merge_lists(void)
   TEST_ASSERT_EQUAL(cc_linked_list_length(list), 6);
   TEST_ASSERT_EQUAL(cc_object_is_equal(cc_linked_list_get_first(list), val1), true);
   TEST_ASSERT_EQUAL(cc_object_is_equal(cc_linked_list_get_last(list2), val6), true);
+}
+
+void test_can_enumerate_list(void) {
+  populate_list(list, 10);
+
+  int index = 1;
+  cc_enumerator *e = cc_linked_list_get_enumerator(list);
+  while(cc_enumerator_move_next(e)) {
+    cc_object *current = cc_enumerator_current(e);
+    cc_object *expect = cc_object_with_int(index);
+    TEST_ASSERT_EQUAL(true, cc_object_is_equal(current, expect));
+    index++;
+  }
 }
