@@ -67,7 +67,7 @@ void cc_stack_clear(cc_stack *stack);
 
 /*! \brief Get an enumerator for an instance of a stack
  * \param stack the stack
- * \returns an enumerator for the list */
+ * \returns an enumerator for the stack */
 cc_enumerator *cc_stack_get_enumerator(cc_stack *stack);
 
 /*! \brief Determines whether two stacks are equal
@@ -83,7 +83,7 @@ bool cc_stack_equals(cc_stack *a_stack, cc_stack *b_stack);
 bool cc_stack_contains(cc_stack *stack, cc_object *obj);
 
 /*! \brief Make a cc_object from a given stack
- * \param list the stack */
+ * \param stack the stack */
 cc_object *cc_stack_to_object(cc_stack *stack);
 
 /*! \brief Make a stack from a cc_object
