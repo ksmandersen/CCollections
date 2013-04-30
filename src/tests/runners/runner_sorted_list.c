@@ -12,6 +12,7 @@ extern void test_can_clear_list(void);
 extern void test_can_merge_lists(void);
 extern void test_contains_will_return_true_for_contained_objects(void);
 extern void test_contains_will_return_false_for_non_contained_objects(void);
+extern void test_can_enumerate_list(void);
 
 static void runTest(UnityTestFunction test)
 {
@@ -45,6 +46,7 @@ int main(void)
   RUN_TEST(test_can_merge_lists, 5);
   RUN_TEST(test_contains_will_return_true_for_contained_objects, 5);
   RUN_TEST(test_contains_will_return_false_for_non_contained_objects, 5);
+  RUN_TEST(test_can_enumerate_list, 5);
 
   UnityEnd();
   return 0;

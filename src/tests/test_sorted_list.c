@@ -10,14 +10,23 @@ void setUp(void)
   cc_init();
 }
 
-void tearDown(void)
+void tearDown(void) {}
+
+void populate_list(cc_sorted_list *l, int count)
 {
+  int i;
+  for(i = 1; i <= count; i++) {
+    cc_object *v = cc_object_with_int(i);
+    cc_sorted_list_add(l, v);
+  }
 }
 
 void test_can_create_linked_list(void)
 {
   cc_sorted_list *list = cc_sorted_list_new();
+
   TEST_ASSERT_NOT_EQUAL(NULL, list);
+  TEST_ASSERT_EQUAL(0, cc_sorted_list_length(list));
 }
 
 void test_can_add_objects(void)
@@ -115,4 +124,17 @@ void test_can_merge_lists(void)
   TEST_ASSERT_EQUAL(cc_sorted_list_length(list), 6);
   TEST_ASSERT_EQUAL(cc_object_is_equal(cc_sorted_list_get_first(list), val1), true);
   TEST_ASSERT_EQUAL(cc_object_is_equal(cc_sorted_list_get_last(list2), val6), true);
+}
+
+void test_can_enumerate_list(void) {
+  cc_sorted_list *a_list = cc_sorted_list_new();
+  populate_list(a_list, 256);
+
+  int i = 1;
+  cc_enumerator *e = cc_sorted_list_get_enumerator(a_list);
+  while (cc_enumerator_move_next(e)) {
+    TEST_ASSERT_NOT_EQUAL(NULL, cc_enumerator_current(e));
+    TEST_ASSERT_EQUAL(true, cc_object_is_equal(cc_enumerator_current(e), cc_object_with_int(i)));
+    i++;
+  }
 }
