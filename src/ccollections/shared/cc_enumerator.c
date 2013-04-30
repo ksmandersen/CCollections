@@ -31,7 +31,7 @@
 
 #include "cc_private.h"
 #include "cc_enumerator_private.h"
-#include "cc_sorted_list.h"
+#include "../cc_sorted_list/cc_sorted_list.h"
 
 typedef struct {
 	cc_enumerator *parent;
