@@ -44,9 +44,14 @@ typedef struct {
 	cc_enumerator *elements_enumerator;
 } order_enumerator_data;
 
-static cc_enumerable *cc_enumerable_new(cc_enumerator_move_next_func move_next);
+typedef struct {
+	cc_enumerator *parent;
+	cc_enumerator_map_func map;
+} map_enumerator_data;
+
 static bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e);
 static bool cc_enumerator_order_move_next(cc_enumerable *c, cc_enumerator *e);
+static bool cc_enumerator_map_move_next(cc_enumerable *c, cc_enumerator *e);
 
 cc_enumerator *cc_enumerator_new(cc_enumerable *e) {
 	cc_enumerator *en = GC_MALLOC(sizeof(cc_enumerator));
@@ -81,7 +86,26 @@ cc_enumerator *cc_enumerator_order(cc_enumerator *e) {
 	return en;
 }
 
-static cc_enumerable *cc_enumerable_new(cc_enumerator_move_next_func move_next) {
+cc_enumerator *cc_enumerator_map(cc_enumerator *e, cc_enumerator_map_func map) {
+	cc_enumerator *en = cc_enumerator_new(cc_enumerable_new(cc_enumerator_map_move_next));
+	map_enumerator_data *data = GC_malloc(sizeof(map_enumerator_data));
+	data->parent = e;
+	data->map = map;
+	en->data = data;
+	return en;
+}
+
+cc_linked_list *cc_enumerator_to_list(cc_enumerator *e) {
+	cc_linked_list *list = cc_linked_list_new();
+	
+	while (cc_enumerator_move_next(e)) {
+		cc_linked_list_add_last(list, cc_enumerator_current(e));
+	}
+	
+	return list;
+}
+
+cc_enumerable *cc_enumerable_new(cc_enumerator_move_next_func move_next) {
 	cc_enumerable *e = GC_malloc(sizeof(cc_enumerator));
 	e->move_next = move_next;
 	return e;
@@ -118,4 +142,16 @@ static bool cc_enumerator_order_move_next(cc_enumerable *c, cc_enumerator *e) {
 	bool status = cc_enumerator_move_next(data->elements_enumerator);
 	e->current = cc_enumerator_current(data->elements_enumerator);
 	return status;
+}
+
+static bool cc_enumerator_map_move_next(cc_enumerable *c, cc_enumerator *e) {
+	map_enumerator_data *data = e->data;
+	cc_enumerator *parent_e = data->parent;
+	
+	while (cc_enumerator_move_next(parent_e)) {
+		e->current = data->map(cc_enumerator_current(parent_e));
+		return true;
+	}
+	
+	return false;
 }

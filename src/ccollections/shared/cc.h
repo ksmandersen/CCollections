@@ -37,6 +37,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <limits.h>
+
+#define CC_END LONG_MAX
 
 #include "cc_error.h"
 #include "cc_object.h"
