@@ -38,6 +38,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "cc_error.h"
+#include "cc_object.h"
+
 #include "../cc_array_list/cc_array_list.h"
 #include "../cc_set/cc_set.h"
 #include "../cc_linked_list/cc_linked_list.h"

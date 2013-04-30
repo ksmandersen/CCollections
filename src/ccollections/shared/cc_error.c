@@ -1,5 +1,5 @@
 /*
- * CC.C
+ * CC_OBJECT.C
  * 
  * This file is part of the CCollections library.
  *
@@ -30,9 +30,22 @@
  */
 
 #include "cc_private.h"
-#include "cc_object_private.h"
+#include "cc_error.h"
 
-void cc_init() {
-  cc_set_default_error_handler();
-	cc_object_register_default_comparators();
+static cc_error_handler cc_current_error_handler;
+
+void cc_error(int error_code, char *error_message) {
+  cc_current_error_handler(error_code, error_message);
+}
+
+void cc_set_error_handler(cc_error_handler handler) {
+  cc_current_error_handler = handler;
+}
+
+void cc_set_default_error_handler() {
+  cc_set_error_handler(cc_default_error_handler);
+}
+
+void cc_default_error_handler(int error_code, char *error_message) {
+  printf("==== CC Error! ====\nCode: %i\nMessage: %s\n===================\n", error_code, error_message);
 }
