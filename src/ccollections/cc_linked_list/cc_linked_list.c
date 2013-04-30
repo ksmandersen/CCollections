@@ -79,7 +79,7 @@ cc_object *cc_linked_list_get(cc_linked_list *list, int index) {
 
   cc_linked_list_node *curr = list->head;
   int i;
-  for (i = 1; i < index; i++) {
+  for (i = 0; i < index; i++) {
     curr = curr->next;
   }
 
@@ -120,7 +120,7 @@ void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
       cc_linked_list_add_last(list, object);
     } else {
       int i;
-      for (i = 1; i < index; i++) {
+      for (i = 0; i < index; i++) {
         prev = curr;
         curr = curr->next;
       }
@@ -196,7 +196,7 @@ void cc_linked_list_remove(cc_linked_list *list, int index) {
     cc_linked_list_node *curr = list->head;
     cc_linked_list_node *prev = NULL;
     int i;
-    for (i = 1; i < index; i++) {
+    for (i = 0; i < index; i++) {
       prev = curr;
       curr = curr->next;
     }
