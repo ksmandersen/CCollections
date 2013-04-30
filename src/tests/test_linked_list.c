@@ -138,6 +138,24 @@ void test_can_add_and_get_many_objects(void) {
   }
 }
 
+void test_can_create_linked_list_from_array_list(void) {
+  cc_array_list *a_list = cc_array_list_new();
+  int i;
+  for (i = 1; i < 512; i++) {
+    cc_array_list_add_last(a_list, cc_object_with_int(i));
+  }
+
+  cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+  cc_linked_list *b_list = cc_linked_list_new_with_enumerator(e);
+
+  TEST_ASSERT_EQUAL(cc_array_list_length(a_list), cc_linked_list_length(b_list));
+  e = cc_array_list_get_enumerator(a_list);
+  while (cc_enumerator_move_next(e)) {
+    cc_object *obj = cc_enumerator_current(e);
+    TEST_ASSERT_EQUAL(true, cc_linked_list_contains(b_list, obj));
+  }
+}
+
 // Getting
 
 void test_can_get_objects_from_list_with_index(void) {

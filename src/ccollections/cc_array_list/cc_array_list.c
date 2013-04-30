@@ -52,6 +52,15 @@ cc_array_list *cc_array_list_new() {
   return list;
 }
 
+cc_array_list *cc_array_list_new_with_enumerator(cc_enumerator *e) {
+  cc_array_list *list = cc_array_list_new();
+  while (cc_enumerator_move_next(e)) {
+    cc_array_list_add_last(list, cc_enumerator_current(e));
+  }
+
+  return list;
+}
+
 void cc_array_list_expand_heap(cc_array_list *list) {
   list->heap_size *= 2;
   list->heap = GC_REALLOC(list->heap, sizeof(cc_object *) * list->heap_size);

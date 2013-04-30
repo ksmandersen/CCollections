@@ -78,6 +78,16 @@ cc_dictionary *cc_dictionary_new() {
 	return dictionary;
 }
 
+cc_dictionary *cc_dictionary_new_with_enumerators(cc_enumerator *key_enumerator, cc_enumerator *object_enumerator) {
+	cc_dictionary *dictionary = cc_dictionary_new();
+
+	while(cc_enumerator_move_next(key_enumerator) && cc_enumerator_move_next(object_enumerator)) {
+		cc_dictionary_add(dictionary, cc_object_string_value(cc_enumerator_current(key_enumerator)), cc_enumerator_current(object_enumerator));
+	}
+
+	return dictionary;
+}
+
 int cc_dictionary_count(cc_dictionary *dictionary) {
 	return dictionary->count;
 }
@@ -160,7 +170,6 @@ bool cc_dictionary_contains_value(cc_dictionary *dictionary, cc_object *obj) {
 }
 
 cc_enumerator *cc_dictionary_get_enumerator(cc_dictionary *dictionary) {
-//	return cc_array_list_get_enumerator(dictionary->keys);
     return cc_set_get_enumerator(dictionary->keys);
 }
 

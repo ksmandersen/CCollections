@@ -12,6 +12,7 @@ extern void test_can_add_objects_to_list_with_index(void);
 extern void test_can_add_objects_to_front_of_list(void);
 extern void test_can_add_and_get_identical_objects(void);
 extern void test_can_add_and_get_many_objects(void);
+extern void test_can_create_linked_list_from_array_list(void);
 
 extern void test_can_get_objects_from_list_with_index(void);
 extern void test_can_get_elements_from_start_of_list(void);
@@ -78,6 +79,7 @@ int main(void)
   RUN_TEST(test_can_add_objects_to_front_of_list, 1);
   RUN_TEST(test_can_add_and_get_identical_objects, 1);
   RUN_TEST(test_can_add_and_get_many_objects, 1);
+  RUN_TEST(test_can_create_linked_list_from_array_list, 1);
 
   RUN_TEST(test_can_get_objects_from_list_with_index, 1);
   RUN_TEST(test_can_get_elements_from_start_of_list, 1);

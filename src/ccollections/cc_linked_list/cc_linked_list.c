@@ -62,6 +62,15 @@ cc_linked_list *cc_linked_list_new() {
   return list;
 }
 
+cc_linked_list *cc_linked_list_new_with_enumerator(cc_enumerator *e) {
+  cc_linked_list *list = cc_linked_list_new();
+  while (cc_enumerator_move_next(e)) {
+    cc_linked_list_add_last(list, cc_enumerator_current(e));
+  }
+
+  return list;
+}
+
 int cc_linked_list_length(cc_linked_list *list) {
   if (list == NULL)
     return 0;

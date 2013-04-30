@@ -46,6 +46,12 @@ typedef struct cc_dictionary_struct cc_dictionary;
  * \return a new empty dictionary */
 cc_dictionary *cc_dictionary_new();
 
+/*! \brief Creates a new dictionary with all objects from the enumerator
+ * \param key_enumerator the enumerator of a collection of keys for the dictionary
+ * \param object_enumerator the enumerator of a collection of objects for the dictionary
+ * \return A new dictionary object */
+cc_dictionary *cc_dictionary_new_with_enumerators(cc_enumerator *key_enumerator, cc_enumerator *object_enumerator);
+
 /*! \brief Set an object for a key
  * \param dictionary the dictionary
  * \param key the key

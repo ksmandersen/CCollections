@@ -52,6 +52,11 @@ typedef struct cc_array_list_struct cc_array_list;
  * \return A new array list object */
 cc_array_list *cc_array_list_new();
 
+/*! \brief Creates a new array list with all objects from the enumerator
+ * \param e the enumerator of a collection
+ * \return A new array list object */
+cc_array_list *cc_array_list_new_with_enumerator(cc_enumerator *e);
+
 /*! \brief Get the length of the list
  * \return The length of the list */
 int cc_array_list_length(cc_array_list *list);

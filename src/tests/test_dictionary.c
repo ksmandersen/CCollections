@@ -117,6 +117,27 @@ void test_can_insert_and_enumerate_many_objects(void) {
 		sprintf(key, "key_%i", i);
 	  cc_dictionary_add(a_dict, key, v);
   }
+}
 
+void test_can_create_dictionary_from_key_and_value_enumerators(void) {
+	cc_linked_list *keys = cc_linked_list_new();
+	cc_linked_list_add_last(keys, cc_object_with_string("a"));
+	cc_linked_list_add_last(keys, cc_object_with_string("b"));
+	cc_linked_list_add_last(keys, cc_object_with_string("c"));
 
+	cc_linked_list *values = cc_linked_list_new();
+	cc_linked_list_add_last(values, cc_object_with_string("test1"));
+	cc_linked_list_add_last(values, cc_object_with_string("krak3"));
+	cc_linked_list_add_last(values, cc_object_with_string("current5"));
+
+	cc_dictionary *dictionary = cc_dictionary_new_with_enumerators(cc_linked_list_get_enumerator(keys), cc_linked_list_get_enumerator(values));
+
+	TEST_ASSERT_EQUAL(3, cc_dictionary_count(dictionary));
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_key(dictionary, "a"));
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_key(dictionary, "b"));
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_key(dictionary, "c"));
+
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_value(dictionary, cc_object_with_string("test1")));
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_value(dictionary, cc_object_with_string("krak3")));
+	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_value(dictionary, cc_object_with_string("current5")));	
 }

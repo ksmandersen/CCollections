@@ -12,6 +12,7 @@ extern void test_can_change_value_for_key(void);
 extern void test_can_find_key_in_dictionary(void);
 extern void test_can_enumerate_keys_in_dictionary(void);
 extern void test_can_insert_and_enumerate_many_objects(void);
+extern void test_can_create_dictionary_from_key_and_value_enumerators(void);
 
 static void runTest(UnityTestFunction test)
 {
@@ -45,6 +46,7 @@ int main(void)
   RUN_TEST(test_can_find_key_in_dictionary, 1);
   RUN_TEST(test_can_enumerate_keys_in_dictionary, 1);
   RUN_TEST(test_can_insert_and_enumerate_many_objects, 1);
+  RUN_TEST(test_can_create_dictionary_from_key_and_value_enumerators, 1);
 
   UnityEnd();
   return 0;
