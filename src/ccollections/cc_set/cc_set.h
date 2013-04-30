@@ -41,15 +41,51 @@ extern const char * const cc_set_type;
 struct cc_set_struct;
 typedef struct cc_set_struct cc_set;
 
+/*! \brief Creates a new empty set
+ * \return A new empty set */
 cc_set *cc_set_new();
+
+/*! \brief Adds an object to the set
+ * \param set the set
+ * \param obj the object to add */
 void cc_set_add(cc_set *set, cc_object *obj);
-void cc_set_clear(cc_set *set);
-bool cc_set_contains(cc_set *set, cc_object *obj);
-cc_enumerator *cc_set_get_enumerator(cc_set *set);
+
+/*! \brief Removes an object from the set
+ * \param set the set
+ * \param obj the object to remove */
 void cc_set_remove(cc_set *set, cc_object *obj);
+
+/*! \brief Removes all objects from the set
+ * \param set the set */
+void cc_set_clear(cc_set *set);
+
+/*! \brief Get the number of objects in the set
+ * \param set the set */
 int cc_set_count(cc_set *set);
 
+/*! \brief Determines whether an object is in the set
+ * \param set the set to search
+ * \param object the object to search the set for
+ * \returns true if the object is found on the stack; otherwise, false */
+bool cc_set_contains(cc_set *set, cc_object *obj);
+
+/*! \brief Merges two sets together by adding all objects
+ * from the b_set to the a_set
+ * \param a_list the first set
+ * \param b_list the second set */
+void cc_set_merge(cc_set *a_set, cc_set *b_set);
+
+/*! \brief Get an enumerator for the set
+ * \param set the set
+ * \returns an enumerator for the set */
+cc_enumerator *cc_set_get_enumerator(cc_set *set);
+
+/*! \brief Make a cc_object from the set
+ * \param set the set */
 cc_object *cc_set_to_object(cc_set *set);
+
+/*! \brief Make a set from the cc_object
+ * \param obj the object */
 cc_set *cc_set_from_object(cc_object *obj);
 
 #endif

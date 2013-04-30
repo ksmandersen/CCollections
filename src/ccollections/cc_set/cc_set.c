@@ -110,6 +110,13 @@ void cc_set_add(cc_set *set, cc_object *obj) {
 	}
 }
 
+void cc_set_merge(cc_set *a_set, cc_set *b_set) {
+	cc_enumerator *e = cc_set_get_enumerator(b_set);
+  while (cc_enumerator_move_next(e)) {
+    cc_set_add(a_set, cc_enumerator_current(e));
+  }
+}
+
 void cc_set_expand_heap(cc_set *set) {    
     set->heap_size = 2 * set->heap_size;
     set->heap = GC_REALLOC(set->heap, sizeof(cc_object *) * set->heap_size);
@@ -248,6 +255,13 @@ void cc_set_register_comparator() {
 		first = false;
 		cc_object_register_comparator_for_type(cc_set_type, cc_set_compare);
 	}
+}
+
+void cc_set_merge(cc_set *a_set, cc_set *b_set) {
+	cc_enumerator *e = cc_set_get_enumerator(b_set);
+  while (cc_enumerator_move_next(e)) {
+    cc_set_add(a_set, cc_enumerator_current(e));
+  }
 }
 
 #endif
