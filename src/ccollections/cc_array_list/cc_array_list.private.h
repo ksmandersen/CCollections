@@ -3,7 +3,7 @@
 
 #include "cc_array_list.h"
 
-extern bool cc_array_list_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+extern bool cc_array_list_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
 extern void cc_array_list_register_comparator();
 extern void cc_array_list_expand_heap(cc_array_list *list);
 

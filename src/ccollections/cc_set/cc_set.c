@@ -11,7 +11,7 @@ const char * const cc_set_type = "cc_set_type";
 
 #if CURRENT_IMPLEMENTATION == HEAP_IMPLEMENTATION
 
-static bool cc_set_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+static bool cc_set_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
 static int cc_set_compare(cc_object *obj1, cc_object *obj2);
 static void cc_set_register_comparator();
 static void cc_set_expand_heap(cc_set *set);
@@ -31,7 +31,7 @@ cc_set *cc_set_new() {
 		return NULL;
 	}
 	
-	set->c.enumerator_move_next = cc_set_enumerator_move_next;
+	set->c.enumerable.move_next = cc_set_enumerator_move_next;
 	set->heap_size = 128;
 	set->count = 0;
 	set->heap = GC_MALLOC(sizeof(cc_object *) * set->heap_size);
@@ -39,8 +39,7 @@ cc_set *cc_set_new() {
 }
 
 cc_enumerator *cc_set_get_enumerator(cc_set *set) {
-	cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
-	e->collection = (cc_collection *)set;
+	cc_enumerator *e = cc_enumerator_new(&set->c.enumerable);
 	e->data = GC_MALLOC(sizeof(int));
 	*((int *)e->data) = -1;
 	return e;
@@ -51,7 +50,7 @@ int cc_set_count(cc_set *set)
 	return set->count;
 }
 
-bool cc_set_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
+bool cc_set_enumerator_move_next(cc_enumerable *c, cc_enumerator *e) {
 	int *counter = (int *)e->data;
 	*counter = *counter + 1;
 	cc_set *set = (cc_set *)c;

@@ -23,7 +23,7 @@ cc_linked_list *cc_linked_list_new() {
   if ((list = GC_MALLOC(sizeof(cc_linked_list))) == NULL)
     return NULL;
 
-  list->c.enumerator_move_next = cc_linked_list_enumerator_move_next;
+  list->c.enumerable.move_next = cc_linked_list_enumerator_move_next;
 
   list->head = NULL;
   list->tail = NULL;
@@ -272,14 +272,13 @@ bool cc_linked_list_contains(cc_linked_list *list, cc_object *obj) {
 }
 
 cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list) {
-  cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
-  e->collection = (cc_collection *)list;
+	cc_enumerator *e = cc_enumerator_new(&list->c.enumerable);
   e->data = NULL;
 
   return e;
 }
 
-bool cc_linked_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e)
+bool cc_linked_list_enumerator_move_next(cc_enumerable *collection, cc_enumerator *e)
 {
   cc_linked_list *list = (cc_linked_list *)collection;
   cc_linked_list_node *prev_node = (cc_linked_list_node *)e->data;

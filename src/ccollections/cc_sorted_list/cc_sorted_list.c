@@ -20,7 +20,7 @@ cc_sorted_list *cc_sorted_list_new() {
   if ((list = GC_MALLOC(sizeof(cc_sorted_list))) == NULL)
     return NULL;
 
-  list->c.enumerator_move_next = cc_linked_list_enumerator_move_next;
+  list->c.enumerable.move_next = cc_linked_list_enumerator_move_next;
 
   if ((list->data = cc_linked_list_new()) == NULL)
     return NULL;

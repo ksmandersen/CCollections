@@ -15,7 +15,7 @@ cc_array_list *cc_array_list_new() {
     return NULL;
   }
   
-  list->c.enumerator_move_next = cc_array_list_enumerator_move_next;
+  list->c.enumerable.move_next = cc_array_list_enumerator_move_next;
   
   list->count = 0;
   list->heap_size = 128;
@@ -154,15 +154,14 @@ bool cc_array_list_contains(cc_array_list *list, cc_object *obj) {
 }
 
 cc_enumerator *cc_array_list_get_enumerator(cc_array_list *list) {
-  cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
-  e->collection = (cc_collection *)list;
+	cc_enumerator *e = cc_enumerator_new(&list->c.enumerable);
   e->data = GC_MALLOC(sizeof(int));
   *((int *)e->data) = -1;
 
   return e;
 }
 
-bool cc_array_list_enumerator_move_next(cc_collection *collection, cc_enumerator *e) {
+bool cc_array_list_enumerator_move_next(cc_enumerable *collection, cc_enumerator *e) {
   int *counter = (int *)e->data;
   *counter = *counter + 1;
   cc_array_list *list = (cc_array_list *)collection;

@@ -8,7 +8,7 @@ typedef struct cc_collection_struct cc_collection;
 #include "cc_enumerator_private.h"
 
 struct cc_collection_struct {
-	bool (*enumerator_move_next)(struct cc_collection_struct *c, cc_enumerator *e);
+	cc_enumerable enumerable;
 };
 
 #endif

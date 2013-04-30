@@ -3,12 +3,12 @@
 
 const char * const cc_binary_tree_type = "cc_binary_tree_type";
 
-static bool cc_binary_tree_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+static bool cc_binary_tree_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
 static int cc_queue_compare(cc_object *obj1, cc_object *obj2);
 static void cc_binary_tree_register_comparator();
 
-static bool cc_binary_tree_depth_first_enumerator_move_next(cc_collection *c, cc_enumerator *e);
-static bool cc_binary_tree_breadth_first_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+static bool cc_binary_tree_depth_first_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
+static bool cc_binary_tree_breadth_first_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
 
 struct cc_binary_tree_struct {
 	cc_collection c;
@@ -32,7 +32,7 @@ cc_binary_tree *cc_binary_tree_new(cc_object *obj) {
 		return NULL;
 	}
 	
-	tree->c.enumerator_move_next = cc_binary_tree_enumerator_move_next;
+	tree->c.enumerable.move_next = cc_binary_tree_enumerator_move_next;
 	
 	tree->parent = NULL;
 	tree->obj = obj;
@@ -81,9 +81,7 @@ cc_binary_tree *cc_binary_tree_from_object(cc_object *object) {
 }
 
 cc_enumerator *cc_binary_tree_get_depth_first_enumerator(cc_binary_tree *tree) {
-	cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
-	e->collection = (cc_collection *)tree;
-	e->current = NULL;
+	cc_enumerator *e = cc_enumerator_new(&tree->c.enumerable);
 	e->data = GC_MALLOC(sizeof(cc_binary_tree_enumerator_data));
 	cc_binary_tree_enumerator_data *edata = (cc_binary_tree_enumerator_data *)e->data;
 	edata->type = depth_first;
@@ -91,9 +89,7 @@ cc_enumerator *cc_binary_tree_get_depth_first_enumerator(cc_binary_tree *tree) {
 }
 
 cc_enumerator *cc_binary_tree_get_breadth_first_enumerator(cc_binary_tree *tree) {
-	cc_enumerator *e = GC_MALLOC(sizeof(cc_enumerator));
-	e->collection = (cc_collection *)tree;
-	e->current = NULL;
+	cc_enumerator *e = cc_enumerator_new(&tree->c.enumerable);
 	e->data = GC_MALLOC(sizeof(cc_binary_tree_enumerator_data));
 	cc_binary_tree_enumerator_data *edata = (cc_binary_tree_enumerator_data *)e->data;
 	edata->type = breadth_first;
@@ -101,7 +97,7 @@ cc_enumerator *cc_binary_tree_get_breadth_first_enumerator(cc_binary_tree *tree)
 	return e;
 }
 
-static bool cc_binary_tree_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
+static bool cc_binary_tree_enumerator_move_next(cc_enumerable *c, cc_enumerator *e) {
 	cc_binary_tree_enumerator_data *edata = (cc_binary_tree_enumerator_data *)e->data;
 	if (edata->type == depth_first) {
 		return cc_binary_tree_depth_first_enumerator_move_next(c, e);
@@ -112,7 +108,7 @@ static bool cc_binary_tree_enumerator_move_next(cc_collection *c, cc_enumerator 
 	return false;
 }
 
-bool cc_binary_tree_depth_first_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
+bool cc_binary_tree_depth_first_enumerator_move_next(cc_enumerable *c, cc_enumerator *e) {
 	cc_binary_tree *selected_tree = NULL;
 	cc_binary_tree *tree = e->current? cc_binary_tree_from_object(e->current): NULL;
 	
@@ -160,7 +156,7 @@ bool cc_binary_tree_depth_first_enumerator_move_next(cc_collection *c, cc_enumer
 	}
 }
 
-bool cc_binary_tree_breadth_first_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
+bool cc_binary_tree_breadth_first_enumerator_move_next(cc_enumerable *c, cc_enumerator *e) {
 	cc_binary_tree_enumerator_data *edata = (cc_binary_tree_enumerator_data *)e->data;
 	cc_binary_tree *selected_tree = NULL;
 	cc_array_list *marked = edata->bfs_marked_trees;
