@@ -33,10 +33,11 @@
   #define CC_STACK_PRIVATE_H
 
 #include "cc_stack.h"
+#include "cc_enumerator_private.h"
 
 // Enumerator & comperator
 extern void cc_stack_register_comparator();
-extern bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e);
+extern bool cc_stack_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
 
 // Compare two stacks agains each other.
 // This function doesn't make a lot of sense since it's not

@@ -52,7 +52,7 @@ cc_stack *cc_stack_new() {
     return NULL;
   }
 
-  stack->c.enumerator_move_next = cc_stack_enumerator_move_next;
+  stack->c.enumerable.move_next = cc_stack_enumerator_move_next;
   stack->items = cc_linked_list_new();
 
   return stack;
@@ -92,7 +92,7 @@ bool cc_stack_equals(cc_stack *a_stack, cc_stack *b_stack) {
   return cc_linked_list_equals(a_stack->items, b_stack->items);
 }
 
-bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e) {
+bool cc_stack_enumerator_move_next(cc_enumerable *c, cc_enumerator *e) {
   return cc_linked_list_enumerator_move_next(c, e);
 }
 
