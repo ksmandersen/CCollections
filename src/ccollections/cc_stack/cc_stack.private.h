@@ -33,7 +33,7 @@
   #define CC_STACK_PRIVATE_H
 
 #include "cc_stack.h"
-#include "cc_enumerator_private.h"
+#include "../shared/cc_enumerator_private.h"
 
 // Enumerator & comperator
 extern void cc_stack_register_comparator();
