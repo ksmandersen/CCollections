@@ -1,3 +1,35 @@
+/*
+ * CC_LINKED_LIST.C
+ * 
+ * This file is part of the CCollections library.
+ *
+ * CCollections is licensed under the BSD-2-Clause License (FreeBSD).
+ * Copyright (c) 2012, Ulrik Damm and Kristian Andersen.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions 
+ * are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, 
+ * this list of conditions and the following disclaimer. Redistributions 
+ * in binary form must reproduce the above copyright notice, this list 
+ * of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. THIS SOFTWARE IS 
+ * PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
 #include "../shared/cc_private.h"
 #include "cc_linked_list.private.h"
 #include "../shared/cc_enumerator_private.h"
@@ -14,8 +46,6 @@ struct cc_linked_list_struct {
 };
 
 
-/*! \brief Create a linked list object
- * \return A new linked list object */
 cc_linked_list *cc_linked_list_new() {
   cc_linked_list_register_comparator();
 
@@ -32,8 +62,6 @@ cc_linked_list *cc_linked_list_new() {
   return list;
 }
 
-/*! \brief Get the length of the list
- * \return The length of the list */
 int cc_linked_list_length(cc_linked_list *list) {
   if (list == NULL)
     return 0;
@@ -51,7 +79,7 @@ cc_object *cc_linked_list_get(cc_linked_list *list, int index) {
 
   cc_linked_list_node *curr = list->head;
   int i;
-  for (i = 1; i < index; i++) {
+  for (i = 0; i < index; i++) {
     curr = curr->next;
   }
 
@@ -61,8 +89,6 @@ cc_object *cc_linked_list_get(cc_linked_list *list, int index) {
   return curr->object;
 }
 
-/*! \brief Get the first node in a linked list
- * \param list the linked list */
 cc_object * cc_linked_list_get_first(cc_linked_list *list) {
   if (list == NULL || list->head == NULL)
     return NULL;
@@ -70,8 +96,6 @@ cc_object * cc_linked_list_get_first(cc_linked_list *list) {
   return list->head->object;
 }
 
-/*! \brief Get the last node in a linked list
- * \param list the linked list */
 cc_object * cc_linked_list_get_last(cc_linked_list *list)
 {
   if (list == NULL || list->tail == NULL)
@@ -80,10 +104,6 @@ cc_object * cc_linked_list_get_last(cc_linked_list *list)
   return list->tail->object; 
 }
 
-/*! \brief Insert a value at a position in the linked list
- * \param list the linked list
- * \param index the index at which to insert the object
- * \param object the object to insert */
 void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
 {
   cc_linked_list_node *temp, *prev, *curr;
@@ -100,7 +120,7 @@ void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
       cc_linked_list_add_last(list, object);
     } else {
       int i;
-      for (i = 1; i < index; i++) {
+      for (i = 0; i < index; i++) {
         prev = curr;
         curr = curr->next;
       }
@@ -124,9 +144,6 @@ void cc_linked_list_add(cc_linked_list *list, int index, cc_object *object)
   }
 }
 
-/*! \brief Insert a value as the first node in a linked list
- * \param list the linked list
- * \param object the value to insert */
 void cc_linked_list_add_first(cc_linked_list *list, cc_object *object) {
   cc_linked_list_node *temp = cc_linked_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -145,9 +162,6 @@ void cc_linked_list_add_first(cc_linked_list *list, cc_object *object) {
   }
 }
 
-/*! \brief Insert a value as the last node in a linked list
- * \param list the linked list
- * \param object the value to insert */
 void cc_linked_list_add_last(cc_linked_list *list, cc_object *object) {
   cc_linked_list_node *temp = cc_linked_list_node_new(object);
   if (list == NULL || temp == NULL)
@@ -167,9 +181,6 @@ void cc_linked_list_add_last(cc_linked_list *list, cc_object *object) {
   list->length++;
 }
 
-/*! \brief Remove a value at a position in the linked list
- * \param list the linked list
- * \param index the index at which to remove the object */
 void cc_linked_list_remove(cc_linked_list *list, int index) {
   if (list == NULL || index > list->length - 1 || index < 0)
     return;
@@ -185,7 +196,7 @@ void cc_linked_list_remove(cc_linked_list *list, int index) {
     cc_linked_list_node *curr = list->head;
     cc_linked_list_node *prev = NULL;
     int i;
-    for (i = 1; i < index; i++) {
+    for (i = 0; i < index; i++) {
       prev = curr;
       curr = curr->next;
     }
@@ -198,8 +209,6 @@ void cc_linked_list_remove(cc_linked_list *list, int index) {
   }
 }
 
-/*! \brief Remove the value from the front node in a linked list
- * \param list the linked list */
 void cc_linked_list_remove_first(cc_linked_list *list) {
   if (list == NULL || list->head == NULL)
     return;
@@ -214,8 +223,6 @@ void cc_linked_list_remove_first(cc_linked_list *list) {
   }
 }
 
-/*! \brief Remove the value from the end node in a linked list
- * \param list the linked list */
 void cc_linked_list_remove_last(cc_linked_list *list) {
   if (list == NULL || list->tail == NULL)
     return;
@@ -229,8 +236,6 @@ void cc_linked_list_remove_last(cc_linked_list *list) {
   }
 }
 
-/*! \brief Removes all objects from a linked list
- * \param list the linked list to be emptied */
 void cc_linked_list_clear(cc_linked_list *list) {
   if (list == NULL)
     return;
@@ -240,11 +245,6 @@ void cc_linked_list_clear(cc_linked_list *list) {
   list->length = 0;
 }
 
-/*! \brief Merges two lists together by adding all objects
- * from the first list to the second list.
- * \param a_list the first list
- * \param b_list the second list
- * \returns The lists merged together */
 cc_linked_list *cc_linked_list_merge(cc_linked_list *a_list, cc_linked_list *b_list) {
   cc_linked_list_node *curr = b_list->head;
   while (curr != NULL) {
@@ -269,6 +269,10 @@ bool cc_linked_list_contains(cc_linked_list *list, cc_object *obj) {
   }
   
   return false;
+}
+
+bool cc_linked_list_equals(cc_linked_list *a_list, cc_linked_list *b_list) {
+  return cc_linked_list_compare(cc_linked_list_to_object(a_list), cc_linked_list_to_object(b_list)) == 0;
 }
 
 cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list) {
@@ -320,9 +324,9 @@ int cc_linked_list_compare(cc_object *obj1, cc_object *obj2) {
     if (!cc_object_is_equal(cc_enumerator_current(e1), cc_enumerator_current(e2))) return -1;
   }
 
-  if (cc_enumerator_move_next(e2)) return 0;
+  if (cc_enumerator_move_next(e2)) return 1;
 
-  return true;
+  return 0;
 }
 
 void cc_linked_list_register_comparator() {

@@ -1,5 +1,5 @@
 /*
- * CC_ENUMERATOR.H
+ * CC_ARRAY_LIST.PRIVATE.H
  * 
  * This file is part of the CCollections library.
  *
@@ -29,21 +29,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CC_ENUMERATOR_H
-#define CC_ENUMERATOR_H
+#ifndef CC_STACK_PRIVATE_H
+  #define CC_STACK_PRIVATE_H
 
-#include "cc_private.h"
-#include "cc_object.h"
+#include "cc_stack.h"
 
-struct cc_enumerator_struct;
-typedef struct cc_enumerator_struct cc_enumerator;
+// Enumerator & comperator
+extern void cc_stack_register_comparator();
+extern bool cc_stack_enumerator_move_next(cc_collection *c, cc_enumerator *e);
 
-typedef bool (*cc_enumerator_filter_func)(cc_object *obj);
-
-cc_object *cc_enumerator_current(cc_enumerator *e);
-bool cc_enumerator_move_next(cc_enumerator *e);
-
-cc_enumerator *cc_enumerator_filter(cc_enumerator *e, cc_enumerator_filter_func filter);
-cc_enumerator *cc_enumerator_order(cc_enumerator *e);
+// Compare two stacks agains each other.
+// This function doesn't make a lot of sense since it's not
+// good design to say that a stack is smaller or bigger than
+// another list apart from size.
+// The function is used for determining whether two stacks are
+// equal (i.e. contains all ofthe same elements).
+int cc_stack_compare(cc_object *obj1, cc_object *obj2);
 
 #endif
+
+

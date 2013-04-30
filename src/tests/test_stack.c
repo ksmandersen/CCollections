@@ -5,244 +5,221 @@
 #define GC_DEBUG
 #include "gc/gc.h"
 
-cc_stack *stack;
-
 void setUp(void)
 {
   GC_INIT();
   cc_init();
-  stack = cc_stack_new();
 }
 
-void tearDown(void)
-{
-  stack = NULL;
-}
+void tearDown(void) {}
 
 void populate_stack(cc_stack *s, int count)
 {
   int i;
   for(i = 1; i <= count; i++) {
-    cc_object *v = cc_object_with_int(i * 100);
+    cc_object *v = cc_object_with_int(i);
     cc_stack_push(s, v);
   }
 }
 
 void test_can_create_stack(void)
 {
-  TEST_ASSERT_NOT_EQUAL(NULL, stack);
+  cc_stack *a_stack = cc_stack_new();
+
+  TEST_ASSERT_NOT_EQUAL(NULL, a_stack);
 }
 
 void test_can_add_objects_to_stack(void) {
-  populate_stack(stack, 3);
+  cc_stack *a_stack = cc_stack_new();
 
-  TEST_ASSERT_EQUAL(cc_stack_size(stack), 3);
+  populate_stack(a_stack, 3);
 
-  cc_object *top = cc_stack_peek(stack);
-  cc_object *val = cc_object_with_int(300);
-
-  TEST_ASSERT_EQUAL(cc_object_is_equal(top, val), true);
+  TEST_ASSERT_EQUAL(cc_stack_size(a_stack), 3);
 }
 
-// void test_can_add_objects_to_list(void)
-// {
-//   cc_object *val1 = cc_object_with_int(100);
+void test_can_peek_at_objects_on_stack(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   cc_array_list_add(list, 0, val1);
+  populate_stack(a_stack, 3);
 
-//   cc_object *val2 = cc_object_with_int(200);
+  cc_object *top = cc_stack_peek(a_stack);
+  cc_object *val = cc_object_with_int(3);
 
-//   cc_array_list_add_first(list, val2);
+  TEST_ASSERT_EQUAL(true, cc_object_is_equal(top, val));
+}
 
-//   cc_object *val3 = cc_object_with_int(300);
+void test_can_pop_objects_from_stack(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   cc_array_list_add_last(list, val3);
+  int count = 15;;
+  populate_stack(a_stack, count);
 
-//   TEST_ASSERT_EQUAL(cc_array_list_length(list), 3);
+  int i;
+  for (int i = count; i <= 1; i--) {
+    cc_object *object = cc_stack_pop(a_stack);
+    TEST_ASSERT_EQUAL(true, cc_object_is_equal(object, cc_object_with_int(i)));
+    TEST_ASSERT_EQUAL(i-1, cc_stack_size(a_stack));
+  }
+}
 
-//   cc_object *ret1 = cc_array_list_get_first(list);
-//   cc_object *ret2 = cc_array_list_get(list, 1);
-//   cc_object *ret3 = cc_array_list_get_last(list);
+void test_can_clear_stack(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   TEST_ASSERT_EQUAL(cc_object_is_equal(ret1, val2), true);
-//   TEST_ASSERT_EQUAL(cc_object_is_equal(ret2, val1), true);
-//   TEST_ASSERT_EQUAL(cc_object_is_equal(ret3, val3), true);
-// }
+  populate_stack(a_stack, 20);
+  TEST_ASSERT_EQUAL(20, cc_stack_size(a_stack));
 
-// void test_can_remove_objects_from_list(void)
-// {
-//   cc_object *val1 = cc_object_with_int(100);
-//   cc_object *val2 = cc_object_with_int(200);
-//   cc_object *val3 = cc_object_with_int(300);
-  
-//   cc_array_list_add_last(list, val1);
-//   cc_array_list_add_last(list, val2);
-//   cc_array_list_add_last(list, val3);
+  cc_stack_clear(a_stack);
+  TEST_ASSERT_EQUAL(0, cc_stack_size(a_stack));
+}
 
-//   cc_array_list_remove_first(list);
+void test_can_enumerate_stack(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   TEST_ASSERT_EQUAL(2, cc_array_list_length(list));
+  populate_stack(a_stack, 20);
 
-//   cc_object *ret1 = cc_array_list_get_first(list);
-//   cc_object *ret2 = cc_array_list_get_last(list);
+  int count = 0;
+  cc_enumerator *e = cc_stack_get_enumerator(a_stack);
+  while(cc_enumerator_move_next(e)) {
+    TEST_ASSERT_NOT_EQUAL(NULL, cc_enumerator_current(e));
+    count++;
+  }
 
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret1, val2));
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret2, val3));
+  TEST_ASSERT_EQUAL(20, count);
+}
 
-//   cc_array_list_remove_last(list);
+void test_can_push_and_pop_many_objects(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   TEST_ASSERT_EQUAL(1, cc_array_list_length(list));
+  populate_stack(a_stack, 10000);
 
-//   cc_object *ret3 = cc_array_list_get_first(list);
+  for (int i = 0; i < 2500; ++i) {
+    cc_stack_pop(a_stack);
+  }
 
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret1, val2));
-// }
+  populate_stack(a_stack, 2500);
 
-// void test_can_merge_lists_together(void)
-// {
-//   cc_object *val1 = cc_object_with_int(100);
-//   cc_object *val2 = cc_object_with_int(200);
-//   cc_object *val3 = cc_object_with_int(300);
-  
-//   cc_array_list_add_last(list, val1);
-//   cc_array_list_add_last(list, val2);
-//   cc_array_list_add_last(list, val3);
+  TEST_ASSERT_EQUAL(10000, cc_stack_size(a_stack));
 
-//   cc_array_list *list2 = cc_array_list_new();
+  cc_enumerator *e = cc_stack_get_enumerator(a_stack);
+  while(cc_enumerator_move_next(e)) {
+    TEST_ASSERT_NOT_EQUAL(NULL, cc_enumerator_current(e));
+  }
+}
 
-//   cc_object *val4 = cc_object_with_int(400);
-//   cc_object *val5 = cc_object_with_int(500);
-//   cc_object *val6 = cc_object_with_int(600);
-  
-//   cc_array_list_add_last(list2, val4);
-//   cc_array_list_add_last(list2, val5);
-//   cc_array_list_add_last(list2, val6);
+void test_peek_on_empty_stack_returns_null(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   cc_array_list *list3 = cc_array_list_merge(list, list2);
+  TEST_ASSERT_EQUAL(NULL, cc_stack_peek(a_stack));
+}
 
-//   TEST_ASSERT_EQUAL(6, cc_array_list_length(list3));
+void test_pop_on_empty_stack_returns_null(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   cc_object *ret1 = cc_array_list_get(list3, 0);
-//   cc_object *ret2 = cc_array_list_get(list3, 1);
-//   cc_object *ret3 = cc_array_list_get(list3, 2);
-//   cc_object *ret4 = cc_array_list_get(list3, 3);
-//   cc_object *ret5 = cc_array_list_get(list3, 4);
-//   cc_object *ret6 = cc_array_list_get(list3, 5);
+  TEST_ASSERT_EQUAL(NULL, cc_stack_pop(a_stack));
+}
 
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret1, val1));
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret2, val2));
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret3, val3));
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret4, val4));
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret5, val5));
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret6, val6));
-// }
+void test_move_next_on_empty_stack_returns_null() {
+  cc_stack *a_stack = cc_stack_new();
+  cc_enumerator *e = cc_stack_get_enumerator(a_stack);
+  TEST_ASSERT_EQUAL(NULL, cc_enumerator_move_next(e));
+}
 
-// void test_can_merge_empty_list_with_non_empty_list(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
-//   cc_array_list *b_list = cc_array_list_new();
+void test_size_on_empty_stack_is_zero(void) {
+  cc_stack *a_stack = cc_stack_new();
 
-//   populateList(b_list);
-//   cc_array_list_merge(a_list, b_list);
+  TEST_ASSERT_EQUAL(0, cc_stack_size(a_stack));
 
-//   TEST_ASSERT_EQUAL(true, cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list)));
-// }
+  populate_stack(a_stack, 10);
+  cc_stack_clear(a_stack);
 
-// void test_merge_non_empty_list_with_empty_list(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
-//   cc_array_list *b_list = cc_array_list_new();
-//   cc_array_list *c_list = cc_array_list_new();
+  TEST_ASSERT_EQUAL(0, cc_stack_size(a_stack));
+}
 
-//   populateList(a_list);
-//   populateList(c_list);
-//   cc_array_list_merge(a_list, b_list);
+void test_can_create_cc_object_from_stack(void) {
+  cc_stack *a_stack = cc_stack_new();
+  populate_stack(a_stack, 5);
 
-//   TEST_ASSERT_EQUAL(true, cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(c_list)));
-// }
+  cc_object *object = cc_stack_to_object(a_stack);
+  TEST_ASSERT_NOT_EQUAL(NULL, object);
+}
 
-// void test_can_clear_list(void)
-// {
-//   cc_object *val1 = cc_object_with_int(100);
-//   cc_object *val2 = cc_object_with_int(200);
-//   cc_object *val3 = cc_object_with_int(300);
-  
-//   cc_array_list_add_last(list, val1);
-//   cc_array_list_add_last(list, val2);
-//   cc_array_list_add_last(list, val3);
+void test_can_create_stack_from_cc_object(void) {
+  cc_stack *a_stack = cc_stack_new();
+  int count = 5;
+  populate_stack(a_stack, count);
 
-//   cc_array_list_clear(list);
+  cc_object *object = cc_stack_to_object(a_stack);
 
-//   TEST_ASSERT_EQUAL(0, cc_array_list_length(list));
-// }
+  cc_stack *b_stack = cc_stack_from_object(object);
 
-// void test_can_list_compare_equal(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
-//   cc_array_list *b_list = cc_array_list_new();
-//   populateList(a_list);
-//   populateList(b_list);
+  TEST_ASSERT_NOT_EQUAL(NULL, b_stack);
+  TEST_ASSERT_EQUAL(count, cc_stack_size(b_stack));
 
-//   bool compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
+  int i;
+  for (int i = count; i <= 1; i--) {
+    cc_object *object = cc_stack_pop(b_stack);
+    TEST_ASSERT_EQUAL(true, cc_object_is_equal(object, cc_object_with_int(i)));
+    TEST_ASSERT_EQUAL(i-1, cc_stack_size(b_stack));
+  }
+}
 
-//   TEST_ASSERT_EQUAL(true, compare);
-// }
+void test_can_determine_if_stacks_are_equal(void) {
+  cc_stack *a_stack = cc_stack_new();
+  cc_stack *b_stack = cc_stack_new();
 
-// void test_can_list_compare_non_equal(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
-//   cc_array_list *b_list = cc_array_list_new();
-//   populateList(a_list);
-//   populateList(b_list);
+  populate_stack(a_stack, 100);
+  populate_stack(b_stack, 100);
 
-//   cc_object *obj = cc_object_with_int(5000);
-//   cc_array_list_add_last(a_list, obj);
+  TEST_ASSERT_EQUAL(true, cc_stack_equals(a_stack, b_stack));
+}
 
-//   bool compare = cc_array_list_compare(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
+void test_can_determine_if_stacks_are_unequal(void) {
+  cc_stack *a_stack = cc_stack_new();
+  cc_stack *b_stack = cc_stack_new();
 
-//   TEST_ASSERT_EQUAL(false, compare);
-// }
+  populate_stack(a_stack, 99);
+  populate_stack(b_stack, 100);
 
-// void test_can_enumerate_list(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
-//   populateList(a_list);
+  TEST_ASSERT_EQUAL(false, cc_stack_equals(a_stack, b_stack));
 
-//   int i = 1;
-//   cc_enumerator *e = cc_array_list_get_enumerator(a_list);
-//   while (cc_enumerator_move_next(e)) {
-//     TEST_ASSERT_EQUAL(true, cc_object_is_equal(cc_enumerator_current(e), cc_object_with_int(i * 100)));
-//     i++;
-//   }
-// }
+  cc_stack *c_stack = cc_stack_new();
+  cc_stack *d_stack = cc_stack_new();
 
-// void test_can_add_and_get_identical_objects(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
-//   populateList(a_list);
+  populate_stack(c_stack, 100);
+  populate_stack(d_stack, 99);
 
-//   cc_object *obj = cc_object_with_int(100);
-//   cc_array_list_add_last(list, obj);
+  TEST_ASSERT_EQUAL(false, cc_stack_equals(c_stack, d_stack));
 
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(obj, cc_array_list_get_last(list)));
-//   TEST_ASSERT_EQUAL(true, cc_object_is_equal(obj, cc_array_list_get_first(list)));
-// }
+  cc_stack *e_stack = cc_stack_new();
+  cc_stack *f_stack = cc_stack_new();
 
-// void test_can_find_contained_objects_in_list(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
-//   populateList(a_list);  
+  populate_stack(e_stack, 99);
 
-//   cc_object *obj = cc_object_with_int(100);
+  TEST_ASSERT_EQUAL(false, cc_stack_equals(e_stack, f_stack));
+}
 
-//   TEST_ASSERT_EQUAL(true, cc_array_list_contains(a_list, obj));
-// }
+void test_can_determine_if_empty_stacks_are_equal(void) {
+  cc_stack *a_stack = cc_stack_new();
+  cc_stack *b_stack = cc_stack_new();
 
-// void test_cannot_find_object_in_list_without_object(void)
-// {
-//   cc_array_list *a_list = cc_array_list_new();
+  TEST_ASSERT_EQUAL(true, cc_stack_equals(a_stack, b_stack));
+}
 
-//   cc_object *obj = cc_object_with_int(100);
+void test_can_determine_stack_contains_object(void) {
+  cc_stack *a_stack = cc_stack_new();
+  populate_stack(a_stack, 200);
 
-//   TEST_ASSERT_EQUAL(false, cc_array_list_contains(a_list, obj));
-// }
+  TEST_ASSERT_EQUAL(true, cc_stack_contains(a_stack, cc_object_with_int(98)));
+}
+
+void test_can_determine_stack_does_not_contain_object(void) {
+  cc_stack *a_stack = cc_stack_new();
+  populate_stack(a_stack, 200);
+
+  TEST_ASSERT_NOT_EQUAL(true, cc_stack_contains(a_stack, cc_object_with_int(201)));
+}
+
+void test_can_determine_empty_stack_does_not_contain_object(void) {
+  cc_stack *a_stack = cc_stack_new();
+  TEST_ASSERT_NOT_EQUAL(true, cc_stack_contains(a_stack, cc_object_with_int(0)));
+}

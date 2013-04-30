@@ -1,12 +1,40 @@
+/*
+ * CC_ARRAY_LIST.C
+ * 
+ * This file is part of the CCollections library.
+ *
+ * CCollections is licensed under the BSD-2-Clause License (FreeBSD).
+ * Copyright (c) 2012, Ulrik Damm and Kristian Andersen.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions 
+ * are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, 
+ * this list of conditions and the following disclaimer. Redistributions 
+ * in binary form must reproduce the above copyright notice, this list 
+ * of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. THIS SOFTWARE IS 
+ * PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 #include "../shared/cc_private.h"
 #include "cc_array_list.private.h"
 #include "../shared/cc_enumerator_private.h"
 
 const char *const cc_array_list_type = "cc_array_list_type";
 
-
-/*! \brief Create a linked list object
- * \return A new linked list object */
 cc_array_list *cc_array_list_new() {
   cc_array_list_register_comparator();
   
@@ -26,11 +54,9 @@ cc_array_list *cc_array_list_new() {
 
 void cc_array_list_expand_heap(cc_array_list *list) {
   list->heap_size *= 2;
-  list->heap = GC_REALLOC(list->heap, list->heap_size);
+  list->heap = GC_REALLOC(list->heap, sizeof(cc_object *) * list->heap_size);
 }
 
-/*! \brief Get the length of the list
- * \return The length of the list */
 int cc_array_list_length(cc_array_list *list) {
   if (list == NULL) {
     return 0;
@@ -39,35 +65,24 @@ int cc_array_list_length(cc_array_list *list) {
   return list->count;
 }
 
-/*! \brief Get a node in a linked list
- * \param list the linked list
- * \param index the index of the node to get */
 cc_object *cc_array_list_get(cc_array_list *list, int index) {
   if (list == NULL || index >= list->count) return NULL;
   
   return list->heap[index];
 }
 
-/*! \brief Get the first node in a linked list
- * \param list the linked list */
 cc_object * cc_array_list_get_first(cc_array_list *list) {
   if (list == NULL || list->count == 0) return NULL;
 
   return list->heap[0];
 }
 
-/*! \brief Get the last node in a linked list
- * \param list the linked list */
 cc_object * cc_array_list_get_last(cc_array_list *list) {
   if (list == NULL || list->count == 0) return NULL;
 
   return list->heap[list->count - 1];
 }
 
-/*! \brief Insert a value at a position in the linked list
- * \param list the linked list
- * \param index the index at which to insert the object
- * \param object the object to insert */
 void cc_array_list_add(cc_array_list *list, int index, cc_object *object) {
   if (list == NULL || object == NULL || index > list->count) return;
   if (list->heap_size == list->count) cc_array_list_expand_heap(list);
@@ -81,23 +96,14 @@ void cc_array_list_add(cc_array_list *list, int index, cc_object *object) {
   list->count++;
 }
 
-/*! \brief Insert a value as the first node in a linked list
- * \param list the linked list
- * \param object the value to insert */
 void cc_array_list_add_first(cc_array_list *list, cc_object *object) {
   cc_array_list_add(list, 0, object);
 }
 
-/*! \brief Insert a value as the last node in a linked list
- * \param list the linked list
- * \param object the value to insert */
 void cc_array_list_add_last(cc_array_list *list, cc_object *object) {
   cc_array_list_add(list, list->count, object);
 }
 
-/*! \brief Remove a value at a position in the linked list
- * \param list the linked list
- * \param index the index at which to remove the object */
 void cc_array_list_remove(cc_array_list *list, int index) {
   if (list == NULL || index >= list->count) return;
   
@@ -109,30 +115,19 @@ void cc_array_list_remove(cc_array_list *list, int index) {
   list->count--;
 }
 
-/*! \brief Remove the value from the front node in a linked list
- * \param list the linked list */
 void cc_array_list_remove_first(cc_array_list *list) {
   cc_array_list_remove(list, 0);
 }
 
-/*! \brief Remove the value from the end node in a linked list
- * \param list the linked list */
 void cc_array_list_remove_last(cc_array_list *list) {
   cc_array_list_remove(list, list->count - 1);
 }
 
-/*! \brief Removes all objects from a linked list
- * \param list the linked list to be emptied */
 void cc_array_list_clear(cc_array_list *list) {
   memset(list->heap, 0, list->heap_size * sizeof(cc_object *));
   list->count = 0;
 }
 
-/*! \brief Merges two lists together by adding all objects
- * from the first list to the second list.
- * \param a_list the first list
- * \param b_list the second list
- * \returns The lists merged together */
 cc_array_list *cc_array_list_merge(cc_array_list *a_list, cc_array_list *b_list) {
   cc_enumerator *e = cc_array_list_get_enumerator(b_list);
   while (cc_enumerator_move_next(e)) {
