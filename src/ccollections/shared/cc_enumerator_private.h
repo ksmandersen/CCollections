@@ -50,5 +50,6 @@ struct cc_enumerator_struct {
 };
 
 cc_enumerator *cc_enumerator_new(cc_enumerable *e);
+cc_enumerable *cc_enumerable_new(cc_enumerator_move_next_func move_next);
 
 #endif

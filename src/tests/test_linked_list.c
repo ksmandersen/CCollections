@@ -456,3 +456,41 @@ void test_can_create_list_from_cc_object(void) {
 
   test_elements_in_list(b_list);
 }
+
+void test_can_create_list_with_ints_from_args(void) {
+	int int1 = 1337;
+	int int2 = -42;
+	int int3 = 0;
+	
+	cc_linked_list *list = cc_linked_list_new_with_values(cc_object_type_int, int1, int2, int3, CC_END);
+	TEST_ASSERT_NOT_EQUAL(list, NULL);
+	TEST_ASSERT_EQUAL(cc_object_int_value(cc_linked_list_get(list, 0)), int1);
+	TEST_ASSERT_EQUAL(cc_object_int_value(cc_linked_list_get(list, 1)), int2);
+	TEST_ASSERT_EQUAL(cc_object_int_value(cc_linked_list_get(list, 2)), int3);
+}
+
+void test_can_create_list_with_floats_from_args(void) {
+	float float1 = 3.141592654;
+	float float2 = -2.71828;
+	float float3 = 0.0;
+	
+	cc_linked_list *list = cc_linked_list_new_with_values(cc_object_type_float, float1, float2, float3, CC_END);
+	TEST_ASSERT_NOT_EQUAL(list, NULL);
+	TEST_ASSERT_EQUAL(cc_object_float_value(cc_linked_list_get(list, 0)), float1);
+	TEST_ASSERT_EQUAL(cc_object_float_value(cc_linked_list_get(list, 1)), float2);
+	TEST_ASSERT_EQUAL(cc_object_float_value(cc_linked_list_get(list, 2)), float3);
+}
+
+void test_can_create_list_with_strings_from_args(void) {
+	const char *str1 = "Blast reality";
+	const char *str2 = "Shatter into pieces";
+	const char *str3 = "Banishment this world";
+	const char *str4 = "";
+	
+	cc_linked_list *list = cc_linked_list_new_with_values(cc_object_type_string, str1, str2, str3, str4, CC_END);
+	TEST_ASSERT_NOT_EQUAL(list, NULL);
+	TEST_ASSERT_EQUAL(strcmp(cc_object_string_value(cc_linked_list_get(list, 0)), str1), 0);
+	TEST_ASSERT_EQUAL(strcmp(cc_object_string_value(cc_linked_list_get(list, 1)), str2), 0);
+	TEST_ASSERT_EQUAL(strcmp(cc_object_string_value(cc_linked_list_get(list, 2)), str3), 0);
+	TEST_ASSERT_EQUAL(strcmp(cc_object_string_value(cc_linked_list_get(list, 3)), str4), 0);
+}

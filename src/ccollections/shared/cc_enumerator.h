@@ -32,18 +32,23 @@
 #ifndef CC_ENUMERATOR_H
 #define CC_ENUMERATOR_H
 
-#include "cc_private.h"
-#include "cc_object.h"
-
 struct cc_enumerator_struct;
 typedef struct cc_enumerator_struct cc_enumerator;
 
+#include "cc_private.h"
+#include "cc_object.h"
+#include "../cc_linked_list/cc_linked_list.h"
+
 typedef bool (*cc_enumerator_filter_func)(cc_object *obj);
+typedef cc_object *(*cc_enumerator_map_func)(cc_object *obj);
 
 cc_object *cc_enumerator_current(cc_enumerator *e);
 bool cc_enumerator_move_next(cc_enumerator *e);
 
 cc_enumerator *cc_enumerator_filter(cc_enumerator *e, cc_enumerator_filter_func filter);
+cc_enumerator *cc_enumerator_map(cc_enumerator *e, cc_enumerator_map_func map);
 cc_enumerator *cc_enumerator_order(cc_enumerator *e);
+
+cc_linked_list *cc_enumerator_to_list(cc_enumerator *e);
 
 #endif

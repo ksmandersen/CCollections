@@ -45,6 +45,10 @@ extern void test_cannot_find_object_in_empty_list(void);
 extern void test_can_create_cc_object_from_list(void);
 extern void test_can_create_list_from_cc_object(void);
 
+extern void test_can_create_list_with_ints_from_args(void);
+extern void test_can_create_list_with_floats_from_args(void);
+extern void test_can_create_list_with_strings_from_args(void);
+
 
 static void runTest(UnityTestFunction test)
 {
@@ -110,6 +114,10 @@ int main(void)
 
   RUN_TEST(test_can_create_cc_object_from_list, 1);
   RUN_TEST(test_can_create_list_from_cc_object, 1);
+  
+  RUN_TEST(test_can_create_list_with_ints_from_args, 1);
+  RUN_TEST(test_can_create_list_with_floats_from_args, 1);
+  RUN_TEST(test_can_create_list_with_strings_from_args, 1);
 
   UnityEnd();
   return 0;

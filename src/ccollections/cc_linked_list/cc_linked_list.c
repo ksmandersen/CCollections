@@ -33,6 +33,8 @@
 #include "../shared/cc_private.h"
 #include "cc_linked_list.private.h"
 #include "../shared/cc_enumerator_private.h"
+#include <stdarg.h>
+#include <math.h>
 
 const char * const cc_linked_list_type = "cc_linked_list_type";
 
@@ -60,6 +62,56 @@ cc_linked_list *cc_linked_list_new() {
   list->length = 0;
 
   return list;
+}
+
+cc_linked_list *cc_linked_list_new_with_values(const char *type, ...) {
+	cc_linked_list *list = cc_linked_list_new();
+	
+	int t = 0;
+	if (strcmp(type, cc_object_type_int) == 0) t = 1;
+	else if (strcmp(type, cc_object_type_float) == 0) t = 2;
+	else if (strcmp(type, cc_object_type_string) == 0) t = 3;
+	
+	va_list l;
+	va_start(l, type);
+	while (true) {
+		cc_object *obj = NULL;
+		
+		switch (t) {
+			case 0: {
+				void *arg = va_arg(l, void *);
+				if ((long)arg == CC_END) goto stop;
+				obj = cc_object_with_pointer(arg, type);
+				break;
+			}
+			case 1: {
+				long arg = va_arg(l, long);
+				if (arg == CC_END) goto stop;
+				obj = cc_object_with_int((int)arg);
+				break;
+			}
+			case 2: {
+				float arg = va_arg(l, double);
+				if (arg == INFINITY) goto stop;
+				obj = cc_object_with_float(arg);
+				break;
+			}
+			case 3: {
+				char *arg = va_arg(l, char *);
+				if ((long)arg == CC_END) goto stop;
+				obj = cc_object_with_string(arg);
+				break;
+			}
+			default: break;
+		}
+		
+		cc_linked_list_add_last(list, obj);
+	}
+	
+	stop: {
+		va_end(l);
+		return list;
+	}
 }
 
 int cc_linked_list_length(cc_linked_list *list) {

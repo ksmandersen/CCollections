@@ -46,6 +46,8 @@ typedef struct cc_linked_list_struct cc_linked_list;
  * \return A new linked list object */
 cc_linked_list *cc_linked_list_new();
 
+cc_linked_list *cc_linked_list_new_with_values(const char *type, ...);
+
 /*! \brief Get the length of the list
  * \return The length of the list */
 int cc_linked_list_length(cc_linked_list *list);
