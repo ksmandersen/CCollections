@@ -54,7 +54,7 @@ cc_array_list *cc_array_list_new() {
 
 void cc_array_list_expand_heap(cc_array_list *list) {
   list->heap_size *= 2;
-  list->heap = GC_REALLOC(list->heap, list->heap_size);
+  list->heap = GC_REALLOC(list->heap, sizeof(cc_object *) * list->heap_size);
 }
 
 int cc_array_list_length(cc_array_list *list) {
