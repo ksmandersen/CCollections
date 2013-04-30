@@ -1,5 +1,5 @@
 /*
- * CC.C
+ * CC_SET.PRIVATE.H
  * 
  * This file is part of the CCollections library.
  *
@@ -29,10 +29,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "cc_private.h"
-#include "cc_object_private.h"
+#ifndef CC_SET_PRIVATE_H
+#define CC_SET_PRIVATE_H
 
-void cc_init() {
-  cc_set_default_error_handler();
-	cc_object_register_default_comparators();
-}
+#include "cc_set.h"
+
+// Returns the index of a object in the set
+int cc_set_find(cc_set *set, cc_object *obj);
+
+// Compare sets agains each other.
+extern int cc_set_compare(cc_object *obj1, cc_object *obj2);
+
+// Enumerator & comperator
+extern bool cc_set_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
+extern void cc_set_register_comparator();
+
+#endif

@@ -135,7 +135,12 @@ int cc_object_compare(cc_object *obj1, cc_object *obj2) {
 	}
 	
 	int type_diff = strcmp(obj1->type, obj2->type);
-	if (type_diff != 0) return type_diff;
+	if (type_diff != 0) {
+		char msg[500];
+		sprintf(msg, "Trying to compare object of type %s with object of type %s", obj1->type, obj2->type);
+		cc_error(100, msg);
+		return type_diff;
+	}
 	
 	const char *type = obj1->type;
 	

@@ -1,5 +1,5 @@
 /*
- * CC.C
+ * CC_ERROR.H
  * 
  * This file is part of the CCollections library.
  *
@@ -29,10 +29,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "cc_private.h"
-#include "cc_object_private.h"
+#ifndef CC_ERROR_H
+#define CC_ERROR_H
 
-void cc_init() {
-  cc_set_default_error_handler();
-	cc_object_register_default_comparators();
-}
+#include "cc_private.h"
+
+typedef void (*cc_error_handler)(int error_code, char *error_message);
+
+void cc_error(int error_code, char *error_message);
+
+void cc_set_default_error_handler();
+void cc_default_error_handler(int error_code, char *error_message);
+void cc_set_error_handler(cc_error_handler handler);
+
+#endif
