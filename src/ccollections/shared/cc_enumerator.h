@@ -33,6 +33,7 @@
 #define CC_ENUMERATOR_H
 
 struct cc_enumerator_struct;
+/*! \brief cc_object enumerator type */
 typedef struct cc_enumerator_struct cc_enumerator;
 
 #include "cc_private.h"

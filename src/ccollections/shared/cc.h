@@ -29,6 +29,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+ /*! \file cc.h
+
+    This file contains the dependencies for the entire CCollections
+    library. Include this header file in your project and call the
+    cc_init function to use the library.
+*/
+
+
 #ifndef CC_H
 #define CC_H
 
@@ -53,6 +61,10 @@
 #include "../cc_stack/cc_stack.private.h"
 #include "../cc_queue/cc_queue.h"
 
+/*! \brief Intializes internal state for the CCollections library
+    This function MUST be called before attempting to use any of
+    the functionality in the library.
+ */
 void cc_init();
 
 #endif
