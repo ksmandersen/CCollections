@@ -28,16 +28,16 @@ cc_object *int_to_string_map(cc_object *obj) {
 	return cc_object_with_string(buffer);
 }
 
-// void setUp(void)
-// {
-//   GC_INIT();
-//   cc_init();
-// }
-
-// void tearDown(void)
-// {
+cc_object *string_concat(cc_object *agg, cc_object *obj) {
+	const char *str1 = cc_object_string_value(agg);
+	const char *str2 = cc_object_string_value(obj);
 	
-// }
+	size_t size = strlen(str1) + strlen(str2) + 2;
+	char buffer[size];
+	snprintf(buffer, size, "%s %s", str1, str2);
+	
+	return cc_object_with_string(buffer);
+}
 
 void test_can_create_enumerator(void)
 {
@@ -165,4 +165,11 @@ void test_enumerator_can_stack_enumerators(void)
 	
 	cc_linked_list *expected = cc_linked_list_new_with_values(cc_object_type_string, "1", "3", "5", "7", "9", CC_END);
 	TEST_ASSERT_EQUAL(cc_linked_list_equals(expected, result), true);
+}
+
+void test_enumerator_can_fold(void)
+{
+	cc_linked_list *list = cc_linked_list_new_with_values(cc_object_type_string, "good", "artists", "copy,", "great", "artists", "steal");
+	cc_object *result = cc_enumerator_fold(cc_linked_list_get_enumerator(list), cc_object_with_string(""), string_concat);
+	TEST_ASSERT_EQUAL(strcmp("good artists copy, great artists steal", cc_object_string_value(result)), 0);
 }

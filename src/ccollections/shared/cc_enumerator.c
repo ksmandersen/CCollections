@@ -95,6 +95,14 @@ cc_enumerator *cc_enumerator_map(cc_enumerator *e, cc_enumerator_map_func map) {
 	return en;
 }
 
+cc_object *cc_enumerator_fold(cc_enumerator *e, cc_object *seed, cc_enumerator_fold_func fold) {
+	while (cc_enumerator_move_next(e)) {
+		seed = fold(seed, cc_enumerator_current(e));
+	}
+	
+	return seed;
+}
+
 cc_linked_list *cc_enumerator_to_list(cc_enumerator *e) {
 	cc_linked_list *list = cc_linked_list_new();
 	
