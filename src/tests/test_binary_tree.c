@@ -1,19 +1,16 @@
 #include "../ccollections/shared/cc.h"
 #include "../lib/unity/src/unity.h"
 
-#define GC_DEBUG
-#include "gc/gc.h"
+// void setUp(void)
+// {
+//   GC_INIT();
+//   cc_init();
+// }
 
-void setUp(void)
-{
-  GC_INIT();
-  cc_init();
-}
-
-void tearDown(void)
-{
+// void tearDown(void)
+// {
 	
-}
+// }
 
 cc_binary_tree *generate_complicated_binary_tree()
 {

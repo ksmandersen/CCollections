@@ -9,7 +9,6 @@ TARGET = $(TARGET_BASE)$(TARGET_EXTENSION)
 SRC_FILES=src/lib/unity/src/unity.c  src/ccollections/**/*.c
 INC_DIRS=-Isrc/ccollections
 SYMBOLS=-DTEST -lgc
-TEST_FILES=src/tests/test_${TEST}.c src/tests/runners/runner_${TEST}.c
 
 ifeq ($(OS),Windows_NT)
 	CLEANUP = del /F /Q build\* && del /F /Q $(TARGET)
@@ -23,7 +22,7 @@ documentation:
 	doxygen Doxyfile
 
 test:
-	$(C_COMPILER) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES) ${TEST_FILES} -o $(TARGET)
+	$(C_COMPILER) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES) src/tests/test_*.c src/tests/runners/runner_all.c -o $(TARGET)
 	./$(TARGET)
 
 clean:

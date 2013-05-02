@@ -36,8 +36,6 @@
 const char *const cc_array_list_type = "cc_array_list_type";
 
 cc_array_list *cc_array_list_new() {
-  cc_array_list_register_comparator();
-  
   cc_array_list *list;
   if ((list = GC_MALLOC(sizeof(cc_array_list))) == NULL) {
     return NULL;

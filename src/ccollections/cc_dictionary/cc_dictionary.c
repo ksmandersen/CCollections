@@ -60,7 +60,7 @@ struct cc_dictionary_struct {
 };
 
 cc_dictionary *cc_dictionary_new() {
-	cc_dictionary_register_comparator();
+	// cc_dictionary_register_comparator();
 	
 	cc_dictionary *dictionary;
 	if ((dictionary = GC_MALLOC(sizeof(cc_dictionary))) == NULL) {

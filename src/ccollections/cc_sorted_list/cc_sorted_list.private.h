@@ -1,5 +1,5 @@
 /*
- * CC_ARRAY_LIST.PRIVATE.H
+ * CC_SORTED_LIST.PRIVATE.H
  * 
  * This file is part of the CCollections library.
  *
@@ -29,14 +29,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CC_ARRAY_LIST_PRIVATE_H
-  #define CC_ARRAY_LIST_PRIVATE_H
+#ifndef CC_SORTED_LIST_PRIVATE_H
+  #define CC_SORTED_LIST_PRIVATE_H
 
-#include "cc_array_list.h"
+#include "cc_sorted_list.h"
 
 // Enumerator & comperator
-extern void cc_array_list_register_comparator();
-extern bool cc_array_list_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
+extern void cc_sorted_list_register_comparator();
+extern bool cc_sorted_list_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
 
 // Compare two lists agains each other.
 // This function doesn't make a lot of sense since it's not
@@ -44,28 +44,6 @@ extern bool cc_array_list_enumerator_move_next(cc_enumerable *c, cc_enumerator *
 // another list apart from size.
 // The function is used for determining whether two lists are
 // equal (i.e. contains all ofthe same elements).
-int cc_array_list_compare(cc_object *obj1, cc_object *obj2);
-
-// This internal function is called whenever the list reaches the
-// limit of its allocated number of objects. When function reallocates
-// the space and doubles the allocated space.
-extern void cc_array_list_expand_heap(cc_array_list *list);
-
-// the array list data structure. (Internal use only)
-struct cc_array_list_struct {
-  cc_collection c;
-  
-  cc_object **heap;
-  int count;
-  int heap_size;
-};
-
-// Sorting
-
-// Sorting of an array list uses quicksort. A call to
-// cc_array_list_sort will invoke quicksort.
-void cc_array_list_quicksort(cc_array_list *list, int left, int right);
-int cc_array_list_partition(cc_array_list *list, int left, int right);
-void cc_array_list_swap(cc_array_list *list, int i, int j);
+int cc_sorted_list_compare(cc_object *obj1, cc_object *obj2);
 
 #endif

@@ -43,7 +43,7 @@ struct cc_set_struct {
 };
 
 cc_set *cc_set_new() {
-	cc_set_register_comparator();
+	// cc_set_register_comparator();
 
 	cc_set *set;
 	if ((set = GC_MALLOC(sizeof(cc_set))) == NULL) {

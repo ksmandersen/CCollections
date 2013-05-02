@@ -1,22 +1,19 @@
 #include "../ccollections/shared/cc.h"
 #include "../lib/unity/src/unity.h"
 
-#define GC_DEBUG
-#include "gc/gc.h"
-
 #define POPULATE_COUNT 120
 
 
-void setUp(void)
-{
-  GC_INIT();
-  cc_init();
-}
+// void setUp(void)
+// {
+//   GC_INIT();
+//   cc_init();
+// }
 
-void tearDown(void)
-{
+// void tearDown(void)
+// {
 
-}
+// }
 
 void cc_set_populate(cc_set *set)
 {

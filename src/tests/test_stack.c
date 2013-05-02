@@ -2,16 +2,13 @@
 #include "../ccollections/cc_stack/cc_stack.h"
 #include "../lib/unity/src/unity.h"
 
-#define GC_DEBUG
-#include "gc/gc.h"
+// void setUp(void)
+// {
+//   GC_INIT();
+//   cc_init();
+// }
 
-void setUp(void)
-{
-  GC_INIT();
-  cc_init();
-}
-
-void tearDown(void) {}
+// void tearDown(void) {}
 
 void populate_stack(cc_stack *s, int count)
 {

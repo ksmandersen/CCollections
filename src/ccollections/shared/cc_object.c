@@ -32,6 +32,10 @@
 #include "cc_private.h"
 #include "cc_object.h"
 
+#include "../cc_array_list/cc_array_list.private.h"
+#include "../cc_linked_list/cc_linked_list.private.h"
+#include "../cc_sorted_list/cc_sorted_list.private.h"
+
 const char * const cc_object_type_int = "cc_object_type_int";
 const char * const cc_object_type_float = "cc_object_type_float";
 const char * const cc_object_type_string = "cc_object_type_string";
@@ -246,6 +250,16 @@ void cc_object_register_default_comparators() {
 	cc_object_register_hash_func_for_type(cc_object_type_int, cc_object_int_hash_func);
 	cc_object_register_hash_func_for_type(cc_object_type_float, cc_object_float_hash_func);
 	cc_object_register_hash_func_for_type(cc_object_type_string, cc_object_string_hash_func);
+
+	cc_object_register_comparator_for_type(cc_array_list_type, cc_array_list_compare);
+	cc_object_register_comparator_for_type(cc_linked_list_type, cc_linked_list_compare);
+	cc_object_register_comparator_for_type(cc_sorted_list_type, cc_sorted_list_compare);
+	// cc_object_register_comparator_for_type(cc_binary_tree_type, cc_binary_tree_compare);
+	// cc_object_register_comparator_for_type(cc_dictionary_type, cc_dictionary_compare);
+	// cc_object_register_comparator_for_type(cc_set_type, cc_set_compare);
+	// cc_object_register_comparator_for_type(cc_stack_type, cc_stack_compare);
+	// cc_object_register_comparator_for_type(cc_stack_type, cc_stack_compare);
+	// cc_object_register_comparator_for_type(cc_queue_type, cc_queue_compare);
 }
 
 // Compare methods

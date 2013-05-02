@@ -86,4 +86,6 @@ cc_object *cc_queue_to_object(cc_queue *queue);
  * \return the queue */
 cc_queue *cc_queue_from_object(cc_object *object);
 
+static void cc_queue_register_comparator();
+
 #endif

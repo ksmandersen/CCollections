@@ -2,9 +2,6 @@
 #include "../ccollections/shared/cc_enumerator_private.h"
 #include "../lib/unity/src/unity.h"
 
-#define GC_DEBUG
-#include "gc/gc.h"
-
 bool one_to_three(cc_enumerable *c, cc_enumerator *e) {
 	int *data = (int *)e->data;
 	if (*data == 3) return false;
@@ -31,16 +28,16 @@ cc_object *int_to_string_map(cc_object *obj) {
 	return cc_object_with_string(buffer);
 }
 
-void setUp(void)
-{
-  GC_INIT();
-  cc_init();
-}
+// void setUp(void)
+// {
+//   GC_INIT();
+//   cc_init();
+// }
 
-void tearDown(void)
-{
+// void tearDown(void)
+// {
 	
-}
+// }
 
 void test_can_create_enumerator(void)
 {

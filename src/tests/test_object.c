@@ -3,10 +3,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-
-#define GC_DEBUG
-#include "gc/gc.h"
-
 const char * const custom_data_type = "custom_data_type";
 
 typedef struct {
@@ -33,16 +29,16 @@ cc_hash custom_data_get_hash(cc_object *obj) {
 }
 
 
-void setUp(void)
-{
-  GC_INIT();
-  cc_init();
-}
+// void setUp(void)
+// {
+//   GC_INIT();
+//   cc_init();
+// }
 
-void tearDown(void)
-{
+// void tearDown(void)
+// {
 	
-}
+// }
 
 void test_can_create_string_object(void)
 {

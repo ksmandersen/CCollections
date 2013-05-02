@@ -45,7 +45,7 @@ struct cc_queue_struct {
 };
 
 cc_queue *cc_queue_new() {
-	cc_queue_register_comparator();
+	// cc_queue_register_comparator();
 	
 	cc_queue *queue = GC_MALLOC(sizeof(cc_queue));
 	

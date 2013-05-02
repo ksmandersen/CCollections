@@ -2,18 +2,7 @@
 #include "../ccollections/cc_array_list/cc_array_list.h"
 #include "../lib/unity/src/unity.h"
 
-#define GC_DEBUG
-#include "gc/gc.h"
-
-void setUp(void)
-{
-  GC_INIT();
-  cc_init();
-}
-
-void tearDown(void) {}
-
-void populate_list(cc_array_list *l, int count)
+void populate_array_list(cc_array_list *l, int count)
 {
   int i;
   for(i = 1; i <= count; i++) {
@@ -22,7 +11,7 @@ void populate_list(cc_array_list *l, int count)
   }
 }
 
-void print_list(cc_array_list *list) {
+void print_array_list(cc_array_list *list) {
   cc_enumerator *e = cc_array_list_get_enumerator(list);
   while(cc_enumerator_move_next(e)) {
     cc_object *obj = cc_enumerator_current(e);
@@ -51,7 +40,7 @@ void test_elements_in_list(cc_array_list *list) {
 
 // Adding
 
-void test_can_add_objects_to_end_of_list(void) {
+void test_can_add_objects_to_end_of_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
 
   cc_object *ins1 = cc_object_with_int(1);
@@ -73,10 +62,10 @@ void test_can_add_objects_to_end_of_list(void) {
   TEST_ASSERT_EQUAL(3, cc_array_list_length(a_list));
 }
 
-void test_can_add_objects_to_list_with_index(void) {
+void test_can_add_objects_to_array_list_with_index(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 128);
+  populate_array_list(a_list, 128);
 
   cc_object *ins = cc_object_with_int(7283);
   cc_array_list_add(a_list, 49, ins);
@@ -87,7 +76,7 @@ void test_can_add_objects_to_list_with_index(void) {
   TEST_ASSERT_EQUAL(129, cc_array_list_length(a_list));
 }
 
-void test_can_add_objects_to_front_of_list(void) {
+void test_can_add_objects_to_front_of_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
 
   cc_object *ins1 = cc_object_with_int(1);
@@ -109,10 +98,10 @@ void test_can_add_objects_to_front_of_list(void) {
   TEST_ASSERT_EQUAL(3, cc_array_list_length(a_list));
 }
 
-void test_can_add_and_get_identical_objects(void)
+void test_can_add_and_get_identical_objects_from_array_list(void)
 {
   cc_array_list *a_list = cc_array_list_new();
-  populate_list(a_list, 30);
+  populate_array_list(a_list, 30);
 
   cc_object *obj = cc_object_with_int(1);
   cc_array_list_add_last(a_list, obj);
@@ -121,15 +110,15 @@ void test_can_add_and_get_identical_objects(void)
   TEST_ASSERT_EQUAL(true, cc_object_is_equal(obj, cc_array_list_get_first(a_list)));
 }
 
-void test_can_add_and_get_many_objects(void) {
+void test_can_add_and_get_many_objects_from_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
-  populate_list(a_list, 10000);
+  populate_array_list(a_list, 10000);
 
   for (int i = 0; i < 2500; ++i) {
     cc_array_list_remove_last(a_list);
   }
 
-  populate_list(a_list, 2500);
+  populate_array_list(a_list, 2500);
 
   TEST_ASSERT_EQUAL(10000, cc_array_list_length(a_list));
 
@@ -141,33 +130,33 @@ void test_can_add_and_get_many_objects(void) {
 
 // Getting
 
-void test_can_get_objects_from_list_with_index(void) {
+void test_can_get_objects_from_array_list_with_index(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 3);
+  populate_array_list(a_list, 3);
 
   TEST_ASSERT_EQUAL(1, cc_object_int_value(cc_array_list_get(a_list, 0)));
   TEST_ASSERT_EQUAL(2, cc_object_int_value(cc_array_list_get(a_list, 1)));
   TEST_ASSERT_EQUAL(3, cc_object_int_value(cc_array_list_get(a_list, 2)));
 }
 
-void test_can_get_elements_from_start_of_list(void) {
+void test_can_get_elements_from_start_of_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 3);
+  populate_array_list(a_list, 3);
 
   TEST_ASSERT_EQUAL(1, cc_object_int_value(cc_array_list_get_first(a_list)));
 }
 
-void test_can_get_elements_from_end_of_list(void) {
+void test_can_get_elements_from_end_of_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 3);
+  populate_array_list(a_list, 3);
 
   TEST_ASSERT_EQUAL(3, cc_object_int_value(cc_array_list_get_last(a_list)));
 }
 
-void test_getting_object_from_list_empty_list_returns_null(void) {
+void test_getting_object_from_array_list_empty_array_list_returns_null(void) {
   cc_array_list *a_list = cc_array_list_new();
 
   TEST_ASSERT_EQUAL(NULL, cc_array_list_get(a_list, 12));
@@ -177,10 +166,10 @@ void test_getting_object_from_list_empty_list_returns_null(void) {
 
 // Removing
 
-void test_can_remove_object_from_list_with_index(void) {
+void test_can_remove_object_from_array_list_with_index(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 100);
+  populate_array_list(a_list, 100);
 
   cc_array_list_remove(a_list, 67);
 
@@ -189,10 +178,10 @@ void test_can_remove_object_from_list_with_index(void) {
   TEST_ASSERT_EQUAL(99, cc_array_list_length(a_list));
 }
 
-void test_can_remove_object_from_front_of_list(void) {
+void test_can_remove_object_from_front_of_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 100);
+  populate_array_list(a_list, 100);
 
   cc_array_list_remove_first(a_list);
 
@@ -200,10 +189,10 @@ void test_can_remove_object_from_front_of_list(void) {
   TEST_ASSERT_EQUAL(99, cc_array_list_length(a_list));
 }
 
-void test_can_remove_object_from_end_of_list(void) {
+void test_can_remove_object_from_end_of_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 100);
+  populate_array_list(a_list, 100);
 
   cc_array_list_remove_last(a_list);
 
@@ -211,10 +200,10 @@ void test_can_remove_object_from_end_of_list(void) {
   TEST_ASSERT_EQUAL(99, cc_array_list_length(a_list));
 }
 
-void test_removing_non_existing_index_from_list_does_nothing(void) {
+void test_removing_non_existing_index_from_array_list_does_nothing(void) {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 100);
+  populate_array_list(a_list, 100);
 
   cc_array_list_remove(a_list, 131);
 
@@ -224,7 +213,7 @@ void test_removing_non_existing_index_from_list_does_nothing(void) {
 
 // Merging
 
-void test_can_merge_lists_together(void)
+void test_can_merge_array_lists_together(void)
 {
   cc_array_list *list1 = cc_array_list_new();
 
@@ -265,12 +254,12 @@ void test_can_merge_lists_together(void)
   TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret6, val6));
 }
 
-void test_can_merge_empty_list_with_non_empty_list(void)
+void test_can_merge_empty_array_list_with_non_empty_array_list(void)
 {
   cc_array_list *a_list = cc_array_list_new();
   cc_array_list *b_list = cc_array_list_new();
 
-  populate_list(b_list, 10);
+  populate_array_list(b_list, 10);
   cc_array_list_merge(a_list, b_list);
 
   cc_object *a_obj = cc_array_list_to_object(a_list);
@@ -283,7 +272,7 @@ void test_can_merge_empty_list_with_non_empty_list(void)
   TEST_ASSERT_EQUAL(10, cc_array_list_length(a_list));
 }
 
-void test_can_merge_empty_lists(void) {
+void test_can_merge_empty_array_lists(void) {
   cc_array_list *a_list = cc_array_list_new();
   cc_array_list *b_list = cc_array_list_new();
 
@@ -301,11 +290,11 @@ void test_can_merge_empty_lists(void) {
 
 // Clearing
 
-void test_can_clear_list(void)
+void test_can_clear_array_list(void)
 {
   cc_array_list *a_list = cc_array_list_new();
 
-  populate_list(a_list, 5);
+  populate_array_list(a_list, 5);
   cc_array_list_clear(a_list);
 
   TEST_ASSERT_EQUAL(0, cc_array_list_length(a_list));
@@ -314,24 +303,24 @@ void test_can_clear_list(void)
 
 // Equality
 
-void test_can_list_compare_equal(void)
+void test_can_array_list_compare_equal(void)
 {
   cc_array_list *a_list = cc_array_list_new();
   cc_array_list *b_list = cc_array_list_new();
-  populate_list(a_list, 45);
-  populate_list(b_list, 45);
+  populate_array_list(a_list, 45);
+  populate_array_list(b_list, 45);
 
   bool equal = cc_object_is_equal(cc_array_list_to_object(a_list), cc_array_list_to_object(b_list));
 
   TEST_ASSERT_EQUAL(true, equal);
 }
 
-void test_can_list_compare_non_equal(void)
+void test_can_array_list_compare_non_equal(void)
 {
   cc_array_list *a_list = cc_array_list_new();
   cc_array_list *b_list = cc_array_list_new();
-  populate_list(a_list, 45);
-  populate_list(b_list, 45);
+  populate_array_list(a_list, 45);
+  populate_array_list(b_list, 45);
 
   cc_object *obj = cc_object_with_int(5000);
   cc_array_list_add_last(a_list, obj);
@@ -341,7 +330,7 @@ void test_can_list_compare_non_equal(void)
   TEST_ASSERT_NOT_EQUAL(true, equal);
 }
 
-void test_can_empty_list_compare_equal(void) {
+void test_can_empty_array_list_compare_equal(void) {
   cc_array_list *a_list = cc_array_list_new();
   cc_array_list *b_list = cc_array_list_new();
 
@@ -352,10 +341,10 @@ void test_can_empty_list_compare_equal(void) {
 
 // Enumerating
 
-void test_can_enumerate_list(void)
+void test_can_enumerate_array_list(void)
 {
   cc_array_list *a_list = cc_array_list_new();
-  populate_list(a_list, 100);
+  populate_array_list(a_list, 100);
 
   int i = 1;
   cc_enumerator *e = cc_array_list_get_enumerator(a_list);
@@ -367,27 +356,27 @@ void test_can_enumerate_list(void)
 
 // Containment
 
-void test_can_find_contained_objects_in_list(void)
+void test_can_find_contained_objects_in_array_list(void)
 {
   cc_array_list *a_list = cc_array_list_new();
-  populate_list(a_list, 120);  
+  populate_array_list(a_list, 120);  
 
   cc_object *obj = cc_object_with_int(100);
 
   TEST_ASSERT_EQUAL(true, cc_array_list_contains(a_list, obj));
 }
 
-void test_cannot_find_object_in_list_without_object(void)
+void test_cannot_find_object_in_array_list_without_object(void)
 {
   cc_array_list *a_list = cc_array_list_new();
-  populate_list(a_list, 99);
+  populate_array_list(a_list, 99);
 
   cc_object *obj = cc_object_with_int(100);
 
   TEST_ASSERT_EQUAL(false, cc_array_list_contains(a_list, obj));
 }
 
-void test_cannot_find_object_in_empty_list(void) {
+void test_cannot_find_object_in_empty_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
 
   cc_object *obj = cc_object_with_int(100);
@@ -399,7 +388,7 @@ void test_cannot_find_object_in_empty_list(void) {
 
 void test_can_shuffle_array_with_objects(void) {
   cc_array_list *a_list = cc_array_list_new();
-  populate_list(a_list, 400);
+  populate_array_list(a_list, 400);
 
   cc_array_list_shuffle(a_list);
   cc_array_list_sort(a_list);
@@ -435,18 +424,18 @@ void test_can_sort_array_with_objects(void) {
 
 // Convertion
 
-void test_can_create_cc_object_from_list(void) {
+void test_can_create_cc_object_from_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
-  populate_list(a_list, 400);
+  populate_array_list(a_list, 400);
 
   cc_object *object = cc_array_list_to_object(a_list);
   TEST_ASSERT_NOT_EQUAL(NULL, object);
 }
 
-void test_can_create_list_from_cc_object(void) {
+void test_can_create_array_list_from_cc_object(void) {
   cc_array_list *a_list = cc_array_list_new();
   int count = 5;
-  populate_list(a_list, count);
+  populate_array_list(a_list, count);
 
   cc_object *object = cc_array_list_to_object(a_list);
 

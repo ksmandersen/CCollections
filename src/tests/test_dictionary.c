@@ -2,22 +2,19 @@
 #include "../ccollections/cc_dictionary/cc_dictionary.h"
 #include "../lib/unity/src/unity.h"
 
-#define GC_DEBUG
-#include "gc/gc.h"
-
 #define POPULATE_COUNT 120
 
 
-void setUp(void)
-{
-  GC_INIT();
-  cc_init();
-}
+// void setUp(void)
+// {
+//   GC_INIT();
+//   cc_init();
+// }
 
-void tearDown(void)
-{
+// void tearDown(void)
+// {
 
-}
+// }
 
 void cc_dictionary_populate(cc_dictionary *dict)
 {

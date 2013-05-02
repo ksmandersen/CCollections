@@ -161,3 +161,19 @@ cc_sorted_list *cc_sorted_list_from_object(cc_object *object) {
   cc_sorted_list *list = cc_object_data_value(object);
   return list;
 }
+
+int cc_sorted_list_compare(cc_object *obj1, cc_object *obj2) {
+  cc_sorted_list *list1 = cc_sorted_list_from_object(obj1);
+  cc_sorted_list *list2 = cc_sorted_list_from_object(obj2);
+    
+  return cc_linked_list_compare(cc_linked_list_to_object(list1->data), cc_linked_list_to_object(list2->data));
+}
+
+void cc_sorted_list_register_comparator() {
+  static bool first = true;
+
+  if (first) {
+    first = false;
+    cc_object_register_comparator_for_type(cc_sorted_list_type, cc_sorted_list_compare);
+  }
+}

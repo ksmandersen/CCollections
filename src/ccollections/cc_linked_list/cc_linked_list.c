@@ -49,7 +49,7 @@ struct cc_linked_list_struct {
 
 
 cc_linked_list *cc_linked_list_new() {
-  cc_linked_list_register_comparator();
+  // cc_linked_list_register_comparator();
 
   cc_linked_list *list;
   if ((list = GC_MALLOC(sizeof(cc_linked_list))) == NULL)
@@ -397,7 +397,7 @@ void cc_linked_list_register_comparator() {
   if (first)
   {
     first = false;
-    cc_object_register_comparator_for_type(cc_linked_list_type, cc_linked_list_compare);
+    // cc_object_register_comparator_for_type(cc_linked_list_type, cc_linked_list_compare);
   }
 }
 

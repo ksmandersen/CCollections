@@ -45,7 +45,7 @@ struct cc_stack_struct {
 };
 
 cc_stack *cc_stack_new() {
-  cc_stack_register_comparator();
+  // cc_stack_register_comparator();
 
   cc_stack *stack;
   if ((stack = GC_MALLOC(sizeof(cc_stack))) == NULL) {

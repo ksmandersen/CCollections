@@ -57,7 +57,7 @@ typedef struct {
 } cc_binary_tree_enumerator_data;
 
 cc_binary_tree *cc_binary_tree_new(cc_object *obj) {
-	cc_binary_tree_register_comparator();
+	// cc_binary_tree_register_comparator();
 	
 	cc_binary_tree *tree;
 	if ((tree = GC_MALLOC(sizeof(cc_binary_tree))) == NULL) {
