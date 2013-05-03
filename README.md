@@ -1,8 +1,29 @@
 # CCollections
 
 CCollections is a general purpose collection library for the ANSI C programming language. It was insipired by the well known collection libraries for .NET runtime and Java runtime.
-CCollections gives programmeres with an object-oriented background a convinient way to use collections in C.
+CCollections gives programmeres with an object-oriented background a convinient way to use various data structures in C.
 The library provides a familiar and consistent interface to work with collections.
+
+Here is an example of how easy it use to the library:
+
+    int countchar (char list[]) {
+      int i, count = 0;
+      for (i = 0; list[i] != '\0'; i++)
+      count++;
+      return (count);
+    }
+
+    cc_linked_list *keys = cc_linked_list_new_with_values(cc_type_string, "Apples", "Bananas", "Oranges", "Pineapples", CC_END);
+    cc_array_list *values = cc_array_list_new();
+
+    cc_enumerator *e = cc_linked_list_get_enumerator(keys);
+    while(cc_enumerator_move_next(e)) {
+      cc_object *fruit = cc_enumerator_current(e);
+      int count = countchar(cc_object_string_value(fruit));
+      cc_array_list_add_last(values, cc_object_with_int(count));
+    }
+
+    cc_dictionary *fruits = cc_dictionary_new_with_enumerators(cc_linked_list_get_enumerator(keys), cc_array_list_get_enumerator(values));
 
 ## Existing solutions
 
