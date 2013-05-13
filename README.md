@@ -1,6 +1,9 @@
 # CCollections
 
-CCollections is a general purpose collection library for the ANSI C programming language. It was insipired by the well known collection libraries for .NET runtime and Java runtime.
+CCollections is a general purpose collection library for the ANSI C programming language. 
+It features a variety of commonly used data structures like Lists, Sets, Dictionaries and Trees. Data structures are garbage collected and has features like sorting, enumeration, filtering and mapping.
+
+It was insipired by the well known collection libraries for .NET runtime and Java runtime.
 CCollections gives programmeres with an object-oriented background a convinient way to use various data structures in C.
 The library provides a familiar and consistent interface to work with collections.
 
