@@ -21,21 +21,21 @@ Date: May 22, 2013
 # Preface [section-preface]
 This report has been written in May 2013 in a 15 ECTS project at the IT University of Copenhagen under the supervision of Hans Henrik Brandenborg Sørensen and Peter Sestoft.
 
-During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation which is customary for OO-language collection libraries but uncommon for C libraries.
+During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for modern Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation that is customary for OO-language collection libraries but uncommon for C libraries.
 
 # Introduction [section-introduction]
 
-Data structures are a natural asset in the development of any application. Unlike most many languages, C does not come with a full stack of data structures, neatly packaged together into a collection libraries. In fact there is not a single data structure in the standard library. Developers find themselves faced with two options. Either write the implementation you need from scratch or go online and find an existing implementation that looks usable.
+Data structures are a natural asset in the development of any application. Unlike many languages, C does not come with a full range of data structures, neatly packaged together into a collection library. In fact there is not a single data structure in the standard library. Developers find themselves faced with two options. Either write the implementation you need from scratch or go online and find an existing implementation that looks usable.
 
-Developers find themselves scouring the web for good libraries and are left with a number of choices. None of the many options available are very much alike the typical OO-language collection library. 
+Developers find themselves scouring the web for good libraries and are left with a number of choices. None of the many options available are very much alike the typical modern OO-language collection library. 
 
 Languages like Java and C# are highly regarded in part because of their extensive, well-documented and loved collection libraries that come as part of their standard libraries. Developers who primarily develop with languages like these are left with no similar options in C.
 
-The general purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C#. 
+The overall purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C#. 
 
 ## Existing libraries [section-existing]
 
-There is a large number of libraries with data structures available for C. In the table below is listed some of  the most commonly known by C developers.
+There is a large number of libraries with data structures available for C. The table below is lists some of  the most commonly known by C developers.
 
 | Library | Documentation  | Naming | Memory | Avail. ADTS |
 -------|----------------|--------|--------|----------------|
@@ -50,13 +50,13 @@ LibDS  | Good, no ex    | Bad    | No     | Decent         |
 
 Most of the libraries listed here are not strictly collection libraries but larger libraries where a small part of it is data structures. This is the case for APR, NPR, Glib and Gnulib. 
 
-Finding libraries purely dedicated to data structures is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact it is however very uncommon for developers from OO-languages to manage memory themselves.
+Finding libraries purely dedicated to data structures is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact, but it is very uncommon for developers using OO-languages to manage memory themselves.
 
 An intricate part of any library is testing. The libraries from our research have varying degrees of testing implemented. Some have a few tests per data structure. A few have full-blown test suites with all public functionality tested. A single claims to have high-coverage unit tests, but is closed source. A lot of have no tests or no tests checked in to the public source.
 
 All the libraries have varying quality of documentation and naming conventions. These two qualities are crucial factors for the entire quality of a library.
 
-Many leaps has happened in computer science since C had its peek, let alone was invented. However it seems that not many of the advancements made in collection libraries in newer programming languages has found their way in to C. There could be several explanations for this. Consider this: many of the newer features doesn't mix well with the non-object-oriented nature of C.
+Many leaps has happened in computer science since C had its peak, let alone was invented. However it seems that not many of the advancements made in collection libraries in newer programming languages has found their way into C. There could be several explanations for this. Consider this: many of the newer features doesn't mix well with the non-object-oriented nature of C.
 
 ## Vision [section-vision]
 In examining the existing libraries containing data structures available for C, it is found that there is room for improvement.  This project will aim to describe and implement a dedicated collection library for C that fills some of the gap between existing solutions for C and the OO-languages.
@@ -74,7 +74,7 @@ This library will consist of a small selection of commonly used data structures.
 * Sorted dictionary
 * Binary tree
 
-In additions to the features that would normally be associated with common data structures like the ones mention above, the library will aim to implement a number of concepts and features inspired by other OO libraries. Most notably the data structures will all have support for enumeration, something that none of the existing libraries for C has. The library will also aim to be very easy to extend with additional features, types and structures. This will be done with the means of solid code conventions, good documentation and unit testing.
+In addition to the features that would normally be associated with common data structures like those mentioned above, the library will aim to implement a number of concepts and features inspired by other OO libraries. Most notably the data structures will all have support for enumeration, something that none of the existing libraries for C has. The library will also aim to be very easy to extend with additional features, types and structures. This will be done with the means of solid code conventions, good documentation and unit testing.
 
 Following code conventions is always good sense when writing library code but it becomes even more important with C because of the lack of modularity in C. There are no namespaces, packages or classes into which functions can be neatly organized.
 
@@ -84,17 +84,17 @@ To further mimic the trades of libraries from other libraries the library of thi
 
 # Architecture [section-architecture]
 
-There are generally two different ways of designing a system in procedural programming languages. The first is the "classic" way, where you would have a single function doing one task on all the supported data types. The other is the more modern object-oriented way of having one implementation of a task for each supported data type. An example of the difference could be a method, which will calculate the weight of a car: the classic method would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each method has pros and cons. If you want to add a car type, in the classic method, you would have to find every place in the code where car-type-specific calculations were made, while in the object oriented, you would only need to implement the functions for the new car type. On the other hand, if you wanted to have a function to calculate the height of a car, in the classic method, you would need to implement just one function, where in the object-oriented way, you would have to find all car types, and implement a function for each.
+There are generally two different approach of designing a system in procedural programming languages. The first is the "classic" way, where you would have a single function doing one task on all the supported data types. The other is the more modern object-oriented way of having one implementation of a task for each supported data type. An example of the difference could be a approach, which will calculate the weight of a car: the classic approach would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each approach has pros and cons. If you want to add a car type, in the classic approach, you would have to find every place in the code where car-type-specific calculations were made, while in the object oriented, you would only need to implement the functions for the new car type. On the other hand, if you wanted to have a function to calculate the height of a car, in the classic approach, you would need to implement just one function, where in the object-oriented way, you would have to find all car types, and implement a function for each.
 
 Newer languages with focus on object oriented programming makes the decision of which to use very easy. In pre-object languages, such as C, the choice is a bit harder. The easy answer is to use the classic way, since this is what the language is built for; however, there are ways to build functionality which replicates some object-oriented functions in a procedural way, which makes object composition available.
 
-One other difference between the two methods is execution speed. The newer, more dynamic ways of programming uses a lot of dynamic lookup at runtime, which have a performance impact, compared to more static programming. If you compare the same code written in C and C++, the C++ code will most likely be a bit slower, since dynamic features like method calls uses runtime table lookups. A more extreme example is languages like JavaScript, which, even when compiled to bytecode, runs at half the speed of the same C program. [remember source, that article with asm.js and Unreal Engine]
+One other difference between the two methods is execution speed. The newer, more dynamic ways of programming uses a lot of dynamic lookup at runtime, which has a performance impact, compared to more static programming. If you compare the same code written in C and C++, the C++ code will most likely be a bit slower, since dynamic features like method calls uses runtime table lookups. A more extreme example is languages like JavaScript, which, even when compiled to bytecode, runs at half the speed of the same C program. [remember source, that article with asm.js and Unreal Engine]
 
 There isn't a single general answer to, which method is the best to use. It depends on the specific situation. What we can do, is that we can set a general style for the project as a guideline, not a rule. The general style should be prioritized over the other, but if one doesn't make sense to use in a situation, the other should be used.
 
-Since most C libraries seems to be using the classic, non-object way, we have chosen to attempt a more modern approach to C programming. The general style guideline for the project is to use object-like thinking when it makes sense: think about how to make things modular and extensible, instead of trying to make it perform.
+Since most C libraries seem to be using the classic, non-object way, we have chosen to attempt a more modern approach to C programming. The general style guideline for the project is to use object-like thinking when it makes sense: strive to make the library modular and extensible, instead of trying to make it perform.
 
-In the following sections, we will go more in-depth with the different design choices in the library.
+In the following sections, we will go more in depth with the different design choices in the library.
 
 ## Memory Management [section-memorymanagement]
 
@@ -110,7 +110,7 @@ In regards to performance, the mark-sweep collector can be slow for larger alloc
 
 The most obvious problem we encounter is how to have an insert method, which can insert any kind of object. A collection should be able to contain every type of object, which isn't a problem in object oriented languages, where there is a system of classes and instances, but is a little more tricky in C, since there are multiple kinds of objects. We will want a function to insert both a char, which is a single-byte stack variable, an int, a multi-byte stack variable, a string, which is a pointer to a block of memory with an unknown size, along with whatever data structure the user has made.
 
-There are multiple approaches to this. One way is to have the user specify an element size when creating the data structure, and any value can then be put into each element, as long as it doesn’t exceed the element size. Another way is to make an insert function for each supported data type, so that you would have functions such as ``insert_int``, ``insert_float``, ``insert_string``, ect.
+There are multiple approaches to this. One way is to have the user specify an element size when creating the data structure, and any value can then be put into each element, as long as it doesn’t exceed the element size. Another way is to make an insert function for each supported data type, so that you would have functions such as ``insert_int``, ``insert_float``, or ``insert_string``.
 
 There are some problems with both of these approaches. The first approach prevents the collection from containing different types of objects, if you don’t want to get into typecasting. Also just inserting values will not be type-safe, since there will be only one insert function to handle any type. The second approach solves these problems, but this gets back to the classic/dynamic style discussion earlier. We would not be able to add custom data types this way. The only way to insert a custom data structure would be to constantly serialize it to data.
 
@@ -160,17 +160,17 @@ implementation for enumerator move next in the cc collection variable.
 
 As noted earlier only some of the libraries encountered in our research had testing implemented. Some had a few tests per data structure to make sure that the data structure sort-of worked. A few had full-blown test suites with all public functionality tested. A lot of had no tests or no tests checked in to the public source at least.
 
-The library for this project will be using unit tests with coverage of all data structures and all public API. This will serve three main goals of the library.
+The library for this project will be using unit tests with coverage of all data structures and all public API functions. This will serve three main goals of the library.
 
-1. The library is well-tested. Every time a change is made to a data structure or another part of the library, which may affect several data structure, all the tests can be run to check nothing breaks. This dramatically lovers the chance of small bugs creeping in.
+1. The library is well-tested. Every time a change is made to a data structure or another part of the library, which may affect several data structure, all the tests can be run to check nothing breaks. This dramatically lowers the chance of small bugs creeping in.
 2. Tests drive forward implementation. This is also known as Test-Driven Development; TDD for short. Once the general structure of the library has been determined features can be fleshed out by writing the tests first and then the implementation. This will both ensure all API is tested but also that there is no API features that has not been tested.
-3. A well tested library will incentivize third-party developers, that wish to extend and contribute their code to the library, to write tests for their code. Looking at the existing tests will also make it easier for the developer to write matching tests for their code.
+3. A well tested library will encourage third-party developers, who wish to extend and contribute their code to the library, to write tests for their code. Looking at the existing tests will also make it easier for the developer to write matching tests for their code.
 
 ## Error handling
 
-Libraries like C# and Java has native support for Exceptions which makes it really easy for developers to determine if something went wrong and then take proper actions. Since C doesn't have any native support for handling errors we'll have to deal with them other ways. There are several approaches to the problem.
+Libraries like C# and Java has native support for Exceptions which makes it really easy for developers to determine whether something went wrong and then take proper actions. Since C doesn't have any native support for handling errors we'll have to deal with them other ways. There are several approaches to the problem.
 
-* Return values (-1, -2, etc. corresponding to a error)
+* Return values (-1, -2, etc. corresponding to an error)
 * out parameters. functions have a last parameter that will contain an error message or code that must be checked.
 * callbacks. functions have a callback parameter that takes a function pointer to a function that will be called with a error message or code.
 * global callbacks. like callbacks but there is only a global function that will be called no matter where the error occurs.
