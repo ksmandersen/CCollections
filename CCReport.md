@@ -21,21 +21,21 @@ Date: May 22, 2013
 # Preface [section-preface]
 This report has been written in May 2013 in a 15 ECTS project at the IT University of Copenhagen under the supervision of Hans Henrik Brandenborg Sørensen and Peter Sestoft.
 
-During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation which is customary for OO-language collection libraries but uncommon for C libraries.
+During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for modern Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation that is customary for OO-language collection libraries but uncommon for C libraries.
 
 # Introduction [section-introduction]
 
-Data structures are a natural asset in the development of any application. Unlike most many languages, C does not come with a full stack of data structures, neatly packaged together into a collection libraries. In fact there is not a single data structure in the standard library. Developers find themselves faced with two options. Either write the implementation you need from scratch or go online and find an existing implementation that looks usable.
+Data structures are a natural asset in the development of any application. Unlike many languages, C does not come with a full range of data structures, neatly packaged together into a collection library. In fact there is not a single data structure in the standard library. Developers find themselves faced with two options. Either write the implementation you need from scratch or go online and find an existing implementation that looks usable.
 
-Developers find themselves scouring the web for good libraries and are left with a number of choices. None of the many options available are very much alike the typical OO-language collection library. 
+Developers find themselves scouring the web for good libraries and are left with a number of choices. None of the many options available are very much alike the typical modern OO-language collection library. 
 
 Languages like Java and C# are highly regarded in part because of their extensive, well-documented and loved collection libraries that come as part of their standard libraries. Developers who primarily develop with languages like these are left with no similar options in C.
 
-The general purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C#. 
+The overall purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C#. 
 
 ## Existing libraries [section-existing]
 
-There is a large number of libraries with data structures available for C. In the table below is listed some of  the most commonly known by C developers.
+There is a large number of libraries with data structures available for C. The table below is lists some of  the most commonly known by C developers.
 
 | Library | Documentation  | Naming | Memory | Avail. ADTS |
 -------|----------------|--------|--------|----------------|
@@ -50,13 +50,13 @@ LibDS  | Good, no ex    | Bad    | No     | Decent         |
 
 Most of the libraries listed here are not strictly collection libraries but larger libraries where a small part of it is data structures. This is the case for APR, NPR, Glib and Gnulib. 
 
-Finding libraries purely dedicated to data structures is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact it is however very uncommon for developers from OO-languages to manage memory themselves.
+Finding libraries purely dedicated to data structures is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact, but it is very uncommon for developers using OO-languages to manage memory themselves.
 
 An intricate part of any library is testing. The libraries from our research have varying degrees of testing implemented. Some have a few tests per data structure. A few have full-blown test suites with all public functionality tested. A single claims to have high-coverage unit tests, but is closed source. A lot of have no tests or no tests checked in to the public source.
 
 All the libraries have varying quality of documentation and naming conventions. These two qualities are crucial factors for the entire quality of a library.
 
-Many leaps has happened in computer science since C had its peek, let alone was invented. However it seems that not many of the advancements made in collection libraries in newer programming languages has found their way in to C. There could be several explanations for this. Consider this: many of the newer features doesn't mix well with the non-object-oriented nature of C.
+Many leaps has happened in computer science since C had its peak, let alone was invented. However it seems that not many of the advancements made in collection libraries in newer programming languages has found their way into C. There could be several explanations for this. Consider this: many of the newer features doesn't mix well with the non-object-oriented nature of C.
 
 ## Vision [section-vision]
 In examining the existing libraries containing data structures available for C, it is found that there is room for improvement.  This project will aim to describe and implement a dedicated collection library for C that fills some of the gap between existing solutions for C and the OO-languages.
@@ -74,7 +74,7 @@ This library will consist of a small selection of commonly used data structures.
 * Sorted dictionary
 * Binary tree
 
-In additions to the features that would normally be associated with common data structures like the ones mention above, the library will aim to implement a number of concepts and features inspired by other OO libraries. Most notably the data structures will all have support for enumeration, something that none of the existing libraries for C has. The library will also aim to be very easy to extend with additional features, types and structures. This will be done with the means of solid code conventions, good documentation and unit testing.
+In addition to the features that would normally be associated with common data structures like those mentioned above, the library will aim to implement a number of concepts and features inspired by other OO libraries. Most notably the data structures will all have support for enumeration, something that none of the existing libraries for C has. The library will also aim to be very easy to extend with additional features, types and structures. This will be done with the means of solid code conventions, good documentation and unit testing.
 
 Following code conventions is always good sense when writing library code but it becomes even more important with C because of the lack of modularity in C. There are no namespaces, packages or classes into which functions can be neatly organized.
 
@@ -168,17 +168,17 @@ implementation for enumerator move next in the cc collection variable.
 
 As noted earlier only some of the libraries encountered in our research had testing implemented. Some had a few tests per data structure to make sure that the data structure sort-of worked. A few had full-blown test suites with all public functionality tested. A lot of had no tests or no tests checked in to the public source at least.
 
-The library for this project will be using unit tests with coverage of all data structures and all public API. This will serve three main goals of the library.
+The library for this project will be using unit tests with coverage of all data structures and all public API functions. This will serve three main goals of the library.
 
-1. The library is well-tested. Every time a change is made to a data structure or another part of the library, which may affect several data structure, all the tests can be run to check nothing breaks. This dramatically lovers the chance of small bugs creeping in.
+1. The library is well-tested. Every time a change is made to a data structure or another part of the library, which may affect several data structure, all the tests can be run to check nothing breaks. This dramatically lowers the chance of small bugs creeping in.
 2. Tests drive forward implementation. This is also known as Test-Driven Development; TDD for short. Once the general structure of the library has been determined features can be fleshed out by writing the tests first and then the implementation. This will both ensure all API is tested but also that there is no API features that has not been tested.
-3. A well tested library will incentivize third-party developers, that wish to extend and contribute their code to the library, to write tests for their code. Looking at the existing tests will also make it easier for the developer to write matching tests for their code.
+3. A well tested library will encourage third-party developers, who wish to extend and contribute their code to the library, to write tests for their code. Looking at the existing tests will also make it easier for the developer to write matching tests for their code.
 
 ## Error handling
 
-Libraries like C# and Java has native support for Exceptions which makes it really easy for developers to determine if something went wrong and then take proper actions. Since C doesn't have any native support for handling errors we'll have to deal with them other ways. There are several approaches to the problem.
+Libraries like C# and Java has native support for Exceptions which makes it really easy for developers to determine whether something went wrong and then take proper actions. Since C doesn't have any native support for handling errors we'll have to deal with them other ways. There are several approaches to the problem.
 
-* Return values (-1, -2, etc. corresponding to a error)
+* Return values (-1, -2, etc. corresponding to an error)
 * out parameters. functions have a last parameter that will contain an error message or code that must be checked.
 * callbacks. functions have a callback parameter that takes a function pointer to a function that will be called with a error message or code.
 * global callbacks. like callbacks but there is only a global function that will be called no matter where the error occurs.
