@@ -189,3 +189,37 @@ Libraries like C# and Java has native support for Exceptions which makes it real
 * error state. each instance of a data structure holds a state which indicates whether an error has occurred along with an error code or an error message. Developers will have to check to check the error state for each call.
 
 # Implementation [section-implementation]
+
+## cc_objects
+
+Our design goal with the item objects is to have them be very simple, yet quite extensible. We have some built in basic functionality, but the idea is that the user of the library can extend it with their own custom data types and functionalities.
+
+The objects does two things: first, it can serialize and de-serialize data; second, it can implement functions to run on the objects. For data serialization, we support three primitive data types: int, float and string (const char *).
+
+cc_object *number = cc_object_with_int(42);
+int in_val = cc_object_int_value(number);
+*Example of how to serialize an int to and from a cc_object*
+
+In addition to this, we have initializers for making custom data types with ether a pointer (void *) or a data block with a length. Since we are using garbage collection in the project, there is not need to specify, who "owns" a pointer (i.e. who is responsible for free'ing it), when saving a pointer in a cc_object. The pointer and data types can be used directly, and just contain whatever data type you want, but the preferred approach is that each custom data type in a project will have their own serialization and de-serialization to and from cc_objects, which will be implemented with the pointer or data type object. This is also why you have to specify a data string when creating a cc_object with a pointer or data block. The custom serialization function on a custom data type should have a type string, which is unique to that type, and set it on the cc_object when serializing. An example of a custom cc_object serialization function is the one from the cc_linked_list object:
+
+// cc_linked_list.h
+extern const char *const cc_linked_list_type;
+
+// cc_linked_list.c
+const char * const cc_linked_list_type = "cc_linked_list_type";
+
+cc_object *cc_linked_list_to_object(cc_linked_list *list) {
+  return cc_object_with_pointer(list, cc_linked_list_type);
+}
+
+cc_linked_list *cc_linked_list_from_object(cc_object *object) {
+  return cc_object_pointer_value(object);
+}
+
+*A note on naming: even though the build-in functions for creating cc_objects has the naming convention of cc_object_with_<type> and cc_object_<type>_value, custom data types should still follow the style guide and be prefixed with the object name*
+
+In this example we use the pointer type to save the linked list to a cc_object, since it's quite complex and a lot slower to serialize it to a block of data, and store a copy of it that way. The main difference between the pointer and data block types is that the pointer references the item, while the data block copies the item. Which one to use varies, and it is up to the writer of the specific data type to choose. Optionally both functions for making referenced and copied objects can be implemented. In this case, they should have a different data type string, since they will no longer be comparable.
+
+Apart from using the cc_objects for saving data, we can, as previously mentioned, implement functionality on top of them. An example of this is the built-in object comparators. The comparator functionality allows us to compare to cc_objects. To be able to compare objects, we need to have a comparator function for each data type. For this, we have the ``cc_object_register_comparator_for_type`` function, which takes a type string and a function pointer. When creating a custom cc_object type, you can implement a custom comparator function, and register it with this function. For comparing two cc_objects, you use the ``cc_object_compare`` function. This function will first compare the types of the two objects: if they're not the same type, we can already say that they're not equal. If they are, we will find the comparator function registered for that type, and return the result of that. The CC library comes with comparators for the built-in types already registered.
+
+This show how to implement dynamic functionality on top of the cc_objects. The point of doing it this way is that users of the library can create their own functionality like this, just as we do it internally. An example of custom functionality could be a cc_object to JSON function. If the user want this in his or her program, it's as easy as defining a function prototype, which will encode a cc_object to a JSON stirng, and write an implementation for each object type. This way, it would also work recursively: the implementation function for a list type would just need to call the JSON serialization function on all it's contained cc_objects. When implementing such custom functionality, one would need to write implementations for all object types in the CC library, as well as all custom data types. This works just like extensible classes in an object oriented language, except that it's in completely standard C code.
