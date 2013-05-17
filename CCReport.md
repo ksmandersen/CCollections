@@ -15,7 +15,10 @@ Date: May 22, 2013
 	- [Code Structure][section-codestructure]
 	- [API][section-api]
 	- [Testing][section-testing]
+	- [Error Handling][section-error-handling]
 * [Implementation][section-implementation]
+	- [Performance][section-performance]
+	- [Testing][section-testing-impl]
 
 
 # Preface [section-preface]
@@ -128,7 +131,7 @@ With the cc_object-approach, we have, in normal C code, replicated some of the f
 
 We want our collections to be architectured in a way so that they have a common interface for data exchange. We want it to be easy to convert between different data structures, and to get data in and out of the different kinds of collections. We already have a uniform way of storing different data types with our object structures, and we need something like that for our collections.
 
-The way to have all data structures be interchangable is to have a common structure, that each can convert to and from. In this collection, we have chosen enumerators to be that common data structure. All collections should be able to return an enumerator, and all collections should be able to be created with an enumerator as argument.
+The way to have all data structures be interchangeable is to have a common structure, that each can convert to and from. In this collection, we have chosen enumerators to be that common data structure. All collections should be able to return an enumerator, and all collections should be able to be created with an enumerator as argument.
 
 The next problem is how to do this in C. In an object oriented language, we would be able to make an enumerable interface, which all collection subclasses could implement. We do not have this feature in C. What we can do have is the ability in incapsulate structures in other structures. This allows us to make something not unlike inheritance from object oriented languages. By defining a cc_enumerable struct, we can place this inside of a cc_collection struct to "implement it" in the collection. We will then be able to add function pointers, which each type of collection can override, to provide their own implementation. This approach is necessary for functions to be called automatically by the library. In this case, it's the move next function, which should take a step in the enumeration. Getting an enumerator from a collection is not something that needs to be done automatically, but rather something the user of the library should do, so we don't need to define it this strongly, but rather just ensure that the collections follow a specific style for getting enumerators.
 
@@ -188,6 +191,9 @@ Libraries like C# and Java has native support for Exceptions which makes it real
 * global callbacks. like callbacks but there is only a global function that will be called no matter where the error occurs.
 * error state. each instance of a data structure holds a state which indicates whether an error has occurred along with an error code or an error message. Developers will have to check to check the error state for each call.
 
+TODO:
+Make a decision here!
+
 # Implementation [section-implementation]
 
 ## cc_objects
@@ -223,3 +229,67 @@ In this example we use the pointer type to save the linked list to a cc_object, 
 Apart from using the cc_objects for saving data, we can, as previously mentioned, implement functionality on top of them. An example of this is the built-in object comparators. The comparator functionality allows us to compare to cc_objects. To be able to compare objects, we need to have a comparator function for each data type. For this, we have the ``cc_object_register_comparator_for_type`` function, which takes a type string and a function pointer. When creating a custom cc_object type, you can implement a custom comparator function, and register it with this function. For comparing two cc_objects, you use the ``cc_object_compare`` function. This function will first compare the types of the two objects: if they're not the same type, we can already say that they're not equal. If they are, we will find the comparator function registered for that type, and return the result of that. The CC library comes with comparators for the built-in types already registered.
 
 This show how to implement dynamic functionality on top of the cc_objects. The point of doing it this way is that users of the library can create their own functionality like this, just as we do it internally. An example of custom functionality could be a cc_object to JSON function. If the user want this in his or her program, it's as easy as defining a function prototype, which will encode a cc_object to a JSON stirng, and write an implementation for each object type. This way, it would also work recursively: the implementation function for a list type would just need to call the JSON serialization function on all it's contained cc_objects. When implementing such custom functionality, one would need to write implementations for all object types in the CC library, as well as all custom data types. This works just like extensible classes in an object oriented language, except that it's in completely standard C code.
+
+## Performance [section-performance]
+
+The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR (Common Language Runtime) or VM (Virtual Machine) like C# and Java does. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
+
+However, the design choices made about this library favors functionality, new concepts and usability over performance. Performance is still as important as ever, but not focused on in this project for two main reasons:
+
+1. The overall goal of this project is as mentioned earlier to investigate possible implementations of concepts taken from OO-language collection libraries. These languages have wildly unsimilar qualities, some of which will be mimicked in the implementation of this project, inherently hurting the level of performance that could otherwise be achieved.
+2. While some of the design decisions hinters or dampens performance it would be possible still be possible to optimize them for performance. However, optimizing for and testing performance impacts is a hugely time consumptious task that needs thorough research and investigation. The time needed to be spend on performance optimization is much better spend on investigating implementation of concepts as described in 1.
+
+## Testing [section-testing-impl]
+
+As noted in [section ?][section-testing-impl] this project will be covering its implementation with functional unit tests. For the implementation of the unit tests a framework called [Unity](https://github.com/ThrowTheSwitch/Unity) has ben chosen. It was picked from a list of [45 competing libraries](http://en.wikipedia.org/wiki/List_of_unit_testing_frameworks#C). It features [xUnit](http://en.wikipedia.org/wiki/XUnit) compliant unit tests and is very light weight. This means that it can easily be bundled with library src and does not have to be installed separately from the source like some of the other choices.
+
+The library features a total of 137 unit tests across all public functions for both the data structures and the cc_objects and enumerators. The tests can easily be compiled and run straight from the command line using the Makefile. When the command ``make test`` is run it will run all unit tests for library and tell how many tests failed or passed.
+
+![Generated test output](images/test_output.png)
+
+This automation makes it easy to run the tests frequently to ensure that no functionality breaks when working on the library code. The automation could even be taken a step further with tools like Guard that runs the test every time a source code file is saved, notifying the developer of test failures.
+
+
+    void test_can_create_linked_linked_list_from_array_list(void) {
+      cc_array_list *a_list = cc_array_list_new();
+      int i;
+      for (i = 1; i < 512; i++) {
+        cc_array_list_add_last(a_list, cc_object_with_int(i));
+      }
+
+      cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+      cc_linked_list *b_list = cc_linked_list_new_with_enumerator(e);
+
+      TEST_ASSERT_EQUAL(cc_array_list_length(a_list), cc_linked_list_length(b_list));
+      e = cc_array_list_get_enumerator(a_list);
+      while (cc_enumerator_move_next(e)) {
+        cc_object *obj = cc_enumerator_current(e);
+        TEST_ASSERT_EQUAL(true, cc_linked_list_contains(b_list, obj));
+      }
+    }
+
+Above is listed one of the 137 tests of the library illustrating how the Unity framework works. Essentially it boils down to only a few set of macros for determining whether a test fails or succeeds. In the example above the macro ``TEST_ASSERT_EQUAL`` is used multiple times. The macro takes two arguments where the first is the value expected and the second is the value returned. If the values doesn't match the test will fail.
+
+### Coverage
+
+The Unity framework has a lot of benefits with its lightweight, portability and ease of use but where it falls short is with code coverage. The framework does not include any functionality to determine what percentage of the code is being covered by tests or which paths are not being executed. Some of the frameworks have this functionality but lacks portability or is part of massive libraries that we do not wish to depend upon.
+
+This means that we cannot make any guarantees that all of the code in the library has been tested. In fact we can almost guarantee that not all code paths have been executed. In turn we can however guarantee that every publicly exposed function in the library has at least one or more test associated with it. Most crucial functions have a lot more.
+
+## Use case testing
+
+With this library is bundled a few but useful use case tests.
+
+They provide:
+
+* Ensuruance of the functionality of the library
+* Examples of how the library works
+* Tests that contain larger test data sets than the unit tests
+
+## Performance testing
+
+As mentioned in [section ?][section-performance] this library will not be optimized or tested for performance metrics. However it is worth "speculating" about in what ways it would be possible to generate performance metrics.
+
+# Code Reuse
+
+About re-using implementation code across different data structures. For an example a set is just a linked list with unique items. A sorted list is a linked list with custom insertion function. A dictionary is a set for keys and an array of linked lists for values.
