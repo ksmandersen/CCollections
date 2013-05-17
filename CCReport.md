@@ -15,7 +15,9 @@ Date: May 22, 2013
 	- [Code Structure][section-codestructure]
 	- [API][section-api]
 	- [Testing][section-testing]
+	- [Error Handling][section-error-handling]
 * [Implementation][section-implementation]
+	- [Performance][section-performance]
 
 
 # Preface [section-preface]
@@ -128,7 +130,7 @@ With the cc_object-approach, we have, in normal C code, replicated some of the f
 
 We want our collections to be architectured in a way so that they have a common interface for data exchange. We want it to be easy to convert between different data structures, and to get data in and out of the different kinds of collections. We already have a uniform way of storing different data types with our object structures, and we need something like that for our collections.
 
-The way to have all data structures be interchangable is to have a common structure, that each can convert to and from. In this collection, we have chosen enumerators to be that common data structure. All collections should be able to return an enumerator, and all collections should be able to be created with an enumerator as argument.
+The way to have all data structures be interchangeable is to have a common structure, that each can convert to and from. In this collection, we have chosen enumerators to be that common data structure. All collections should be able to return an enumerator, and all collections should be able to be created with an enumerator as argument.
 
 The next problem is how to do this in C. In an object oriented language, we would be able to make an enumerable interface, which all collection subclasses could implement. We do not have this feature in C. What we can do have is the ability in incapsulate structures in other structures. This allows us to make something not unlike inheritance from object oriented languages. By defining a cc_enumerable struct, we can place this inside of a cc_collection struct to "implement it" in the collection. We will then be able to add function pointers, which each type of collection can override, to provide their own implementation. This approach is necessary for functions to be called automatically by the library. In this case, it's the move next function, which should take a step in the enumeration. Getting an enumerator from a collection is not something that needs to be done automatically, but rather something the user of the library should do, so we don't need to define it this strongly, but rather just ensure that the collections follow a specific style for getting enumerators.
 
@@ -188,4 +190,29 @@ Libraries like C# and Java has native support for Exceptions which makes it real
 * global callbacks. like callbacks but there is only a global function that will be called no matter where the error occurs.
 * error state. each instance of a data structure holds a state which indicates whether an error has occurred along with an error code or an error message. Developers will have to check to check the error state for each call.
 
+TODO:
+Make a decision here!
+
 # Implementation [section-implementation]
+
+## Performance [section-performance]
+
+The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR or VM. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
+
+As discussed earlier the overall goals for this project is to investigate the implementation of concepts from the modern OO-languages world into the C programming languages. 
+
+Outline:
+* performance is not a main goal of the project
+* the whole architecture of the library is "counter-performance"
+* a lot of time can be spend optimizing for performance (its a rabbit-hole)
+* this project is focused on concepts and functionality
+
+
+Outline2:
+- We're not really focusing on performance
+- We're focusing on concepts and features ported from OO languages.
+- Optimizing for and testing performance is something that takes a lot of time unless your're already an export in the area.
+- Performance is still a great concern in any library; even more so in C because many developers use the language because of it's great performance characteristics.
+- C is "as close to the metal" as you get.
+- We're going in the complete opposite direction with this library.
+- Because of these two reasons we have decided not to put an emphasis on performance.
