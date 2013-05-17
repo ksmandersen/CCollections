@@ -18,6 +18,7 @@ Date: May 22, 2013
 	- [Error Handling][section-error-handling]
 * [Implementation][section-implementation]
 	- [Performance][section-performance]
+	- [Testing][section-testing-impl]
 
 
 # Preface [section-preface]
@@ -204,5 +205,57 @@ However, the design choices made about this library favors functionality, new co
 1. The overall goal of this project is as mentioned earlier to investigate possible implementations of concepts taken from OO-language collection libraries. These languages have wildly unsimilar qualities, some of which will be mimicked in the implementation of this project, inherently hurting the level of performance that could otherwise be achieved.
 2. While some of the design decisions hinters or dampens performance it would be possible still be possible to optimize them for performance. However, optimizing for and testing performance impacts is a hugely time consumptious task that needs thorough research and investigation. The time needed to be spend on performance optimization is much better spend on investigating implementation of concepts as described in 1.
 
-## Testing
+## Testing [section-testing-impl]
 
+As noted in [section ?][section-testing-impl] this project will be covering its implementation with functional unit tests. For the implementation of the unit tests a framework called [Unity](https://github.com/ThrowTheSwitch/Unity) has ben chosen. It was picked from a list of [45 competing libraries](http://en.wikipedia.org/wiki/List_of_unit_testing_frameworks#C). It features [xUnit](http://en.wikipedia.org/wiki/XUnit) compliant unit tests and is very light weight. This means that it can easily be bundled with library src and does not have to be installed separately from the source like some of the other choices.
+
+The library features a total of 137 unit tests across all public functions for both the data structures and the cc_objects and enumerators. The tests can easily be compiled and run straight from the command line using the Makefile. When the command ``make test`` is run it will run all unit tests for library and tell how many tests failed or passed.
+
+![Generated test output](images/test_output.png)
+
+This automation makes it easy to run the tests frequently to ensure that no functionality breaks when working on the library code. The automation could even be taken a step further with tools like Guard that runs the test every time a source code file is saved, notifying the developer of test failures.
+
+
+    void test_can_create_linked_linked_list_from_array_list(void) {
+      cc_array_list *a_list = cc_array_list_new();
+      int i;
+      for (i = 1; i < 512; i++) {
+        cc_array_list_add_last(a_list, cc_object_with_int(i));
+      }
+
+      cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+      cc_linked_list *b_list = cc_linked_list_new_with_enumerator(e);
+
+      TEST_ASSERT_EQUAL(cc_array_list_length(a_list), cc_linked_list_length(b_list));
+      e = cc_array_list_get_enumerator(a_list);
+      while (cc_enumerator_move_next(e)) {
+        cc_object *obj = cc_enumerator_current(e);
+        TEST_ASSERT_EQUAL(true, cc_linked_list_contains(b_list, obj));
+      }
+    }
+
+Above is listed one of the 137 tests of the library illustrating how the Unity framework works. Essentially it boils down to only a few set of macros for determining whether a test fails or succeeds. In the example above the macro ``TEST_ASSERT_EQUAL`` is used multiple times. The macro takes two arguments where the first is the value expected and the second is the value returned. If the values doesn't match the test will fail.
+
+### Coverage
+
+The Unity framework has a lot of benefits with its lightweight, portability and ease of use but where it falls short is with code coverage. The framework does not include any functionality to determine what percentage of the code is being covered by tests or which paths are not being executed. Some of the frameworks have this functionality but lacks portability or is part of massive libraries that we do not wish to depend upon.
+
+This means that we cannot make any guarantees that all of the code in the library has been tested. In fact we can almost guarantee that not all code paths have been executed. In turn we can however guarantee that every publicly exposed function in the library has at least one or more test associated with it. Most crucial functions have a lot more.
+
+## Use case testing
+
+With this library is bundled a few but useful use case tests.
+
+They provide:
+
+* Ensuruance of the functionality of the library
+* Examples of how the library works
+* Tests that contain larger test data sets than the unit tests
+
+## Performance testing
+
+As mentioned in [section ?][section-performance] this library will not be optimized or tested for performance metrics. However it is worth "speculating" about in what ways it would be possible to generate performance metrics.
+
+# Code Reuse
+
+About re-using implementation code across different data structures. For an example a set is just a linked list with unique items. A sorted list is a linked list with custom insertion function. A dictionary is a set for keys and an array of linked lists for values.
