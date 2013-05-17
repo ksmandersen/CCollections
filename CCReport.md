@@ -197,22 +197,12 @@ Make a decision here!
 
 ## Performance [section-performance]
 
-The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR or VM. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
+The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR (Common Language Runtime) or VM (Virtual Machine) like C# and Java does. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
 
-As discussed earlier the overall goals for this project is to investigate the implementation of concepts from the modern OO-languages world into the C programming languages. 
+However, the design choices made about this library favors functionality, new concepts and usability over performance. Performance is still as important as ever, but not focused on in this project for two main reasons:
 
-Outline:
-* performance is not a main goal of the project
-* the whole architecture of the library is "counter-performance"
-* a lot of time can be spend optimizing for performance (its a rabbit-hole)
-* this project is focused on concepts and functionality
+1. The overall goal of this project is as mentioned earlier to investigate possible implementations of concepts taken from OO-language collection libraries. These languages have wildly unsimilar qualities, some of which will be mimicked in the implementation of this project, inherently hurting the level of performance that could otherwise be achieved.
+2. While some of the design decisions hinters or dampens performance it would be possible still be possible to optimize them for performance. However, optimizing for and testing performance impacts is a hugely time consumptious task that needs thorough research and investigation. The time needed to be spend on performance optimization is much better spend on investigating implementation of concepts as described in 1.
 
+## Testing
 
-Outline2:
-- We're not really focusing on performance
-- We're focusing on concepts and features ported from OO languages.
-- Optimizing for and testing performance is something that takes a lot of time unless your're already an export in the area.
-- Performance is still a great concern in any library; even more so in C because many developers use the language because of it's great performance characteristics.
-- C is "as close to the metal" as you get.
-- We're going in the complete opposite direction with this library.
-- Because of these two reasons we have decided not to put an emphasis on performance.
