@@ -230,6 +230,32 @@ Apart from using the cc_objects for saving data, we can, as previously mentioned
 
 This show how to implement dynamic functionality on top of the cc_objects. The point of doing it this way is that users of the library can create their own functionality like this, just as we do it internally. An example of custom functionality could be a cc_object to JSON function. If the user want this in his or her program, it's as easy as defining a function prototype, which will encode a cc_object to a JSON stirng, and write an implementation for each object type. This way, it would also work recursively: the implementation function for a list type would just need to call the JSON serialization function on all it's contained cc_objects. When implementing such custom functionality, one would need to write implementations for all object types in the CC library, as well as all custom data types. This works just like extensible classes in an object oriented language, except that it's in completely standard C code.
 
+## Collections
+
+### Array List
+### Binary Tree
+### Dictionary
+### Linked List
+### Queue
+### Set
+### Sorted List
+### Stack
+
+## Enumerators
+
+The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocesser code), we can recreate the functionality.
+
+An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actualy functionality is implemented by the collection being looped. The enumerators doesn't even have a public contstructor function; it's each collections responsability to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
+
+When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as ``cc_linked_list_get_enumerator``. That function should then return a new enumerator, with the move_next function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a cc_object, which should be set to the item that is the current item in the iteration, and which is returned from the get_current function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
+
+cc_enumerator *e = cc_linked_list_get_enumerator(list);
+while (cc_enumerator_move_next(e)) {
+  cc_object *obj = cc_enumerator_current(e);
+}
+
+It should be noted that when creating the enumerator, the current object is not the first object in the collection, but just a null object, and the first object is retrieved with the first call to cc_enumerator_move_next. This is for practical rather than technical reasons, because it allows for a simpler syntax (this way, we can start the while loop right after getting the enumerator. The other way, we would have to validate the return value of get_current, and then use a do..while).
+
 ## Performance [section-performance]
 
 The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR (Common Language Runtime) or VM (Virtual Machine) like C# and Java does. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
