@@ -256,6 +256,43 @@ while (cc_enumerator_move_next(e)) {
 
 It should be noted that when creating the enumerator, the current object is not the first object in the collection, but just a null object, and the first object is retrieved with the first call to cc_enumerator_move_next. This is for practical rather than technical reasons, because it allows for a simpler syntax (this way, we can start the while loop right after getting the enumerator. The other way, we would have to validate the return value of get_current, and then use a do..while).
 
+The other thing we can use enumerators for, apart from implementing foreach-like iteration, is, as mentioned in the architecture section, to be able to convert between collections, by using the enumerators as an interexchangable collection type. For all collection supporting enumerators, it it possible to get an item-enumerator. All these should also have a designated constructor for taking an enumerator, and filling the collection with the items from that. This would allow us to very easily convert between collection types, no matter how they're implemented. Say that we wanted to convert a collection from an array list to a linked list, we would just use this short piece of code:
+
+cc_array_list *list = ...
+cc_enumerator *e = cc_array_list_get_enumerator(list);
+cc_linked list *list2 = cc_linked_list_new_with_enumerator(e);
+
+Another feature we then can implement is running code on each element in an enumerator. This would allow us to do things like filter, map and fold a collection. The way this is implemted is by doing something very much alike what we do in the collections' enumerator functions: we create an enumerator and specify a move next function. The move next function would then call the move next on the "parent" enumerator and setting the parents current object to the childs current object. This would create a completely transparent enumerator, in which we can implement some custom functionality. An example of this is a filter move next function:
+
+bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
+	filter_enumerator_data *data = e->data;
+	cc_enumerator *parent_e = data->parent;
+	
+	while (cc_enumerator_move_next(parent_e)) {
+		cc_object *obj = cc_enumerator_current(parent_e);
+		
+		if (data->filter(obj)) {
+			e->current = obj;
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+With this filter function, we can now apply a filter to any enumerator:
+
+bool odd_filter(cc_object *obj) {
+	return (cc_object_int_value(obj) % 2 == 1);
+}
+
+cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
+e->data = GC_MALLOC(sizeof(int));
+*((int *)e->data) = 0;
+cc_enumerator *odd_numbers = cc_enumerator_filter(e, odd_filter);
+
+Other than just being pretty simple to both use and implement, this approach also follows our philosify of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns the reverse enumerator.
+
 ## Performance [section-performance]
 
 The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR (Common Language Runtime) or VM (Virtual Machine) like C# and Java does. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
