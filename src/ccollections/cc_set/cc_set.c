@@ -65,6 +65,13 @@ void cc_set_add(cc_set *set, cc_object *obj) {
 	}
 }
 
+cc_object *cc_set_get(cc_set *set, int index) {
+	if (set == NULL)
+		return NULL;
+
+	return cc_linked_list_get(set->list, index);
+}
+
 void cc_set_remove(cc_set *set, cc_object *obj) {
 	int index = cc_set_find(set, obj);
 

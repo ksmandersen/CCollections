@@ -263,6 +263,7 @@ void test_queue() {
 
 extern void test_can_create_set(void);
 extern void test_can_add_object_to_set(void);
+extern void test_can_get_object_from_set(void);
 extern void test_can_enumerate_objects_in_set(void);
 extern void test_can_find_contained_objects_in_set(void);
 extern void test_cannot_find_uncontained_objects_in_set(void);
@@ -275,6 +276,7 @@ void test_set() {
 
   RUN_TEST(test_can_create_set, 1);
   RUN_TEST(test_can_add_object_to_set, 1);
+  RUN_TEST(test_can_get_object_from_set, 1);
   RUN_TEST(test_can_enumerate_objects_in_set, 1);
   RUN_TEST(test_can_find_contained_objects_in_set, 1);
   RUN_TEST(test_cannot_find_uncontained_objects_in_set, 1);

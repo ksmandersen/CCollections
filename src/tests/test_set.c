@@ -38,6 +38,14 @@ void test_can_add_object_to_set(void)
   TEST_ASSERT_EQUAL(POPULATE_COUNT, cc_set_count(a_set));
 }
 
+void test_can_get_object_from_set(void) {
+  cc_set *a_set = cc_set_new();
+  cc_set_populate(a_set);
+
+  cc_object *ret = cc_set_get(a_set, 5);
+  TEST_ASSERT_EQUAL(true, cc_object_is_equal(ret, cc_object_with_int(600)));
+}
+
 void test_can_enumerate_objects_in_set(void)
 {
   cc_set *a_set = cc_set_new();
