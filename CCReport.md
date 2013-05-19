@@ -245,15 +245,74 @@ This is illustrated nicely with ``cc_set`` implementation of a set of unique ite
 
 ## Collections
 
-### Array List
-### Binary Tree
-### Dictionary
-### Linked List
-### Queue
-### Set
-### Sorted List
-### Stack
+In this section the various collection types implemented in the library will be briefly described. Their description will only be high-level and brief while unique features of the individual collections will be discussed at greater length.
 
+First a note on the amount and selection of data structures implemented. In this section we will discuss the data structures: *Array List, Linked List, Sorted List, Set, Stack, Queue, Dictionary and Binary Tree*. Although the initial plan was to implement more data structures (see [section ?][section-vision]) we did not have time for all of them. For more on this refer to the discussion in [section ?][section-discussion].
+
+### Array List [section-array-list]
+
+The first collection type we will discuss is the array list. This simple data structure is in reality just a dynamically expanding array. It contains a ``heap`` with a fixed capacity for cc_objects. Once the capacity has been reached the data structure will automatically expands it heap to double its previous size.
+
+    struct cc_array_list_struct {
+      cc_collection c;
+      
+      cc_object **heap;
+      int count;
+      int heap_size;
+    };
+
+Above is the internal representation of an array list. Like all other data structures in the library it has a reference to its ``cc_collection``. The structure also tracks the number of elements currently in the structure and what the limit is (``heap_size``). When the structure reaches its limit, the next call to the add function will reallocate ``heap`` using ``GC_REALLOC``.
+
+As the name implies Array List has almost identical time complexity to native arrays. Because arrays are used for storing, and the array doubles its size, the complexity of one insertion at the end of the list is O(1). Insertions at the beginning and the middle is O(n) because all subsequent items needs to be moved one item at a time.
+
+Like all other collections in the library, Array List comes with a standard set of features. In the table below is listed these functions with a snippet of their documentation.
+
+| function | Description
+-------|----------------|
+cc_array_list_clear | Removes all objects from a array list
+cc_array_list_new_with_enumerator | Creates a new array list with all objects from the enumerator
+cc_array_list_contains   | Determines whether an object is in the array list    |
+cc_array_list_merge | Merges two lists together by adding all objects from the b_list to the a_list
+
+Array list is the only data structure apart from the sorted list that has support for sorting. The only reason other data structures does not have this feature is lack of time to implement it. For more on this see [section ?][section-discussion].
+
+The sorting function of array list uses the well known divide and conquer algorithm, Quicksort. The sorting method has an average case complexity of ``O(n log n)`` while its worst case is ``O(n^2)``. Although that doesn't seem impressive Quicksort has proven to perform better in practice the most other ``O(n log n)`` algorithms. Quicksort also has the advantage of being easy to implement with in-place partitioning that only requires ``O(n log n)`` additional space. This algorithm is implemented with array list and is used with calls to ``cc_array_list_sort``.
+
+### Linked List [section-linked-list]
+
+    struct cc_linked_list_node_struct {
+      cc_object *object;
+      struct cc_linked_list_node_struct *next;
+      struct cc_linked_list_node_struct *prev;
+    };
+
+    struct cc_linked_list_struct {
+      cc_collection c;
+
+      struct cc_linked_list_node_struct *head;
+      struct cc_linked_list_node_struct *tail;
+
+      int length;
+    };
+
+    cc_linked_list *cc_linked_list_new_with_values(const char *type, ...)
+
+    
+
+### Sorted List [section-sorted-list]
+
+    struct cc_sorted_list_struct {
+      cc_collection c;
+      cc_linked_list *data;
+    };
+
+### Set [section-set]
+### Stack [section-stack]
+### Queue [section-queue]
+### Dictionary [section-dictionary]
+### Binary Tree [section-binary-tree]
+
+ 
 ## Enumerators
 
 The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
@@ -365,3 +424,7 @@ They provide:
 ## Performance testing
 
 As mentioned in [section ?][section-performance] this library will not be optimized or tested for performance metrics. However it is worth "speculating" about in what ways it would be possible to generate performance metrics.
+
+# Discussion [section-discussion]
+
+# Conclusion [section-conclusion]
