@@ -280,11 +280,7 @@ The sorting function of array list uses the well known divide and conquer algori
 
 ### Linked List [section-linked-list]
 
-    struct cc_linked_list_node_struct {
-      cc_object *object;
-      struct cc_linked_list_node_struct *next;
-      struct cc_linked_list_node_struct *prev;
-    };
+The Linked List collection type is as the name indicates a doubly-linked list data structure. The structure store items in node structs and maintains a reference to the first and last item in the list; in the implementation called ``head`` and ``tail``.
 
     struct cc_linked_list_struct {
       cc_collection c;
@@ -295,8 +291,21 @@ The sorting function of array list uses the well known divide and conquer algori
       int length;
     };
 
+Just as the Array List, the Linked List keeps track of its length (number of items in the list). Each node in the structure contains a reference to the stored ``cc_object`` along with references to the next and previous nodes in the list.
+
+    struct cc_linked_list_node_struct {
+      cc_object *object;
+      struct cc_linked_list_node_struct *next;
+      struct cc_linked_list_node_struct *prev;
+    };
+
+Like the Array List, the Linked List has the standard features of ``cc_linked_list_clear``, ``cc_linked_list_contains`` and ``cc_linked_list_merge``. But unlike any other data structure it has a shorthand function for creating a linked list using an argument list (or, ``va_list``) of scalar types.
+
     cc_linked_list *cc_linked_list_new_with_values(const char *type, ...)
 
+The function makes it a lot easier to create a linked list seeded with some initial items without first wrapping them in ``cc_object``. The function can be used as follows:
+
+    cc_linked_list *a_list = cc_linked_list_new_with_values(cc_object_type_int, 4, 8, 15, 16, 23, 42, CC_END);
     
 
 ### Sorted List [section-sorted-list]
