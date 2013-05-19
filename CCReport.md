@@ -149,6 +149,7 @@ In addition to keeping a minimally exposed interface, it should also be document
 
 [^headernote]: the one-header-per-library method is mostly used when the product of the project is an API, and not an implementation. An example of this is OpenGL, which is an API implemented differently across platforms, with the whole public interface in the gl.h header file.
 
+
 ## API [section-api]
 
 One of the problems with a lot of C libraries is the API design. If you don’t put some though into making a consistent and readable interface, it will make the whole project seem messy, and confusing functions with a lot of parameters will be more prone to errors.
@@ -229,6 +230,18 @@ In this example we use the pointer type to save the linked list to a cc_object, 
 Apart from using the cc_objects for saving data, we can, as previously mentioned, implement functionality on top of them. An example of this is the built-in object comparators. The comparator functionality allows us to compare to cc_objects. To be able to compare objects, we need to have a comparator function for each data type. For this, we have the ``cc_object_register_comparator_for_type`` function, which takes a type string and a function pointer. When creating a custom cc_object type, you can implement a custom comparator function, and register it with this function. For comparing two cc_objects, you use the ``cc_object_compare`` function. This function will first compare the types of the two objects: if they're not the same type, we can already say that they're not equal. If they are, we will find the comparator function registered for that type, and return the result of that. The CC library comes with comparators for the built-in types already registered.
 
 This shows how to implement dynamic functionality on top of the cc_objects. The point of doing it this way is that users of the library can create their own functionality like this, just as we do it internally. An example of custom functionality could be a cc_object to JSON function. If the user want this in his or her program, it's as easy as defining a function prototype, which will encode a cc_object to a JSON string, and write an implementation for each object type. This way, it would also work recursively: the implementation function for a list type would just need to call the JSON serialization function on all it's contained cc_objects. When implementing such custom functionality, one would need to write implementations for all object types in the CC library, as well as all custom data types. This works just like extensible classes in an object oriented language, except that it's in completely standard C code.
+
+## Code Reuse
+
+As a side effect of great architectured extensibility of the library it becomes very easy and convenient to reuse code across the library. All data structures of course share the cc_objects and enumerators code. But data structures can be built as extension of another data structure.
+
+    struct cc_set_struct {
+      cc_collection c;
+      
+      cc_linked_list *list;
+    };
+
+This is illustrated nicely with ``cc_set`` implementation of a set of unique items. The set data structures is built on top of the ``cc_linked_list`` data structure, reusing all the code for insertion, deletion, enumeration and more. All that the set implementation needs to do is to forward calls to the linked list and provide a new insertion function that checks if an item is already in the linked list. Thus building on the 400+ lines of code long linked list implementation and just providing a mere 140 lines of set implementation code.
 
 ## Collections
 
@@ -352,7 +365,3 @@ They provide:
 ## Performance testing
 
 As mentioned in [section ?][section-performance] this library will not be optimized or tested for performance metrics. However it is worth "speculating" about in what ways it would be possible to generate performance metrics.
-
-# Code Reuse
-
-About re-using implementation code across different data structures. For an example a set is just a linked list with unique items. A sorted list is a linked list with custom insertion function. A dictionary is a set for keys and an array of linked lists for values.
