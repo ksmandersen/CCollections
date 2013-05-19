@@ -202,25 +202,25 @@ Our design goal with the item objects is to have them be very simple, yet quite 
 
 The objects does two things: first, it can serialize and de-serialize data; second, it can implement functions to run on the objects. For data serialization, we support three primitive data types: int, float and string (const char *).
 
-cc_object *number = cc_object_with_int(42);
-int in_val = cc_object_int_value(number);
-*Example of how to serialize an int to and from a cc_object*
+    cc_object *number = cc_object_with_int(42);
+    int in_val = cc_object_int_value(number);
+***Example of how to serialize an int to and from a cc_object***
 
 In addition to this, we have initializers for making custom data types with ether a pointer (void *) or a data block with a length. Since we are using garbage collection in the project, there is not need to specify, who "owns" a pointer (i.e. who is responsible for free'ing it), when saving a pointer in a cc_object. The pointer and data types can be used directly, and just contain whatever data type you want, but the preferred approach is that each custom data type in a project will have their own serialization and de-serialization to and from cc_objects, which will be implemented with the pointer or data type object. This is also why you have to specify a data string when creating a cc_object with a pointer or data block. The custom serialization function on a custom data type should have a type string, which is unique to that type, and set it on the cc_object when serializing. An example of a custom cc_object serialization function is the one from the cc_linked_list object:
 
-// cc_linked_list.h
-extern const char *const cc_linked_list_type;
+    // cc_linked_list.h
+    extern const char *const cc_linked_list_type;
 
-// cc_linked_list.c
-const char * const cc_linked_list_type = "cc_linked_list_type";
+    // cc_linked_list.c
+    const char * const cc_linked_list_type = "cc_linked_list_type";
 
-cc_object *cc_linked_list_to_object(cc_linked_list *list) {
-  return cc_object_with_pointer(list, cc_linked_list_type);
-}
+    cc_object *cc_linked_list_to_object(cc_linked_list *list) {
+      return cc_object_with_pointer(list, cc_linked_list_type);
+    }
 
-cc_linked_list *cc_linked_list_from_object(cc_object *object) {
-  return cc_object_pointer_value(object);
-}
+    cc_linked_list *cc_linked_list_from_object(cc_object *object) {
+      return cc_object_pointer_value(object);
+    }
 
 *A note on naming: even though the build-in functions for creating cc_objects has the naming convention of cc_object_with_<type> and cc_object_<type>_value, custom data types should still follow the style guide and be prefixed with the object name*
 
@@ -228,7 +228,7 @@ In this example we use the pointer type to save the linked list to a cc_object, 
 
 Apart from using the cc_objects for saving data, we can, as previously mentioned, implement functionality on top of them. An example of this is the built-in object comparators. The comparator functionality allows us to compare to cc_objects. To be able to compare objects, we need to have a comparator function for each data type. For this, we have the ``cc_object_register_comparator_for_type`` function, which takes a type string and a function pointer. When creating a custom cc_object type, you can implement a custom comparator function, and register it with this function. For comparing two cc_objects, you use the ``cc_object_compare`` function. This function will first compare the types of the two objects: if they're not the same type, we can already say that they're not equal. If they are, we will find the comparator function registered for that type, and return the result of that. The CC library comes with comparators for the built-in types already registered.
 
-This show how to implement dynamic functionality on top of the cc_objects. The point of doing it this way is that users of the library can create their own functionality like this, just as we do it internally. An example of custom functionality could be a cc_object to JSON function. If the user want this in his or her program, it's as easy as defining a function prototype, which will encode a cc_object to a JSON stirng, and write an implementation for each object type. This way, it would also work recursively: the implementation function for a list type would just need to call the JSON serialization function on all it's contained cc_objects. When implementing such custom functionality, one would need to write implementations for all object types in the CC library, as well as all custom data types. This works just like extensible classes in an object oriented language, except that it's in completely standard C code.
+This shows how to implement dynamic functionality on top of the cc_objects. The point of doing it this way is that users of the library can create their own functionality like this, just as we do it internally. An example of custom functionality could be a cc_object to JSON function. If the user want this in his or her program, it's as easy as defining a function prototype, which will encode a cc_object to a JSON string, and write an implementation for each object type. This way, it would also work recursively: the implementation function for a list type would just need to call the JSON serialization function on all it's contained cc_objects. When implementing such custom functionality, one would need to write implementations for all object types in the CC library, as well as all custom data types. This works just like extensible classes in an object oriented language, except that it's in completely standard C code.
 
 ## Collections
 
@@ -243,55 +243,55 @@ This show how to implement dynamic functionality on top of the cc_objects. The p
 
 ## Enumerators
 
-The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocesser code), we can recreate the functionality.
+The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
 
-An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actualy functionality is implemented by the collection being looped. The enumerators doesn't even have a public contstructor function; it's each collections responsability to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
+An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actual functionality is implemented by the collection being looped. The enumerators doesn't even have a public constructor function; it is each collections responsibility to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
 
 When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as ``cc_linked_list_get_enumerator``. That function should then return a new enumerator, with the move_next function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a cc_object, which should be set to the item that is the current item in the iteration, and which is returned from the get_current function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
 
-cc_enumerator *e = cc_linked_list_get_enumerator(list);
-while (cc_enumerator_move_next(e)) {
-  cc_object *obj = cc_enumerator_current(e);
-}
+    cc_enumerator *e = cc_linked_list_get_enumerator(list);
+    while (cc_enumerator_move_next(e)) {
+      cc_object *obj = cc_enumerator_current(e);
+    }
 
 It should be noted that when creating the enumerator, the current object is not the first object in the collection, but just a null object, and the first object is retrieved with the first call to cc_enumerator_move_next. This is for practical rather than technical reasons, because it allows for a simpler syntax (this way, we can start the while loop right after getting the enumerator. The other way, we would have to validate the return value of get_current, and then use a do..while).
 
 The other thing we can use enumerators for, apart from implementing foreach-like iteration, is, as mentioned in the architecture section, to be able to convert between collections, by using the enumerators as an interexchangable collection type. For all collection supporting enumerators, it it possible to get an item-enumerator. All these should also have a designated constructor for taking an enumerator, and filling the collection with the items from that. This would allow us to very easily convert between collection types, no matter how they're implemented. Say that we wanted to convert a collection from an array list to a linked list, we would just use this short piece of code:
 
-cc_array_list *list = ...
-cc_enumerator *e = cc_array_list_get_enumerator(list);
-cc_linked list *list2 = cc_linked_list_new_with_enumerator(e);
+    cc_array_list *a_list = ...
+    cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+    cc_linked list *b_list = cc_linked_list_new_with_enumerator(e);
 
-Another feature we then can implement is running code on each element in an enumerator. This would allow us to do things like filter, map and fold a collection. The way this is implemted is by doing something very much alike what we do in the collections' enumerator functions: we create an enumerator and specify a move next function. The move next function would then call the move next on the "parent" enumerator and setting the parents current object to the childs current object. This would create a completely transparent enumerator, in which we can implement some custom functionality. An example of this is a filter move next function:
+Another feature we then can implement is running code on each element in an enumerator. This would allow us to do things like filter, map and fold a collection. The way this is implemented is by doing something very much alike what we do in the collections' enumerator functions: we create an enumerator and specify a move next function. The move next function would then call the move next on the "parent" enumerator and setting the parents current object to the childs current object. This would create a completely transparent enumerator, in which we can implement some custom functionality. An example of this is a filter move next function:
 
-bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
-	filter_enumerator_data *data = e->data;
-	cc_enumerator *parent_e = data->parent;
-	
-	while (cc_enumerator_move_next(parent_e)) {
-		cc_object *obj = cc_enumerator_current(parent_e);
-		
-		if (data->filter(obj)) {
-			e->current = obj;
-			return true;
-		}
-	}
-	
-	return false;
-}
+    bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
+      filter_enumerator_data *data = e->data;
+      cc_enumerator *parent_e = data->parent;
+      
+      while (cc_enumerator_move_next(parent_e)) {
+        cc_object *obj = cc_enumerator_current(parent_e);
+        
+        if (data->filter(obj)) {
+          e->current = obj;
+          return true;
+        }
+      }
+      
+      return false;
+    }
 
 With this filter function, we can now apply a filter to any enumerator:
 
-bool odd_filter(cc_object *obj) {
-	return (cc_object_int_value(obj) % 2 == 1);
-}
+    bool odd_filter(cc_object *obj) {
+      return (cc_object_int_value(obj) % 2 == 1);
+    }
 
-cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
-e->data = GC_MALLOC(sizeof(int));
-*((int *)e->data) = 0;
-cc_enumerator *odd_numbers = cc_enumerator_filter(e, odd_filter);
+    cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
+    e->data = GC_MALLOC(sizeof(int));
+    *((int *)e->data) = 0;
+    cc_enumerator *odd_numbers = cc_enumerator_filter(e, odd_filter);
 
-Other than just being pretty simple to both use and implement, this approach also follows our philosify of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns the reverse enumerator.
+Other than just being pretty simple to both use and implement, this approach also follows our philosiphy of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns the reverse enumerator.
 
 ## Performance [section-performance]
 
