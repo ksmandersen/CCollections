@@ -3,28 +3,12 @@ Author: Ulrik Damm & Kristian Andersen
 Email: ksma@itu.dk
 Date: May 22, 2013
 
-# Table of Contents
-
-* [Preface][section-preface]
-* [Introduction][section-introduction]
-	- [Existing libraries][section-existing]
-	- [Vision][section-vision]
-* [Architecture][section-architecture]
-	- [Memory Management][section-memorymanagement]
-	- [Data Objects][section-dataobjects]
-	- [Code Structure][section-codestructure]
-	- [API][section-api]
-	- [Testing][section-testing]
-	- [Error Handling][section-error-handling]
-* [Implementation][section-implementation]
-	- [Performance][section-performance]
-	- [Testing][section-testing-impl]
-
-
 # Preface [section-preface]
 This report has been written in May 2013 in a 15 ECTS project at the IT University of Copenhagen under the supervision of Hans Henrik Brandenborg Sørensen and Peter Sestoft.
 
 During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for modern Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation that is customary for OO-language collection libraries but uncommon for C libraries.
+
+The entire source, with tests and documentation, for the project is available for download on [GitHub](https://github.com/ksmandersen/CCollections) at [github.com/ksmandersen/CCollections](https://github.com/ksmandersen/CCollections).
 
 # Introduction [section-introduction]
 
@@ -321,6 +305,22 @@ Sorted List is the first collection type in the library where code reuse becomes
 All calls for creating, getting, removing, clearing and enumerating the sorted list is forwarded to the internal linked list using an public functions exposed as the sorted list. The only function that needs to have significant code content is the insertion function. This function then uses an insertion sort algorithm to find the proper place in the linked list to insert the new item. It does so by enumerating the linked list, comparing each item in it with the new item until it finds the correct place.
 
 ### Set [section-set]
+
+The Set collection is very much alike the Sorted List collection because of its small implementation. Just like the Sorted List it uses a Linked List as internal structure for storing items. Although the Set is much like the Sorted List the interface exposed is a bit different. The Set exposes a lot less features than the Linked List. In the table below is listed the public interface for the Set.
+
+| function | Description
+-------|----------------|
+cc_set_new | Creates a new empty set
+cc_set_add | Adds an object to the set
+cc_set_get | Gets an object from a set
+cc_set_remove | Removes an object from the set
+cc_set_clear | Removes all objects from the set
+cc_set_count | Get the number of objects in the set
+cc_set_contains | Determines whether an object is in the set
+cc_set_merge | Merges two sets together by adding all objects
+cc_set_get_enumerator | Get an enumerator for the set
+cc_set_to_object | Make a cc_object from the set
+cc_set_from_object | Make a set from the cc_object
 
 ### Stack [section-stack]
 ### Queue [section-queue]
