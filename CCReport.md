@@ -306,16 +306,22 @@ Like the Array List, the Linked List has the standard features of ``cc_linked_li
 The function makes it a lot easier to create a linked list seeded with some initial items without first wrapping them in ``cc_object``. The function can be used as follows:
 
     cc_linked_list *a_list = cc_linked_list_new_with_values(cc_object_type_int, 4, 8, 15, 16, 23, 42, CC_END);
-    
+
+This features is very similar to what other languages has like Objective-C where you can create an array using the syntax: ``[NSArray arrayWithObjects: @4, @8, @15, @16, @23, @42]``. Note here that the integers are prefixed the ``@`` which makes them into ``NSNumber`` instances. The collection type does not take care of the conversion like our implementation does.
 
 ### Sorted List [section-sorted-list]
+
+Sorted List is the first collection type in the library where code reuse becomes very useful. The structure only has one internal linked list which is used to store the items in.
 
     struct cc_sorted_list_struct {
       cc_collection c;
       cc_linked_list *data;
     };
 
+All calls for creating, getting, removing, clearing and enumerating the sorted list is forwarded to the internal linked list using an public functions exposed as the sorted list. The only function that needs to have significant code content is the insertion function. This function then uses an insertion sort algorithm to find the proper place in the linked list to insert the new item. It does so by enumerating the linked list, comparing each item in it with the new item until it finds the correct place.
+
 ### Set [section-set]
+
 ### Stack [section-stack]
 ### Queue [section-queue]
 ### Dictionary [section-dictionary]
