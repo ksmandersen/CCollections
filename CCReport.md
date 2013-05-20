@@ -323,8 +323,20 @@ cc_set_get_enumerator | Get an enumerator for the set
 cc_set_to_object | Make a cc_object from the set
 cc_set_from_object | Make a set from the cc_object
 
+The Set works like the Sorted List by forwarding most calls to the internal Linked List that stores items. Only few functions differ. Adding an object will first check if the object is already in the set using the ``cc_set_contains`` function. 
+
 ### Stack [section-stack]
+
+Stack is yet another simple collection type based on an internal Linked List for storing items. The data structures have a small amount of public functions that follow the naming conventions normally associated with a stack. New items can be added to the stack by using ``cc_stack_push``, items can be peeked at with ``cc_stack_peek`` and popped from the stack with ``cc_stack_pop``.
+
+The stack uses the FIFO principle. The Stack uses the pointer to the last item in the linked list as the pointer to the top of the stack. Items pushed to the stack are added to the end of the list and items popped from the stack are removed from the end of the list as well. This gives the benefit of O(1) pushes, peeks and pops.
+
 ### Queue [section-queue]
+
+The Queue collection type also uses Linked lists internally and is extremely similar to the Stack. It has also has public functions with naming conventions that match queues. New items are added to the list with ``cc_queue_enqueue``, removed from the queue with ``cc_queue_dequeue`` and peeked at with ``cc_queue_peek`.
+
+The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the FILO principle. Just like the stack the complexity of enqueues, dequeues and peeks are O(1).
+
 ### Dictionary [section-dictionary]
 ### Binary Tree [section-binary-tree]
 
