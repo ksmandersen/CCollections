@@ -50,6 +50,11 @@ cc_set *cc_set_new();
  * \param obj the object to add */
 void cc_set_add(cc_set *set, cc_object *obj);
 
+/*! \brief Finds the index of an objet in the set
+ * \param set the set
+ * \param index the index of the object in the set; -1 if the object is not in the set */
+int cc_set_find(cc_set *set, cc_object *obj);
+
 /*! \brief Gets an object from a set
  * \param set the set
  * \param index the index of the object in the set */

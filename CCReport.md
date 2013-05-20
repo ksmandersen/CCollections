@@ -312,6 +312,7 @@ The Set collection is very much alike the Sorted List collection because of its 
 -------|----------------|
 cc_set_new | Creates a new empty set
 cc_set_add | Adds an object to the set
+cc_set_find | Finds the index of an objet in the set
 cc_set_get | Gets an object from a set
 cc_set_remove | Removes an object from the set
 cc_set_clear | Removes all objects from the set
