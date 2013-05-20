@@ -439,19 +439,29 @@ The Unity framework has a lot of benefits with its lightweight, portability and 
 
 This means that we cannot make any guarantees that all of the code in the library has been tested. In fact we can almost guarantee that not all code paths have been executed. In turn we can however guarantee that every publicly exposed function in the library has at least one or more test associated with it. Most crucial functions have a lot more.
 
-## Use case testing
+A full overview of tests and their results can be found in Appendix A.
 
-With this library is bundled a few but useful use case tests.
+## Documentation
 
-They provide:
+As mentioned in [section ?][section-vision] the importance of good documentation for this project is very high. The programming language Java spawned a new era of well documented code with its contestant to the market, JavaDoc. JavaDoc is a documentation generator that takes code documentation and generates browsable HTML documentation for the codes API. JavaDoc defines a syntax that can be used in the comments of code declarations that will help generate well formed API documentation. Other similar libraries have existed before but JavaDoc seemed to really start the movement. Since then other languages has found inspiration and has adopted similar features.
 
-* Ensuruance of the functionality of the library
-* Examples of how the library works
-* Tests that contain larger test data sets than the unit tests
+One of the long running contestants is Doxygen. With very similar features to JavaDoc it brings its code documentation syntax to multiple languages. It was originally engineered for C++ but works just as well for other languages like C. Doxygen, like JavaDoc, defines a syntax that can be used to generate browsable API documentation. An example snippet for documentation is listed below.
 
-## Performance testing
+    /*! \brief Determines whether an object is in the linked list
+     * \param list the linked list to search
+     * \param object the object to search the list for
+     * \returns true if the object is found in the linked list; otherwise, false */
+    bool cc_linked_list_contains(cc_linked_list *list, cc_object *object);
 
-As mentioned in [section ?][section-performance] this library will not be optimized or tested for performance metrics. However it is worth "speculating" about in what ways it would be possible to generate performance metrics.
+This generates the following entry in the browsable HTML API documentation:
+
+![Generated documentation example](images/doxygen_example.png)
+
+Using the Doxygen documentation has multiple benefits that is important to this project. It provides users with great overview of what the library is capable of since all public documentation is there browsable from a single place. It provides them with a single point to look up documentation and find out how a certain collection operates or what kind of functionality is available. It provides users that wish to extend the library with internal documentation that will make it easier to pinpoint what the different internal functions do.
+
+One of the best parts of Doxygen is that it like the unit tests can be fully automated. Running ``make documentation`` from the command line will go through all the sources in the library and automatically generate a new HTML documentation ready to be browsed.
+
+A full overview of all documentation for public functions can be found in Appendix B.
 
 # Discussion [section-discussion]
 
