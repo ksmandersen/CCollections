@@ -52,12 +52,13 @@ void cc_set_add(cc_set *set, cc_object *obj);
 
 /*! \brief Finds the index of an objet in the set
  * \param set the set
- * \param index the index of the object in the set; -1 if the object is not in the set */
+ * \returns the index of the object in the set; -1 if the object is not in the set */
 int cc_set_find(cc_set *set, cc_object *obj);
 
 /*! \brief Gets an object from a set
  * \param set the set
- * \param index the index of the object in the set */
+ * \param index the index of the object in the set 
+ * \returns the object at the index from the set; NULL if no object at the index */
 cc_object *cc_set_get(cc_set *set, int index);
 
 /*! \brief Removes an object from the set
