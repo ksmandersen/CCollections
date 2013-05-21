@@ -286,6 +286,17 @@ The optimal solution for a project like this would be the last option. With a se
 
 \chapter{Implementation}
 
+\section{Performance}
+
+The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR (Common Language Runtime) or VM (Virtual Machine) like C\# and Java does. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
+
+However, the design choices made about this library favors functionality, new concepts and usability over performance. Performance is still as important as ever, but not focused on in this project for two main reasons:
+
+\begin{enumerate}
+	\item The overall goal of this project is as mentioned earlier to investigate possible implementations of concepts taken from OO-language collection libraries. These languages have wildly unsimilar qualities, some of which will be mimicked in the implementation of this project, inherently hurting the level of performance that could otherwise be achieved.
+	\item While some of the design decisions hinters or dampens performance it would be possible still be possible to optimize them for performance. However, optimizing for and testing performance impacts is a hugely time consumptious task that needs thorough research and investigation. The time needed to be spend on performance optimization is much better spend on investigating implementation of concepts as described in 1.
+\end{enumerate}
+
 \section{Data Objects}\label{sec:impl_data_objects}
 
 Our design goal with the item objects is to have them be very simple, yet quite extensible. We have some built in basic functionality, but the idea is that the user of the library can extend it with their own custom data types and functionalities.
@@ -336,6 +347,66 @@ struct cc_set_struct {
 \end{lstlisting}
 
 This is illustrated nicely with \highlight{cc\_set} implementation of a set of unique items. The set data structures is built on top of the \\\highlight{cc\_linked\_list} data structure, reusing all the code for insertion, deletion, enumeration and more. All that the set implementation needs to do is to forward calls to the linked list and provide a new insertion function that checks if an item is already in the linked list. Thus building on the 400+ lines of code long linked list implementation and just providing a mere 140 lines of set implementation code.
+
+\section{Enumerators}
+
+	The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C\#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
+
+	An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actual functionality is implemented by the collection being looped. The enumerators doesn't even have a public constructor function; it is each collections responsibility to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
+
+	When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as \highlight{cc\_linked\_list\_get\_enumerator}. That function should then return a new enumerator, with the \highlight{move\_next} function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a \highlight{cc\_object}, which should be set to the item that is the current item in the iteration, and which is returned from the \highlight{get\_current} function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
+
+\begin{lstlisting}[label=cc_enumerator-example,caption=Using enumerators in CCollections]
+cc_enumerator *e = cc_linked_list_get_enumerator(list);
+while (cc_enumerator_move_next(e)) {
+  cc_object *obj = cc_enumerator_current(e);
+}
+\end{lstlisting}
+
+	It should be noted that when creating the enumerator, the current object is not the first object in the collection, but just a null object, and the first object is retrieved with the first call to \highlight{cc\_enumerator\_move\_next}. This is for practical rather than technical reasons, because it allows for a simpler syntax (this way, we can start the while loop right after getting the enumerator. The other way, we would have to validate the return value of \highlight{get\_current}, and then use a do..while).
+
+	The other thing we can use enumerators for, apart from implementing foreach-like iteration, is, as mentioned in the architecture section, to be able to convert between collections, by using the enumerators as an interexchangable collection type. For all collection supporting enumerators, it it possible to get an item-enumerator. All these should also have a designated constructor for taking an enumerator, and filling the collection with the items from that. This would allow us to very easily convert between collection types, no matter how they're implemented. Say that we wanted to convert a collection from an array list to a linked list, we would just use this short piece of code:
+
+\begin{lstlisting}[label=cc_enumerator-new-with,caption=Creating collections with enumerators]
+cc_array_list *a_list = ...
+cc_enumerator *e = cc_array_list_get_enumerator(a_list);
+cc_linked list *b_list = cc_linked_list_new_with_enumerator(e);
+\end{lstlisting}
+
+	Another feature we then can implement is running code on each element in an enumerator. This would allow us to do things like filter, map and fold a collection. The way this is implemented is by doing something very much alike what we do in the collections' enumerator functions: we create an enumerator and specify a move next function. The move next function would then call the move next on the "parent" enumerator and setting the parents current object to the childs current object. This would create a completely transparent enumerator, in which we can implement some custom functionality. An example of this is a filter move next function:
+	
+\begin{lstlisting}[label=cc_enumerator-filter-move_next,caption=Custom enumerator filter]
+bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
+  filter_enumerator_data *data = e->data;
+  cc_enumerator *parent_e = data->parent;
+
+  while (cc_enumerator_move_next(parent_e)) {
+    cc_object *obj = cc_enumerator_current(parent_e);
+  
+    if (data->filter(obj)) {
+      e->current = obj;
+      return true;
+    }
+  }
+
+  return false;
+}
+\end{lstlisting}	    
+
+	With this filter function, we can now apply a filter to any enumerator:
+
+\begin{lstlisting}[label=cc_enumerator-custom-filter,caption=Custom filter example]
+bool odd_filter(cc_object *obj) {
+  return (cc_object_int_value(obj) % 2 == 1);
+}
+
+cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
+e->data = GC_MALLOC(sizeof(int));
+*((int *)e->data) = 0;
+cc_enumerator *odd_numbers = cc_enumerator_filter(e, odd_filter);
+\end{lstlisting}	
+
+	Other than just being pretty simple to both use and implement, this approach also follows our philosiphy of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns the reverse enumerator.
 
 \section{Collections}\label{sec:impl_collections}
 	In this section the various collection types implemented in the library will be briefly described. Their description will only be high-level and brief while unique features of the individual collections will be discussed at greater length.
@@ -457,7 +528,7 @@ struct cc_sorted_list_struct {
 	
 	\subsection{Dictionary}
 	
-	The dictionary differs a bit from the other data types, in that it needs two data stores: a set of the keys and some "buckets" for the values. For the keys, it's pretty obvious to use our already implemented set, which works just the way we need it to for our key store. For the value store, we need something for quick lookup from a hash value. For this, we use a simple native C array, because we will, in our initial implementation, just use a fixed heap size. A preferrable extension would to allow the heap to dynamically expand. Since there may be hash value collisions, the heap will be an array of linked lists. The objects inserted into the dictionary should, if a sufficiently sophisticated hash function is used, spread out evenly in the heap, putting only one object in each linked list. Using an array list with preallocated space for a number of items would be a waste here.
+	The dictionary differs a bit from the other data types, in that it needs two data stores: a set of the keys and some "buckets" for the values. For the keys, it's pretty obvious to use our already implemented set, which works just the way we need it to for our key store. For the value store, we need something for quick lookup from a hash value. For this, we use a simple native C array, because we will, in our initial implementation, just use a fixed heap size. A preferrable extension would be to allow the heap to dynamically expand. Since there may be hash value collisions, the heap will be an array of linked lists. The objects inserted into the dictionary should, if a sufficiently sophisticated hash function is used, spread out evenly in the heap, putting only one object in each linked list. Using an array list with preallocated space for a number of items would be a waste here.
 
 \begin{lstlisting}[label=cc_dictionary-struct,caption=Internal representation of Dictionary]
 struct cc_dictionary_struct {
@@ -479,7 +550,7 @@ struct cc_dictionary_struct {
 	
 	\subsection{Binary Tree}
 	
-	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it have is references to its parent node, the left branch node, the right branch node, and the associated cc\_object.
+	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it has is references to its parent node, the left branch node, the right branch node, and the associated cc\_object.
 
 \begin{lstlisting}[label=cc_binary_tree-struct,caption=Internal representation of Binary Tree]
 struct cc_binary_tree_struct {
@@ -494,77 +565,6 @@ struct cc_binary_tree_struct {
 
 It is also possible to get an enumerator for the tree. The only thing making this a bit more difficult than list structures is, that there is no obvious order, in which the nodes should be returned. To solve this, we have to different enumerators for the binary tree: a depth-first enumerator, as well as a breadth-first enumerator. The way this is implemented is by having two functions for getting an enumerator, as well as two move next functions. Still, when the enumerator wants to move to the next object, it will just call the \highlight{cc\_binary\_tree\_enumerator\_move\_next} function. To figure out which move next function to call, we have saved the enumerator type in the enumerators data field. With this, we can distinguish between the two enumerator types, and call the right move next function.
 	
-\section{Enumerators}
-
-	The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C\#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
-
-	An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actual functionality is implemented by the collection being looped. The enumerators doesn't even have a public constructor function; it is each collections responsibility to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
-
-	When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as \highlight{cc\_linked\_list\_get\_enumerator}. That function should then return a new enumerator, with the \highlight{move\_next} function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a \highlight{cc\_object}, which should be set to the item that is the current item in the iteration, and which is returned from the \highlight{get\_current} function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
-
-\begin{lstlisting}[label=cc_enumerator-example,caption=Using enumerators in CCollections]
-cc_enumerator *e = cc_linked_list_get_enumerator(list);
-while (cc_enumerator_move_next(e)) {
-  cc_object *obj = cc_enumerator_current(e);
-}
-\end{lstlisting}
-
-	It should be noted that when creating the enumerator, the current object is not the first object in the collection, but just a null object, and the first object is retrieved with the first call to \highlight{cc\_enumerator\_move\_next}. This is for practical rather than technical reasons, because it allows for a simpler syntax (this way, we can start the while loop right after getting the enumerator. The other way, we would have to validate the return value of \highlight{get\_current}, and then use a do..while).
-
-	The other thing we can use enumerators for, apart from implementing foreach-like iteration, is, as mentioned in the architecture section, to be able to convert between collections, by using the enumerators as an interexchangable collection type. For all collection supporting enumerators, it it possible to get an item-enumerator. All these should also have a designated constructor for taking an enumerator, and filling the collection with the items from that. This would allow us to very easily convert between collection types, no matter how they're implemented. Say that we wanted to convert a collection from an array list to a linked list, we would just use this short piece of code:
-
-\begin{lstlisting}[label=cc_enumerator-new-with,caption=Creating collections with enumerators]
-cc_array_list *a_list = ...
-cc_enumerator *e = cc_array_list_get_enumerator(a_list);
-cc_linked list *b_list = cc_linked_list_new_with_enumerator(e);
-\end{lstlisting}
-
-	Another feature we then can implement is running code on each element in an enumerator. This would allow us to do things like filter, map and fold a collection. The way this is implemented is by doing something very much alike what we do in the collections' enumerator functions: we create an enumerator and specify a move next function. The move next function would then call the move next on the "parent" enumerator and setting the parents current object to the childs current object. This would create a completely transparent enumerator, in which we can implement some custom functionality. An example of this is a filter move next function:
-	
-\begin{lstlisting}[label=cc_enumerator-filter-move_next,caption=Custom enumerator filter]
-bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
-  filter_enumerator_data *data = e->data;
-  cc_enumerator *parent_e = data->parent;
-
-  while (cc_enumerator_move_next(parent_e)) {
-    cc_object *obj = cc_enumerator_current(parent_e);
-  
-    if (data->filter(obj)) {
-      e->current = obj;
-      return true;
-    }
-  }
-
-  return false;
-}
-\end{lstlisting}	    
-
-	With this filter function, we can now apply a filter to any enumerator:
-
-\begin{lstlisting}[label=cc_enumerator-custom-filter,caption=Custom filter example]
-bool odd_filter(cc_object *obj) {
-  return (cc_object_int_value(obj) % 2 == 1);
-}
-
-cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
-e->data = GC_MALLOC(sizeof(int));
-*((int *)e->data) = 0;
-cc_enumerator *odd_numbers = cc_enumerator_filter(e, odd_filter);
-\end{lstlisting}	
-
-	Other than just being pretty simple to both use and implement, this approach also follows our philosiphy of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns the reverse enumerator.
-	
-
-\section{Performance}
-
-The programming language C has a huge asset that makes many developers strive towards it still: performance. The language is statically typed and does not run through a CLR (Common Language Runtime) or VM (Virtual Machine) like C\# and Java does. Everything is compiled directly to bytecode. This means that many developers who write C code often do so because of it's great performance advantage. Thus is performance often a great concern for developers using C when searching for libraries. 
-
-However, the design choices made about this library favors functionality, new concepts and usability over performance. Performance is still as important as ever, but not focused on in this project for two main reasons:
-
-\begin{enumerate}
-	\item The overall goal of this project is as mentioned earlier to investigate possible implementations of concepts taken from OO-language collection libraries. These languages have wildly unsimilar qualities, some of which will be mimicked in the implementation of this project, inherently hurting the level of performance that could otherwise be achieved.
-	\item While some of the design decisions hinters or dampens performance it would be possible still be possible to optimize them for performance. However, optimizing for and testing performance impacts is a hugely time consumptious task that needs thorough research and investigation. The time needed to be spend on performance optimization is much better spend on investigating implementation of concepts as described in 1.
-\end{enumerate}
 
 \section{Testing}
 
@@ -582,7 +582,7 @@ However, the design choices made about this library favors functionality, new co
 	
 	This automation makes it easy to run the tests frequently to ensure that no functionality breaks when working on the library code. The automation could even be taken a step further with tools like Guard that runs the test every time a source code file is saved, notifying the developer of test failures.
 
-\begin{figure}[ht!]
+\begin{figure}*[ht!]
 \begin{lstlisting}[label=test-example,caption=Example of unit test with Unity]
 void test_can_create_linked_linked_list_from_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
