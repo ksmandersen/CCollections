@@ -1,6 +1,4 @@
 \select@language {english}
-\contentsline {chapter}{Contents}{2}{section*.1}
-\contentsline {section}{\numberline {0.1}Preface}{3}{section.0.1}
 \contentsline {chapter}{\chapternumberline {1}Introduction}{5}{chapter.1}
 \contentsline {section}{\numberline {1.1}Existing solutions}{5}{section.1.1}
 \contentsline {section}{\numberline {1.2}Vision}{7}{section.1.2}
@@ -26,11 +24,13 @@
 \contentsline {subsection}{\numberline {3.3.6}Queue}{26}{subsection.3.3.6}
 \contentsline {subsection}{\numberline {3.3.7}Dictionary}{26}{subsection.3.3.7}
 \contentsline {subsection}{\numberline {3.3.8}Binary Tree}{26}{subsection.3.3.8}
-\contentsline {section}{\numberline {3.4}Enumerators}{27}{section.3.4}
-\contentsline {section}{\numberline {3.5}Performance}{31}{section.3.5}
-\contentsline {section}{\numberline {3.6}Testing}{31}{section.3.6}
-\contentsline {subsection}{\numberline {3.6.1}Coverage}{33}{subsection.3.6.1}
-\contentsline {section}{\numberline {3.7}Documentation}{34}{section.3.7}
-\contentsline {chapter}{\chapternumberline {4}Conclusion}{37}{chapter.4}
-\contentsline {section}{\numberline {4.1}Discussion}{37}{section.4.1}
-\contentsline {chapter}{\chapternumberline {5}Appendix}{39}{chapter.5}
+\contentsline {section}{\numberline {3.4}Enumerators}{26}{section.3.4}
+\contentsline {section}{\numberline {3.5}Performance}{29}{section.3.5}
+\contentsline {section}{\numberline {3.6}Testing}{30}{section.3.6}
+\contentsline {subsection}{\numberline {3.6.1}Coverage}{32}{subsection.3.6.1}
+\contentsline {section}{\numberline {3.7}Documentation}{32}{section.3.7}
+\contentsline {chapter}{\chapternumberline {4}Conclusion}{35}{chapter.4}
+\contentsline {section}{\numberline {4.1}Discussion}{35}{section.4.1}
+\contentsline {chapter}{\chapternumberline {5}Abbreviations \& Definitions}{37}{chapter.5}
+\contentsline {chapter}{Bibliography}{39}{section*.3}
+\contentsline {chapter}{\chapternumberline {6}Appendix}{41}{chapter.6}
