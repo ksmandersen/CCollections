@@ -36,7 +36,7 @@
 % color hyperlinks
 \hypersetup{
  colorlinks=true,
- citecolor=Violet,
+ citecolor=black,
  linkcolor=black,
  urlcolor=blue
 }
@@ -70,7 +70,7 @@
 \newcommand{\highlight}[1]{\colorbox{lightGray}{$\displaystyle \texttt{#1}$}}
 
 \usepackage{acronym}
-% \acsetup{first-style=short}
+\acsetup{first-style=short}
 % \DeclareAcronym{
 % 	short		= OO,
 % 	long		= Object Oriented,
@@ -225,7 +225,7 @@ The approach of using enumerators as an interexchangable collection format allow
 
 To have a well structured source code is very important in regards to debugging, testing and maintainability of the project. That's why we are strictly following some basic rules regarding structure, information hiding and naming.
 
-One of the most fundamental structural decisions is to enforce information hiding through the idea of the black box: a potentially decoupled interface and implementation, and only exposure of the interface to the user of the module. In Java-like languages, you would implement a black box like this with the public and private keywords, for selecting which parts of a class should be exposed, and which should not. In addition, things can be marked as not visible to a user, but visible to the rest of the package. In C, such levels of visibility is implemented with header files. Typically, you will have one header file and one implementation file per black box, with the header file being the public interface. Other projects have a single header file for all public interface code in a library. The one-header-per-module approach is the most common in C, and also what we will use. In addition to this, to implement a package-private like behavior, modules may also have a header file for use internally in the project, which should not be exposed to the user. This allows use to "leak" some implementation details internally. This should be used for details relating to the internal structure of the project's data structures, not the implementation of the specific algorithm or data structure.
+One of the most fundamental structural decisions is to enforce information hiding through the idea of the black box: a potentially decoupled interface and implementation, and only exposure of the interface to the user of the module \cite{Gelder2001}. In Java-like languages, you would implement a black box like this with the public and private keywords, for selecting which parts of a class should be exposed, and which should not. In addition, things can be marked as not visible to a user, but visible to the rest of the package. In C, such levels of visibility is implemented with header files. Typically, you will have one header file and one implementation file per black box, with the header file being the public interface. Other projects have a single header file for all public interface code in a library. The one-header-per-module approach is the most common in C, and also what we will use. In addition to this, to implement a package-private like behavior, modules may also have a header file for use internally in the project, which should not be exposed to the user. This allows use to "leak" some implementation details internally. This should be used for details relating to the internal structure of the project's data structures, not the implementation of the specific algorithm or data structure.
 
 In addition to keeping a minimally exposed interface, it should also be documented with a description of each function, along with pre- and post conditions. See the documentation chapter for more.
 
@@ -242,7 +242,7 @@ In addition to keeping a minimally exposed interface, it should also be document
 	
 		\begin{description}
 			\item All names must be in lowercase, with underscores separating each word. To avoid naming collisions, they should be prefixed first with cc for the library, and then the name of the object or module it belongs in (e.g. \highlight{cc\_set} and \highlight{cc\_set\_add()}). Struct names must end in struct, and should be typedef'd to the name without struct (e.g. \highlight{struct cc\_set\_struct} and \highlight{cc\_set}).
-			\item All objects must have a constructor function called new (e.g. \highlight{cc\_set\_new()}). All other "methods" to this object should take an instance pointer as the first parameter (e.g. \highlight{cc\_set\_add(cc\_set *set, cc\_object *obj)}). If the function returns anything through a parameter, it should be at the end of the parameter list. Furthermore, all objects must define a type string as a global constant, whose value should be the name of the object (any prefixes included).
+			\item All objects must have a constructor function called new (e.g. \\\highlight{cc\_set\_new()}). All other "methods" to this object should take an instance pointer as the first parameter (e.g. \\\highlight{cc\_set\_add(cc\_set *set, cc\_object *obj)}). If the function returns anything through a parameter, it should be at the end of the parameter list. Furthermore, all objects must define a type string as a global constant, whose value should be the name of the object (any prefixes included).
 			\item All global constants must be defined in the interface as an extern const pointer, and be implemented in the belonging implementation file (e.g. \highlight{extern const char * const cc\_set\_type}).
 			\item No struct should be defined in the public interface. All interaction with the object should be done through functions. The definition of the struct should be in the private or package private interface.
 			\item Everything defined in a public interface should have Doxygen documentation.
@@ -335,7 +335,7 @@ struct cc_set_struct {
 };
 \end{lstlisting}
 
-This is illustrated nicely with \highlight{cc\_set} implementation of a set of unique items. The set data structures is built on top of the \highlight{cc\_linked\_list} data structure, reusing all the code for insertion, deletion, enumeration and more. All that the set implementation needs to do is to forward calls to the linked list and provide a new insertion function that checks if an item is already in the linked list. Thus building on the 400+ lines of code long linked list implementation and just providing a mere 140 lines of set implementation code.
+This is illustrated nicely with \highlight{cc\_set} implementation of a set of unique items. The set data structures is built on top of the \\\highlight{cc\_linked\_list} data structure, reusing all the code for insertion, deletion, enumeration and more. All that the set implementation needs to do is to forward calls to the linked list and provide a new insertion function that checks if an item is already in the linked list. Thus building on the 400+ lines of code long linked list implementation and just providing a mere 140 lines of set implementation code.
 
 \section{Collections}\label{sec:impl_collections}
 	In this section the various collection types implemented in the library will be briefly described. Their description will only be high-level and brief while unique features of the individual collections will be discussed at greater length.
@@ -364,7 +364,7 @@ struct cc_array_list_struct {
 	
 	Array list is the only data structure apart from the sorted list that has support for sorting. The only reason other data structures does not have this feature is lack of time to implement it. For more on this see \autoref{sec:discussion}.
 
-	The sorting function of array list uses the well known divide and conquer algorithm, Quicksort. The sorting method has an average case complexity of \highlight{$O(n log n)$} while its worst case is \highlight{$O(n^2)$}. Although that doesn't seem impressive Quicksort has proven to perform better in practice the most other \highlight{$O(n log n)$} algorithms. Quicksort also has the advantage of being easy to implement with in-place partitioning that only requires \highlight{$O(n log n)$} additional space. This algorithm is implemented with array list and is used with calls to \highlight{cc\_array\_list\_sort}.
+	The sorting function of array list uses the well known divide and conquer algorithm, Quicksort. The sorting method has an average case complexity of \highlight{$O(n log n)$} while its worst case is \highlight{$O(n^2)$}. Although that doesn't seem impressive Quicksort has proven to perform better in practice the most other \highlight{$O(n log n)$} algorithms. Quicksort also has the advantage of being easy to implement with in-place partitioning that only requires \highlight{$O(n log n)$} additional space \cite[p. 145]{Algorithms2002}. This algorithm is implemented with array list and is used with calls to \highlight{cc\_array\_list\_sort}.
 	
 	\subsection{Linked List}
 	
@@ -447,13 +447,13 @@ struct cc_sorted_list_struct {
 	
 	Stack is yet another simple collection type based on an internal Linked List for storing items. The data structures have a small amount of public functions that follow the naming conventions normally associated with a stack. New items can be added to the stack by using \highlight{cc\_stack\_push}, items can be peeked at with \highlight{cc\_stack\_peek} and popped from the stack with \highlight{cc\_stack\_pop}.
 
-	The stack uses the FIFO principle. The Stack uses the pointer to the last item in the linked list as the pointer to the top of the stack. Items pushed to the stack are added to the end of the list and items popped from the stack are removed from the end of the list as well. This gives the benefit of \highlight{$O(1)$} pushes, peeks and pops.
+	The stack uses the \ac{FIFO} principle \cite[p. 200]{Algorithms2002}. The Stack uses the pointer to the last item in the linked list as the pointer to the top of the stack. Items pushed to the stack are added to the end of the list and items popped from the stack are removed from the end of the list as well. This gives the benefit of \highlight{$O(1)$} pushes, peeks and pops.
 	
 	\subsection{Queue}
 	
 	The Queue collection type also uses Linked lists internally and is extremely similar to the Stack. It also has public functions with naming conventions that matches queues. New items are added to the list with \highlight{cc\_queue\_enqueue} and removed from the queue with \highlight{cc\_queue\_dequeue}. Additionally, the first element in the queue can be peeked at with \highlight{cc\_queue\_peek}.
 
-	The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Again, a linked list is used because of the fast modification. If we used an array list, each dequeing would need to move the data of all the remaining objects in memory. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the FILO principle. Just like the stack the complexity of enqueues, dequeues and peeks are \highlight{$O(1)$}.
+	The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Again, a linked list is used because of the fast modification. If we used an array list, each dequeing would need to move the data of all the remaining objects in memory. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the \ac{FILO} principle \cite[p. 200]{Algorithms2002}. Just like the stack the complexity of enqueues, dequeues and peeks are \highlight{$O(1)$}.
 	
 	\subsection{Dictionary}
 	\subsection{Binary Tree}
@@ -616,6 +616,8 @@ This generates the following entry in the browsable HTML API documentation:
 	\acro{ADT}{Abstract Data Structure}
 	\acro{API}{Application Programming Interface}
 	\acro{APR}{Apache Portable Runtime,\\ see \url{http://apr.apache.org/}}
+	\acro{FIFO}{First In First Out, see \cite[p. 200]{Algorithms2002}}
+	\acro{FILO}{First In Last Out, see \cite[p. 200]{Algorithms2002}}
 	\acro{GDSL}{The Generic Data Structures Library,\\ see \url{http://home.gna.org/gdsl/}}
 	\acro{Glib}{Gnome Library,\\ see \url{https://developer.gnome.org/glib/2.34/}}
 	\acro{LibDS}{A Portable Data Structures Library,\\ see \url{http://libds.sourceforge.net/doc/index.html}}
