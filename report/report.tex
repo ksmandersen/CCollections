@@ -456,6 +456,23 @@ struct cc_sorted_list_struct {
 	The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Again, a linked list is used because of the fast modification. If we used an array list, each dequeing would need to move the data of all the remaining objects in memory. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the FILO principle \cite[p. 200]{Algorithms2002}. Just like the stack the complexity of enqueues, dequeues and peeks are \highlight{$O(1)$}.
 	
 	\subsection{Dictionary}
+	
+	The dictionary differs a bit from the other data types, in that it needs two data stores: a set of the keys and some "buckets" for the values. For the keys, it's pretty obvious to use our already implemented set, which works just the way we need it to for our key store. For the value store, we need something for quick lookup from a hash value. For this, we use a simple native C array, because we will, in our initial implementation, just use a fixed heap size. A preferrable extension would to allow the heap to dynamically expand. Since there may be hash value collisions, the heap will be an array of linked lists. The objects inserted into the dictionary should, if a sufficiently sophisticated hash function is used, spread out evenly in the heap, putting only one object in each linked list. Using an array list with preallocated space for a number of items would be a waste here.
+
+\begin{lstlisting}[label=cc_dictionary-struct,caption=Internal representation of Dictionary]
+struct cc_dictionary_struct {
+	cc_collection c;
+	
+	cc_linked_list **heap;
+	cc_set *keys;
+	int count;
+};
+\end{lstlisting}
+
+	All the basic dictionary operation implementations are pretty straight forward: adding a value for a key searches for that key, and if it exists overwrites the value, otherwise inserts the new value in the heap and the key in the keys list. Get looks at the place in the heap equal to the hash value of the key. Contains checks if the key exists in the keys list.
+
+	One thing that works a bit different is the handling of enumerators. Getting an enumerator just enumerates over the keys in the dictionary, and the user can just get the value for the current key to get the corresponding item. Creating a dictionary from enumerators is not as simple. It wouldn't make much sense to create a dictionary from a list-enumerator. That's why the dictionary has a constructor function that takes two enumerators: one for the keys and one for the items. This will expect two enumerators with the same item count, and one of them containing strings. This will create the new dictionary with each value from the item-enumerator matched to a key from the key-enumerator.
+	
 	\subsection{Binary Tree}
 	
 	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it have is references to its parent node, the left branch node, the right branch node, and the associated cc_object.
