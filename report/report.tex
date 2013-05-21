@@ -169,7 +169,17 @@ To further mimic the trades of libraries from other libraries the library of thi
 
 \chapter{Architecture}
 
-There are generally two different approaches to designing a system in procedural programming languages. The first is the "classic" way, where you would have a single function doing one task on all the supported data types. The other is the more modern object-oriented way of having one implementation of a task for each supported data type. An example of the difference could be a method, which will calculate the weight of a car: the classic method would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each approach has pros and cons. If you want to add a car type, in the classic method, you would have to find every place in the code where car-type-specific calculations were made, while in the object oriented, you would only need to implement the functions for the new car type. On the other hand, if you wanted to have a function to calculate the height of a car, in the classic approach, you would need to implement just one function, where in the object-oriented approach, you would have to find all car types, and implement a function for each.
+There are generally two different approaches to designing a system in procedural programming languages. The first is the "classic" way, where you would have a single function doing one task on all the supported data types. The other is the more modern object-oriented way of having one implementation of a task for each supported data type.
+
+	\begin{figure}[ht!]
+		\begin{center}
+			\includegraphics[scale=0.5]{images/approaches.png}
+			\caption{Classic and modern approaches}
+		\end{center}
+		\label{fig:approaches}
+	\end{figure}
+
+An example of the difference could be a method, which will calculate the weight of a car: the classic method would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each approach has pros and cons. If you want to add a car type, in the classic method, you would have to find every place in the code where car-type-specific calculations were made, while in the object oriented, you would only need to implement the functions for the new car type. On the other hand, if you wanted to have a function to calculate the height of a car, in the classic approach, you would need to implement just one function, where in the object-oriented approach, you would have to find all car types, and implement a function for each.
 
 Newer languages with focus on object oriented programming makes the decision of which to use very easy. In pre-object languages, such as C, the choice is a bit harder. The easy answer is to use the classic way, since this is what the language is built for; however, there are ways to build functionality which replicates some object-oriented functions in a procedural way, which makes object composition available.
 
@@ -201,6 +211,14 @@ There are some problems with both of these approaches. The first approach preven
 
 The approach we have chosen is to delegate the task of handling different types away from the collections. We will define a data type, which will act as a wrapper for whatever kind of data needed, called \highlight{cc\_object}. Along with making the collections only need to worry about one type of data, the cc\_object can also handle comparison, value equality, data conversion, serialization and hashing, all in an extensible manner.
 
+	\begin{figure}[ht!]
+		\begin{center}
+			\includegraphics[scale=0.4]{images/types.png}
+			\caption{Handling types in a single location}
+		\end{center}
+		\label{fig:types}
+	\end{figure}
+
 The cc\_object works by having a data structure, which supports each item type, and has special insert functions for each. The difference from having a lot of insert functions on the collection is that when you add a new data type, you only have to add one new function to the cc\_object, instead of adding a new function to each collection. This is the same idea as used in Objective-C, where the collection classes cannot contain primitive data types, so numbers gets wrapped in NSNumber instances, and various structures in NSValue instances. If you would save an integer in a collection, you would make an \highlight{NSNumber} with the \highlight{-numberWithInteger:} method, and the other way around call the \highlight{-integerValue} method to get the primitive value back. Likewise, with cc\_objects, you would create a new object with the \highlight{cc\_object\_with\_int} function, and to get the value back, use the \highlight{cc\_object\_int\_value} function. When using custom data types, the user can just make a custom cc\_object initializer method, to keep everything type-safe.
 
 A very useful feature of object-oriented languages, which is difficult to replicate in C, is the concept of interfaces. Suppose that you want to be able to compare two cc\_objects. If they were objects, you would just make a comparable-interface, and have each object-subclass implement a compare method. In C, we'll have to use a slightly different method.
@@ -220,6 +238,14 @@ The next problem is how to do this in C. In an object oriented language, we woul
 With this approach, a collection can have a method to return an enumerator, and the enumerator will be able to crawl through the objects of the collection by calling that collection's move next function, which it will have, since it incapsulates an enumerable struct.
 
 The approach of using enumerators as an interexchangable collection format allows us to do something else, which is in many other collection libraries, but traditionally would be difficult to implement in C. In C\# and especially many functional languages, you can easily filter, map, sort and take elements from a collection. With the enumerators as a standard "collection", we can implement this functionality as well. We can make functions that takes an enumerator and returns a new, which will then create a chain of move next implementations, where each link can filter out items, map items to different types, or whatever the function does. This allows us very easily create chains of collection modifiers, in a way that is typically only seen in higher level languages.
+
+	\begin{figure}[ht!]
+		\begin{center}
+			\includegraphics[scale=0.4]{images/enumerators.png}
+			\caption{An example of usage of enumerators. We get an enumerator from the array list, which has some filters and mappings, and is then creating a linked list}
+		\end{center}
+		\label{fig:enumerators}
+	\end{figure}
 
 \section{Code Structure}\label{sec:arch_code_structure}
 
