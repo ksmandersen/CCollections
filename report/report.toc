@@ -32,4 +32,5 @@
 \contentsline {chapter}{\chapternumberline {4}Conclusion}{35}{chapter.4}
 \contentsline {section}{\numberline {4.1}Discussion}{35}{section.4.1}
 \contentsline {chapter}{\chapternumberline {5}Abbreviations \& Definitions}{37}{chapter.5}
-\contentsline {chapter}{\chapternumberline {6}Appendix}{39}{chapter.6}
+\contentsline {chapter}{Bibliography}{39}{section*.3}
+\contentsline {chapter}{\chapternumberline {6}Appendix}{41}{chapter.6}
