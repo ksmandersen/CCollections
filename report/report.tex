@@ -648,12 +648,10 @@ This generates the following entry in the browsable HTML API documentation:
 	A full overview of all documentation for public functions can be found in Appendix B.
 
 \chapter{Conclusion}
+
+	Our goal with this project was to create a general-purpose collection library for C, that would be simple to include in any project, and be very easy to use, as an alternative to rewriting basic collections from scratch, for each new project. The style of the code should be inspired by modern techniques used in dynamic, object oriented languages, that would make the collections powerful, flexible and easy to extend. We implemented the Boehm-Demers-Weiser conservative garbage collector for automated memory management, to make the code simpler and less errorprone. We made the library flexible by using item objects, with could dynamically be extended with additional functionality. We implemented enumeration, which not only coupled all collections together in a unified format, but also allowed high-level features like filtering, mapping and folding of collections.
 	
-	In the beginning of this project we set out to investigate possible ways to take inspirations from the collection libraries from Object Oriented programming languages in developing a collection library for C. We found that none of the existing collection libraries for C had adopted many concepts from modern collection libraries. Support for Memory management in the form of Boehm-Demers-Weiser conservative garbage collector was implemented in the library. This was done to relief the user of managing the memory themselves. The modern concept of enumeration which has not yet been implemented in any C collection libraries we found, was implemented. This adoption gave birth to more great features inspired from modern collection libraries. Namely the ability to filter results from a collection or mapping and folding over items in a collection.
-	
-	In this project we have shown how colelction libraries from C can still learn much from modern collection libraries. We have provided a starting point for developers using OO languages to pick up C and use a modernly inspired collection library.
-	
-	Although performance may not be up to the standards of other collection libraries for C, the features certainly are.
+	In this project, we have back-ported some of the great improvements made by modern languages, to make a starting point for developers using object oriented languages to pick up C, and see, how modernly inspired C code should work. It's a departure from the classic performance-persuing C programs, to a more dynamic code.
 	
 	
 	\section{Discussion}\label{sec:discussion}
