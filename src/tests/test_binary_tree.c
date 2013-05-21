@@ -1,19 +1,7 @@
 #include "../ccollections/shared/cc.h"
 #include "../lib/unity/src/unity.h"
 
-// void setUp(void)
-// {
-//   GC_INIT();
-//   cc_init();
-// }
-
-// void tearDown(void)
-// {
-	
-// }
-
-cc_binary_tree *generate_complicated_binary_tree()
-{
+cc_binary_tree *generate_complicated_binary_tree() {
 	//	        0
 	//	       / \
 	//	      1   2
@@ -40,20 +28,17 @@ cc_binary_tree *generate_complicated_binary_tree()
 	return tree0;
 }
 
-void test_can_create_binary_tree(void)
-{
+void test_can_create_binary_tree(void) {
 	cc_binary_tree *tree = cc_binary_tree_new(NULL);
 	TEST_ASSERT_NOT_EQUAL(NULL, tree);
 }
 
-void test_can_create_binary_tree_with_object(void)
-{
+void test_can_create_binary_tree_with_object(void) {
 	cc_binary_tree *tree = cc_binary_tree_new(cc_object_with_int(123));
 	TEST_ASSERT_EQUAL(123, cc_object_int_value(cc_binary_tree_get_object(tree)));
 }
 
-void test_can_add_branches(void)
-{
+void test_can_add_branches(void) {
 	cc_binary_tree *tree = cc_binary_tree_new(cc_object_with_int(0));
 	
 	cc_binary_tree_set_left_branch(tree, cc_binary_tree_new(cc_object_with_int(1)));
@@ -63,8 +48,7 @@ void test_can_add_branches(void)
 	TEST_ASSERT_EQUAL(2, cc_object_int_value(cc_binary_tree_get_object(cc_binary_tree_get_right_branch(tree))));
 }
 
-void test_can_remove_branch(void)
-{
+void test_can_remove_branch(void) {
 	cc_binary_tree *tree = cc_binary_tree_new(cc_object_with_int(0));
 	
 	cc_binary_tree_set_left_branch(tree, cc_binary_tree_new(cc_object_with_int(1)));
@@ -74,8 +58,7 @@ void test_can_remove_branch(void)
 	TEST_ASSERT_EQUAL(NULL, cc_binary_tree_get_left_branch(tree));
 }
 
-void test_can_enumerate_depth_first(void)
-{
+void test_can_enumerate_depth_first(void) {
 	// expected order: 0, 1, 3, 2, 4, 5
 	
 	cc_binary_tree *tree = generate_complicated_binary_tree();
@@ -109,8 +92,7 @@ void test_can_enumerate_depth_first(void)
 	TEST_ASSERT_EQUAL(5, cc_object_int_value(cc_binary_tree_get_object(tree5)));
 }
 
-void test_can_enumerate_breadth_first(void)
-{
+void test_can_enumerate_breadth_first(void) {
 	// expected order: 0, 1, 2, 3, 4, 5
 	
 	cc_binary_tree *tree = generate_complicated_binary_tree();

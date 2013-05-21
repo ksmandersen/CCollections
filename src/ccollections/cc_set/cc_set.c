@@ -57,18 +57,20 @@ cc_set *cc_set_new() {
 }
 
 void cc_set_add(cc_set *set, cc_object *obj) {
-	if (set == NULL || obj == NULL)
+	if (set == NULL || obj == NULL) {
 		return;
-
+	}
+	
 	if (!cc_set_contains(set, obj)) {
 		cc_linked_list_add_last(set->list, obj);
 	}
 }
 
 cc_object *cc_set_get(cc_set *set, int index) {
-	if (set == NULL)
+	if (set == NULL) {
 		return NULL;
-
+	}
+	
 	return cc_linked_list_get(set->list, index);
 }
 
@@ -83,7 +85,7 @@ void cc_set_remove(cc_set *set, cc_object *obj) {
 int cc_set_find(cc_set *set, cc_object *obj) {
 	cc_enumerator *e = cc_set_get_enumerator(set);
 	int i = 0;
-	while(cc_enumerator_move_next(e)) {
+	while (cc_enumerator_move_next(e)) {
 		if (cc_object_is_equal(obj, cc_enumerator_current(e))) {
 			return i;
 		}
@@ -129,19 +131,19 @@ int cc_set_compare(cc_object *obj1, cc_object *obj2) {
 }
 
 void cc_set_register_comparator() {
-  static bool first = true;
-  
-  if (first) {
-    first = false;
-    cc_object_register_comparator_for_type(cc_set_type, cc_set_compare);
-  }
+	static bool first = true;
+	
+	if (first) {
+		first = false;
+		cc_object_register_comparator_for_type(cc_set_type, cc_set_compare);
+	}
 }
 
 cc_object *cc_set_to_object(cc_set *set) {
-  return cc_object_with_pointer(set, cc_set_type);
+	return cc_object_with_pointer(set, cc_set_type);
 }
 
 cc_set *cc_set_from_object(cc_object *obj) {
-  cc_set *set = cc_object_pointer_value(obj);
-  return set;
+	cc_set *set = cc_object_pointer_value(obj);
+	return set;
 }

@@ -4,45 +4,29 @@
 
 #define POPULATE_COUNT 120
 
-
-// void setUp(void)
-// {
-//   GC_INIT();
-//   cc_init();
-// }
-
-// void tearDown(void)
-// {
-
-// }
-
-void cc_dictionary_populate(cc_dictionary *dict)
-{
-  int i;
-  for(i = 1; i <= POPULATE_COUNT; i++) {
-    cc_object *v = cc_object_with_int(i * 100);
-	char key[128];
-	sprintf(key, "key_%i", i);
-    cc_dictionary_add(dict, key, v);
-  }
+void cc_dictionary_populate(cc_dictionary *dict) {
+	int i;
+	for (i = 1; i <= POPULATE_COUNT; i++) {
+		cc_object *v = cc_object_with_int(i * 100);
+		char key[128];
+		sprintf(key, "key_%i", i);
+		cc_dictionary_add(dict, key, v);
+	}
 }
 
-void test_can_create_dictionary(void)
-{
-  cc_dictionary *a_dict = cc_dictionary_new();
-  
-  TEST_ASSERT_NOT_EQUAL(NULL, a_dict);
+void test_can_create_dictionary(void) {
+	cc_dictionary *a_dict = cc_dictionary_new();
+	
+	TEST_ASSERT_NOT_EQUAL(NULL, a_dict);
 }
 
-void test_can_add_object_to_dictionary(void)
-{
+void test_can_add_object_to_dictionary(void) {
 	cc_dictionary *a_dict = cc_dictionary_new();
 	cc_dictionary_populate(a_dict);
 	TEST_ASSERT_EQUAL(POPULATE_COUNT, cc_dictionary_count(a_dict));
 }
 
-void test_can_set_value_for_key_in_dictionary(void)
-{
+void test_can_set_value_for_key_in_dictionary(void) {
 	cc_dictionary *a_dict = cc_dictionary_new();
 	cc_object *value = cc_object_with_string("test_value");
 	cc_dictionary_add(a_dict, "test_key", value);
@@ -51,8 +35,7 @@ void test_can_set_value_for_key_in_dictionary(void)
 	TEST_ASSERT_EQUAL(0, strcmp(cc_object_string_value(value), cc_object_string_value(out_value)));
 }
 
-void test_can_change_value_for_key(void)
-{
+void test_can_change_value_for_key(void) {
 	cc_dictionary *a_dict = cc_dictionary_new();
 	cc_object *value1 = cc_object_with_string("test_value_1");
 	cc_object *value2 = cc_object_with_string("test_value_2");
@@ -63,16 +46,14 @@ void test_can_change_value_for_key(void)
 	TEST_ASSERT_EQUAL(0, strcmp(cc_object_string_value(value2), cc_object_string_value(out_value)));
 }
 
-void test_can_find_key_in_dictionary(void)
-{
+void test_can_find_key_in_dictionary(void) {
 	cc_dictionary *a_dict = cc_dictionary_new();
 	cc_object *value1 = cc_object_with_string("test_value");
 	cc_dictionary_add(a_dict, "test_key", value1);
 	TEST_ASSERT_EQUAL(true, cc_dictionary_contains_key(a_dict, "test_key"));
 }
 
-void test_can_enumerate_keys_in_dictionary(void)
-{
+void test_can_enumerate_keys_in_dictionary(void) {
 	cc_dictionary *a_dict = cc_dictionary_new();
 	cc_dictionary_add(a_dict, "key1", cc_object_with_string("value1"));
 	cc_dictionary_add(a_dict, "key2", cc_object_with_string("value2"));
@@ -108,12 +89,12 @@ void test_can_insert_and_enumerate_many_objects(void) {
 	cc_dictionary *a_dict = cc_dictionary_new();
 
 	int i;
-  for(i = 1; i <= 1000; i++) {
-	  cc_object *v = cc_object_with_int(i * 100);
+	for (i = 1; i <= 1000; i++) {
+		cc_object *v = cc_object_with_int(i * 100);
 		char key[128];
 		sprintf(key, "key_%i", i);
-	  cc_dictionary_add(a_dict, key, v);
-  }
+		cc_dictionary_add(a_dict, key, v);
+	}
 }
 
 void test_can_create_dictionary_from_key_and_value_enumerators(void) {

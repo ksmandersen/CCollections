@@ -30,7 +30,7 @@
  */
 
 #ifndef CC_ARRAY_LIST_PRIVATE_H
-  #define CC_ARRAY_LIST_PRIVATE_H
+#define CC_ARRAY_LIST_PRIVATE_H
 
 #include "cc_array_list.h"
 
@@ -53,11 +53,11 @@ extern void cc_array_list_expand_heap(cc_array_list *list);
 
 // the array list data structure. (Internal use only)
 struct cc_array_list_struct {
-  cc_collection c;
-  
-  cc_object **heap;
-  int count;
-  int heap_size;
+	cc_collection c;
+	
+	cc_object **heap;
+	int count;
+	int heap_size;
 };
 
 // Sorting

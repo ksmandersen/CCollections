@@ -40,8 +40,7 @@
  *  internal interface to ease the enumeration pattern
  *  of CCollections.
  */
-struct cc_linked_list_node_struct
-{
+struct cc_linked_list_node_struct {
   cc_object *object;
   struct cc_linked_list_node_struct *next;
   struct cc_linked_list_node_struct *prev;

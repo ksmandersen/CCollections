@@ -39,84 +39,84 @@
 const char * const cc_stack_type = "cc_stack_type";
 
 struct cc_stack_struct {
-  cc_collection c;
+	cc_collection c;
 
-  cc_linked_list *items;
+	cc_linked_list *items;
 };
 
 cc_stack *cc_stack_new() {
-  // cc_stack_register_comparator();
+	// cc_stack_register_comparator();
 
-  cc_stack *stack;
-  if ((stack = GC_MALLOC(sizeof(cc_stack))) == NULL) {
-    return NULL;
-  }
+	cc_stack *stack;
+	if ((stack = GC_MALLOC(sizeof(cc_stack))) == NULL) {
+		return NULL;
+	}
 
-  stack->c.enumerable.move_next = cc_stack_enumerator_move_next;
-  stack->items = cc_linked_list_new();
+	stack->c.enumerable.move_next = cc_stack_enumerator_move_next;
+	stack->items = cc_linked_list_new();
 
-  return stack;
+	return stack;
 }
 
 void cc_stack_push(cc_stack *stack, cc_object *obj) {
-  cc_linked_list_add_last(stack->items, obj);
+	cc_linked_list_add_last(stack->items, obj);
 }
 
 cc_object *cc_stack_pop(cc_stack *stack) {
-  cc_object *obj = cc_stack_peek(stack);
-  cc_linked_list_remove_last(stack->items);
-  return obj;
+	cc_object *obj = cc_stack_peek(stack);
+	cc_linked_list_remove_last(stack->items);
+	return obj;
 }
 
 cc_object *cc_stack_peek(cc_stack *stack) {
-  return cc_linked_list_get_last(stack->items);;
+	return cc_linked_list_get_last(stack->items);;
 }
 
 int cc_stack_size(cc_stack *stack) {
-  return cc_linked_list_length(stack->items);
+	return cc_linked_list_length(stack->items);
 }
 
 void cc_stack_clear(cc_stack *stack) {
-  cc_linked_list_clear(stack->items);
+	cc_linked_list_clear(stack->items);
 }
 
 bool cc_stack_contains(cc_stack *stack, cc_object *obj) {
-  return cc_linked_list_contains(stack->items, obj);
+	return cc_linked_list_contains(stack->items, obj);
 }
 
 cc_enumerator *cc_stack_get_enumerator(cc_stack *stack) {
-  return cc_linked_list_get_enumerator(stack->items);
+	return cc_linked_list_get_enumerator(stack->items);
 }
 
 bool cc_stack_equals(cc_stack *a_stack, cc_stack *b_stack) {
-  return cc_linked_list_equals(a_stack->items, b_stack->items);
+	return cc_linked_list_equals(a_stack->items, b_stack->items);
 }
 
 bool cc_stack_enumerator_move_next(cc_enumerable *c, cc_enumerator *e) {
-  return cc_linked_list_enumerator_move_next(c, e);
+	return cc_linked_list_enumerator_move_next(c, e);
 }
 
 int cc_stack_compare(cc_object *obj1, cc_object *obj2) {
-  cc_stack *a_stack = (cc_stack *)obj1;
-  cc_stack *b_stack = (cc_stack *)obj2;
+	cc_stack *a_stack = (cc_stack *)obj1;
+	cc_stack *b_stack = (cc_stack *)obj2;
 
-  return cc_linked_list_compare((cc_object *)a_stack->items, (cc_object *)b_stack->items);
+	return cc_linked_list_compare((cc_object *)a_stack->items, (cc_object *)b_stack->items);
 }
 
 void cc_stack_register_comparator() {
-  static bool first = true;
-  
-  if (first) {
-    first = false;
-    cc_object_register_comparator_for_type(cc_stack_type, cc_stack_compare);
-  }
+	static bool first = true;
+	
+	if (first) {
+		first = false;
+		cc_object_register_comparator_for_type(cc_stack_type, cc_stack_compare);
+	}
 }
 
 cc_object *cc_stack_to_object(cc_stack *stack) {
-  return cc_object_with_pointer(stack, cc_stack_type);
+	return cc_object_with_pointer(stack, cc_stack_type);
 }
 
 cc_stack *cc_stack_from_object(cc_object *obj) {
-  cc_stack *stack = cc_object_pointer_value(obj);
-  return stack;
+	cc_stack *stack = cc_object_pointer_value(obj);
+	return stack;
 }
