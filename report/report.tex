@@ -447,13 +447,13 @@ struct cc_sorted_list_struct {
 	
 	Stack is yet another simple collection type based on an internal Linked List for storing items. The data structures have a small amount of public functions that follow the naming conventions normally associated with a stack. New items can be added to the stack by using \highlight{cc\_stack\_push}, items can be peeked at with \highlight{cc\_stack\_peek} and popped from the stack with \highlight{cc\_stack\_pop}.
 
-	The stack uses the \ac{FIFO} principle \cite[p. 200]{Algorithms2002}. The Stack uses the pointer to the last item in the linked list as the pointer to the top of the stack. Items pushed to the stack are added to the end of the list and items popped from the stack are removed from the end of the list as well. This gives the benefit of \highlight{$O(1)$} pushes, peeks and pops.
+	The stack uses the FIFO principle \cite[p. 200]{Algorithms2002}. The Stack uses the pointer to the last item in the linked list as the pointer to the top of the stack. Items pushed to the stack are added to the end of the list and items popped from the stack are removed from the end of the list as well. This gives the benefit of \highlight{$O(1)$} pushes, peeks and pops.
 	
 	\subsection{Queue}
 	
 	The Queue collection type also uses Linked lists internally and is extremely similar to the Stack. It also has public functions with naming conventions that matches queues. New items are added to the list with \highlight{cc\_queue\_enqueue} and removed from the queue with \highlight{cc\_queue\_dequeue}. Additionally, the first element in the queue can be peeked at with \highlight{cc\_queue\_peek}.
 
-	The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Again, a linked list is used because of the fast modification. If we used an array list, each dequeing would need to move the data of all the remaining objects in memory. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the \ac{FILO} principle \cite[p. 200]{Algorithms2002}. Just like the stack the complexity of enqueues, dequeues and peeks are \highlight{$O(1)$}.
+	The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Again, a linked list is used because of the fast modification. If we used an array list, each dequeing would need to move the data of all the remaining objects in memory. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the FILO principle \cite[p. 200]{Algorithms2002}. Just like the stack the complexity of enqueues, dequeues and peeks are \highlight{$O(1)$}.
 	
 	\subsection{Dictionary}
 	\subsection{Binary Tree}
@@ -536,13 +536,16 @@ However, the design choices made about this library favors functionality, new co
 	The library features a total of 137 unit tests across all public functions for both the data structures and the cc\_objects and enumerators. The tests can easily be compiled and run straight from the command line using the Makefile. When the command \highlight{make test} is run it will run all unit tests for library and tell how many tests failed or passed.
 	
 	\begin{figure}[ht!]
-		\includegraphics{images/test_output.png}
+		\begin{center}
+			\includegraphics[scale=0.7]{images/test_output.png}
+			\caption{Generated test output}
+		\end{center}
 		\label{fig:generate_test_output}
-		\caption{Generated test output}
 	\end{figure}
 	
 	This automation makes it easy to run the tests frequently to ensure that no functionality breaks when working on the library code. The automation could even be taken a step further with tools like Guard that runs the test every time a source code file is saved, notifying the developer of test failures.
 
+\begin{figure}[ht!]
 \begin{lstlisting}[label=test-example,caption=Example of unit test with Unity]
 void test_can_create_linked_linked_list_from_array_list(void) {
   cc_array_list *a_list = cc_array_list_new();
@@ -562,7 +565,7 @@ void test_can_create_linked_linked_list_from_array_list(void) {
   }
 }
 \end{lstlisting}
-
+\end{figure}
 	Above is listed one of the 137 tests of the library illustrating how the Unity framework works. Essentially it boils down to only a few set of macros for determining whether a test fails or succeeds. In the example above the macro \highlight{TEST\_ASSERT\_EQUAL} is used multiple times. The macro takes two arguments where the first is the value expected and the second is the value returned. If the values doesn't match the test will fail.
 
 	\subsection{Coverage}
@@ -620,6 +623,7 @@ This generates the following entry in the browsable HTML API documentation:
 	\acro{FILO}{First In Last Out, see \cite[p. 200]{Algorithms2002}}
 	\acro{GDSL}{The Generic Data Structures Library,\\ see \url{http://home.gna.org/gdsl/}}
 	\acro{Glib}{Gnome Library,\\ see \url{https://developer.gnome.org/glib/2.34/}}
+	\acro{JavaDoc}{A documentation generation engine developed by Sun for Java}
 	\acro{LibDS}{A Portable Data Structures Library,\\ see \url{http://libds.sourceforge.net/doc/index.html}}
 	\acro{NPR}{Netscape Portable Runtime,\\ see \url{http://www.mozilla.org/projects/nspr/}}
 	\acro{OO}{Object Oriented}
