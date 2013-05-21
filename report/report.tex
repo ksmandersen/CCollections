@@ -282,7 +282,7 @@ Libraries like C\# and Java has native support for Exceptions which makes it rea
 	\item long jump. this can be used to create something like the try..catch pattern.
 \end{itemize}
 
-
+The optimal solution for a project like this would be the last option. With a setjmp/longjmp wrapper and an exception object, we could make something that would very much resemble the try..catch pattern, which is known from newer languages. This approach allows both checking for errors after a single function call, jumping out of a block of code on error, and having a global handler for uncaught exceptions. An example of a try..catch implementation in C is [insert example link and description here].
 
 \chapter{Implementation}
 
