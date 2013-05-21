@@ -105,7 +105,7 @@ Developers find themselves scouring the web for good libraries and are left with
 
 Languages like Java and C\# are highly regarded in part because of their extensive, well-documented and loved collection libraries that come as part of their standard libraries. Developers who primarily develop using languages like these are left with no similar options in C.
 
-The overall purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C\#. During the project such alibrary will be implemented.
+The overall purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C\#. During the project such a library will be implemented.
 
 \section{Existing solutions}\label{sec:existing_solutions}
 There is a large number of libraries with data structures available for C. In \autoref{tab:existing_solutins_adts} is listed some of the most commonly known by C developers.
@@ -342,7 +342,7 @@ This is illustrated nicely with \highlight{cc\_set} implementation of a set of u
 
 	First a note on the amount and selection of data structures implemented. In this section we will discuss the data structures: \textit{Array List, Linked List, Sorted List, Set, Stack, Queue, Dictionary and Binary Tree}. Although the initial plan was to implement more data structures (see \autoref{sec:vision}) we did not have time for all of them. For more on this refer to the discussion in \autoref{sec:discussion}.
 
-	\subsection{Array List}
+	\subsection{Array List}\label{sec:array_list}
 	
 	The first collection type we will discuss is the array list. This simple data structure is in reality just a dynamically expanding array. It contains a \highlight{heap} with a fixed capacity for cc\_objects. Once the capacity has been reached the data structure will automatically expands it heap to double its previous size.
 
@@ -366,7 +366,7 @@ struct cc_array_list_struct {
 
 	The sorting function of array list uses the well known divide and conquer algorithm, Quicksort. The sorting method has an average case complexity of \highlight{$O(n log n)$} while its worst case is \highlight{$O(n^2)$}. Although that doesn't seem impressive Quicksort has proven to perform better in practice the most other \highlight{$O(n log n)$} algorithms. Quicksort also has the advantage of being easy to implement with in-place partitioning that only requires \highlight{$O(n log n)$} additional space \cite[p. 145]{Algorithms2002}. This algorithm is implemented with array list and is used with calls to \highlight{cc\_array\_list\_sort}.
 	
-	\subsection{Linked List}
+	\subsection{Linked List}\label{sec:linked_list}
 	
 	The Linked List collection type is as the name indicates a doubly-linked list data structure. The structure store items in node structs and maintains a reference to the first and last item in the list; in the implementation called \highlight{head} and \highlight{tail}.
 
@@ -475,7 +475,7 @@ struct cc_dictionary_struct {
 	
 	\subsection{Binary Tree}
 	
-	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it have is references to its parent node, the left branch node, the right branch node, and the associated cc_object.
+	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it have is references to its parent node, the left branch node, the right branch node, and the associated cc\_object.
 
 \begin{lstlisting}[label=cc_binary_tree-struct,caption=Internal representation of Binary Tree]
 struct cc_binary_tree_struct {
@@ -488,7 +488,7 @@ struct cc_binary_tree_struct {
 };
 \end{lstlisting}
 
-It is also possible to get an enumerator for the tree. The only thing making this a bit more difficult than list structures is, that there is no obvious order, in which the nodes should be returned. To solve this, we have to different enumerators for the binary tree: a depth-first enumerator, as well as a breadth-first enumerator. The way this is implemented is by having two functions for getting an enumerator, as well as two move next functions. Still, when the enumerator wants to move to the next object, it will just call the cc_binary_tree_enumerator_move_next function. To figure out which move next function to call, we have saved the enumerator type in the enumerators data field. With this, we can distinguish between the two enumerator types, and call the right move next function.
+It is also possible to get an enumerator for the tree. The only thing making this a bit more difficult than list structures is, that there is no obvious order, in which the nodes should be returned. To solve this, we have to different enumerators for the binary tree: a depth-first enumerator, as well as a breadth-first enumerator. The way this is implemented is by having two functions for getting an enumerator, as well as two move next functions. Still, when the enumerator wants to move to the next object, it will just call the \highlight{cc\_binary\_tree\_enumerator\_move\_next} function. To figure out which move next function to call, we have saved the enumerator type in the enumerators data field. With this, we can distinguish between the two enumerator types, and call the right move next function.
 	
 \section{Enumerators}
 
@@ -642,10 +642,45 @@ This generates the following entry in the browsable HTML API documentation:
 	A full overview of all documentation for public functions can be found in Appendix B.
 
 \chapter{Conclusion}
-	Double test
-	\section{Discussion}
-	\label{sec:discussion}
-	Text
+	
+	In the beginning of this project we set out to investigate possible ways to take inspirations from the collection libraries from Object Oriented programming languages in developing a collection library for C. We found that none of the existing collection libraries for C had adopted many concepts from modern collection libraries. Support for Memory management in the form of Boehm-Demers-Weiser conservative garbage collector was implemented in the library. This was done to relief the user of managing the memory themselves. The modern concept of enumeration which has not yet been implemented in any C collection libraries we found, was implemented. This adoption gave birth to more great features inspired from modern collection libraries. Namely the ability to filter results from a collection or mapping and folding over items in a collection.
+	
+	In this project we have shown how colelction libraries from C can still learn much from modern collection libraries. We have provided a starting point for developers using OO languages to pick up C and use a modernly inspired collection library.
+	
+	Although performance may not be up to the standards of other collection libraries for C, the features certainly are.
+	
+	
+	\section{Discussion}\label{sec:discussion}
+	
+		Even though we made a lot of progress and implemented a lot of feature in this library we did not get to do all the things that we set out to do from the start. There is also a number of things we learned during the process that we would like to have done differently. We will go over some of these features and problems in this section.
+		
+		\subsection{Outstanding functionality}
+		
+			In \autoref{sec:vision} we listed a number of collection types that we planned to implement during this project. Limited by time we faced the decision to focus on implementing all the collection types or to take more inspiration from modern libraries and implemnt features that had not been seen in C before. Instead of implementing all collection types we decided to focus on enumeration, filtering and mapping. The collection types we choce not implement are Sorted Set and Sorted dictionary.\\
+			
+			In \autoref{sec:linked_list} we demonstrated how we implemented the functionality to create a Linked List using an argument list as seed. This feature makes the creation of collection types much easier. Even though we wished to, we did not get to implement that feature for the rest of the collection types. We did however get to demonstrate how it can be done, which means it will be fairly easy to implement for the rest of the collection types.
+			
+			
+		
+		\subsection{Wish list}\label{sec:wishlist}
+
+		% - What we didn't get to
+		% 	- The remaining collection types
+		% 	- Proper use of hashing functions like comparators
+		% 	- sorting for more collection types
+		% 	- collections with argument lists for all collection types
+		% - Wish list
+		% 	- More collection types
+		% 		- Hash tables
+		% 		- hash set
+		% 		- priority queue
+		% 	- Performance testing
+		% 		- benchmarking to show the performance impact of our solution
+		% 		- being able to pinpoint bottlenecks
+		% 	- Test code coverage (we should have picked another library)
+		% 	- Better hashing
+		% 	- some way to have sorted interface to get a sorted version from an enumerator
+		% 	- key/value pair as a cc\_object type
 
 \chapter{Abbreviations \& Definitions}
 \begin{acronym}
