@@ -457,6 +457,22 @@ struct cc_sorted_list_struct {
 	
 	\subsection{Dictionary}
 	\subsection{Binary Tree}
+	
+  We have a simple implementation of a binary tree. It allows to create a tree node, set its left and right branches, and attach a cc_object to each node. The implementation is essentially very simple: there's a single structure for a node in tree, cc_binary_tree_struct, which has a pointer to a parent tree, a left branch tree, a right branch tree, and the cc_object.
+	
+\begin{lstlisting}[label=cc_binary_tree-struct,caption=Internal representation of Binary Tree]
+struct cc_binary_tree_struct {
+	cc_collection c;
+	
+	cc_object *obj;
+	cc_binary_tree *parent;
+	cc_binary_tree *left_branch;
+	cc_binary_tree *right_branch;
+};
+\end{lstlisting}
+
+  For enumeration, a tree isn't as simple to implement as a list. It is not obvious how a tree would be iterated by a default enumerator. That's why we have to functions for the binary tree to get an enumerator: a depth first enumerator and a breadth first enumerator. This is implemented by having two different getter functions and two different move next functions. Still, when the enumerator wants to move to the next object, it still just makes a call to cc_binary_tree_enumerator_move_next. To find out which move next function to call from here, we save the enumerator type in the enumerators data field.
+	
 \section{Enumerators}
 
 	The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C\#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
