@@ -458,7 +458,7 @@ struct cc_sorted_list_struct {
 	\subsection{Dictionary}
 	\subsection{Binary Tree}
 	
-	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it have is references to its parent node, the left branch node, the right branch node, and the associated cc_object.
+	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it have is references to its parent node, the left branch node, the right branch node, and the associated cc\_object.
 
 \begin{lstlisting}[label=cc_binary_tree-struct,caption=Internal representation of Binary Tree]
 struct cc_binary_tree_struct {
@@ -471,7 +471,7 @@ struct cc_binary_tree_struct {
 };
 \end{lstlisting}
 
-It is also possible to get an enumerator for the tree. The only thing making this a bit more difficult than list structures is, that there is no obvious order, in which the nodes should be returned. To solve this, we have to different enumerators for the binary tree: a depth-first enumerator, as well as a breadth-first enumerator. The way this is implemented is by having two functions for getting an enumerator, as well as two move next functions. Still, when the enumerator wants to move to the next object, it will just call the cc_binary_tree_enumerator_move_next function. To figure out which move next function to call, we have saved the enumerator type in the enumerators data field. With this, we can distinguish between the two enumerator types, and call the right move next function.
+It is also possible to get an enumerator for the tree. The only thing making this a bit more difficult than list structures is, that there is no obvious order, in which the nodes should be returned. To solve this, we have to different enumerators for the binary tree: a depth-first enumerator, as well as a breadth-first enumerator. The way this is implemented is by having two functions for getting an enumerator, as well as two move next functions. Still, when the enumerator wants to move to the next object, it will just call the \highlight{cc\_binary\_tree\_enumerator\_move\_next} function. To figure out which move next function to call, we have saved the enumerator type in the enumerators data field. With this, we can distinguish between the two enumerator types, and call the right move next function.
 	
 \section{Enumerators}
 
