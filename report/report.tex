@@ -179,7 +179,7 @@ There are generally two different approaches to designing a system in procedural
 		\label{fig:approaches}
 	\end{figure}
 
-An example of the difference could be a function to calculate the weight of a car: the classic approach would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each approach has pros and cons. If you want to add a car type with the classic approach, you would have to find every place in the code where car-type-specific calculations were made, while with the object approeach, you would only need to implement the functions for the new car type. On the other hand, if you in addition wanted to have a function to calculate the height of a car, in the classic approach, you would need to implement just one function, where in the object-oriented approach, you would have to find all car types, and implement a function for each.
+An example of the difference could be a function to calculate the weight of a car: the classic approach would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each approach has pros and cons. If you want to add a car type with the classic approach, you would have to find every place in the code where car-type-specific calculations were made, while with the object approach, you would only need to implement the functions for the new car type. On the other hand, if you in addition wanted to have a function to calculate the height of a car, in the classic approach, you would need to implement just one function, where in the object-oriented approach, you would have to find all car types, and implement a function for each.
 
 Newer languages with focus on object oriented programming makes the decision of which to use very easy. In pre-object languages, such as C, the choice is a bit harder. The easy answer is to use the classic way, since this is what the language is built for; however, there are ways to build functionality which replicates some object-oriented functions in a procedural way, which makes object composition available.
 
@@ -187,23 +187,23 @@ One other difference between the two approaches is execution speed. The newer, m
 
 There isn't a single general answer to, which method is the best to use. It depends on the specific situation. What we can do, is that we can set a general style for the project as a guideline, not a rule. The general style should be prioritized over the other, but if one of them doesn't make sense to use in a situation, the other should be used.
 
-Since most C libraries seem to be using the classic, non-object way, we have chosen to attempt a more modern approach to C programming. The general style guideline for the project is to use object-like thinking when it makes sense: strive to make everything modular and extensible, instead of trying to make it perform.
+Since most C libraries seem to be using the classic, non-object way, we have chosen to attempt a more modern approach to C programming. The general style guideline for the project is to use object-like thinking when it makes sense: strive to make everything modular and extensible, rather than trying to make it perform.
 
 In the following sections, we will go more in depth with the different design choices in the library.
 
 \section{Memory Management}\label{sec:arch_memory_management}
 
-Manual memory management is often a big hurdle for people coming from garbage collected languages. With the right techniques and code structure, it can become less of a problem, but it's still something that can cause not only headaches during development and debugging, but also commonly causes stability- and security problems when release, if not all bugs are found. This is especially in collections, where programmers are often tempted to just create a static array instead of something that is dynamically expanding, because of the trouble of having to keep track of when you don't need it any more, leading to buffer overflow issues. And, apart from direct code problems, garbage collection is just a convenience that many high-level programmers expects to have. This is why we want our collections to be garbage collected.
+Manual memory management is often a big hurdle for people coming from garbage collected languages. With the right techniques and code structure, it can become less of a problem, but it's still something that can cause not only headaches during development and debugging, but also commonly causes stability- and security problems when released, if not all bugs are found. Especially in collections are programmers more often tempted to just create a static array instead of something that is dynamically expanding, because of the trouble of having to keep track of when you don't need it any more. This leads to both worse code, but also buffer overflow issues. And, apart from direct code problems, garbage collection is just a convenience that many high-level programmers expects to have. This is why we want our collections to be garbage collected.
 
 Since there is no support for garbage collection in the C runtime, it has to run on top of the standard memory allocation. There are a number of libraries to do this, the most popular of these being the Boehm-Demers-Weiser conservative garbage collector\footnote{\url{http://www.hpl.hp.com/personal/Hans_Boehm/gc/}} (also known just as Boehm's garbage collector), which is used as the garbage collector in Mono and as a leak detector in the Mozilla project. It has replacement functions for malloc and realloc, which will instead allocate memory in heap blocks allocated by the garbage collector, and associate mark-ing bits. For collecting memory, it uses mark-sweep to find unused memory blocks and free them \cite[chap. 10]{Sestoft2012}. Finalizers can also be registered for a block of memory, which could be used to replicate the functionality of deconstructors.
 
-For use in a C program, the mark-sweep method has the advantage of being able to be made conservative. This ensures that there will be no problems in trying to differentiate pointers and integers, since there is no harm done by retaining a block of memory, that isn't in use, but has an integer — which can be interpreted as a pointer, but really is just a value — pointing to it. Non-conservative garbage collectors, such as stop-and-copy, would have to make a choice wether to move the block, and update the potentially false pointer, or garbage collect the memory \cite[chap. 10]{Sestoft2012}.
+For use in a C program, the mark-sweep method has the advantage of being able to be made conservative. This ensures that there will be no problems in trying to differentiate pointers and integers, since there is no harm done by retaining a block of memory, that isn't in use, but has an integer – which can be interpreted as a pointer, but really is just a value – pointing to it. Non-conservative garbage collectors, such as stop-and-copy, would have to make a choice wether to move the block, and update the potentially false pointer, or garbage collect the memory \cite[chap. 10]{Sestoft2012}.
 
 In regards to performance, the mark-sweep collector can be slow for larger allocations, but is generally fast for smaller ones. Boehm's garbage collector claims to be on-par or faster than regular C memory management for smaller allocations, but slower for larger ones\footnote{As stated in the documentation for GC on the website}.
 
 \section{Data Objects}\label{sec:arch_data_objects}
 
-The most obvious problem we encounter is how to have an insert function, which can insert any kind of object. A collection should be able to contain every type of object, which isn't a problem in object oriented languages, where there is a system of classes and instances, but is a little more tricky in C, since there are multiple distinct type of objects. We will want a function to insert both a char, which is a single-byte stack variable, an int, a multi-byte stack variable, a string, which is a pointer to a block of memory with an unknown size, along with whatever data structure the user has made.
+The most obvious problem we encounter is how to have an insert function, which can insert any kind of object. A collection should be able to contain every type of object, which isn't a problem in object oriented languages, where there is a system of classes and instances, but is a little more tricky in C, since there are multiple distinct types of objects. We will want a function to insert both a char, which is a single-byte stack variable, an int, a multi-byte stack variable, a string, which is a pointer to a block of memory with an unknown size, along with whatever data structure the user has made.
 
 There are multiple approaches to this. One way is to have the user specify an element size when creating the data structure, and any value can then be put into each element, as long as it doesn't exceed the element size. Another way is to make an insert function for each supported data type, so that you would have functions such as \highlight{insert\_int}, \highlight{insert\_float} and \highlight{insert\_string}.
 
@@ -333,8 +333,25 @@ The objects does two things: first, it can serialize and de-serialize data; seco
 cc_object *number = cc_object_with_int(42);
 int in_val = cc_object_int_value(number);
 \end{lstlisting}
+
+The way we, in the cc_object struct, supports multiple different types of values, is via a union declaration. The cc_object structs value field is a union of all the different types it supports. A union in C works by allocating space in the struct for the largest type, and each of the types points to this allocated memory. There's type safe access to all the different types, but they share the memory, so that only one of them can be valid at a time. This keeps the cc_object struct as small as possible, while retaining type safety. Other than the value, we also have a string, which is used to identify the objects type, like gettings its class name.
+
+\begin{lstlisting}[label=cc_object-struct,caption=Internal structure of the cc_object]
+struct cc_object_struct {
+	const char *type;
+	cc_object_hash_func hash_func;
 	
-In addition to this, we have initializers for making custom data types with ether a pointer (void *) or a data block with a length. Since we are using garbage collection in the project, there is not need to specify, who "owns" a pointer (i.e. who is responsible for free'ing it), when saving a pointer in a cc\_object. The pointer and data types can be used directly, and just contain whatever data type you want, but the preferred approach is that each custom data type in a project will have their own serialization and de-serialization to and from cc\_objects, which will be implemented with the pointer or data type object. This is also why you have to specify a data string when creating a cc\_object with a pointer or data block. The custom serialization function on a custom data type should have a type string, which is unique to that type, and set it on the cc\_object when serializing. An example of a custom cc\_object serialization function is the one from the cc\_linked\_list object:
+	union {
+		int i;
+		float f;
+		char *str;
+		void *data;
+		void *ptr;
+	} value;
+};
+\end{lstlisting}
+
+In addition to the three primitive types, we have initializers for making custom data types with ether a pointer (void *) or a data block with a length. Since we are using garbage collection in the project, there is not need to specify, who "owns" a pointer (i.e. who is responsible for free'ing it), when saving a pointer in a cc\_object. The pointer and data types can be used directly, and just contain whatever data type you want, but the preferred approach is that each custom data type in a project will have their own serialization and de-serialization to and from cc\_objects, which will be implemented with the pointer or data type object. This is also why you have to specify a data string when creating a cc\_object with a pointer or data block. The custom serialization function on a custom data type should have a type string, which is unique to that type, and set it on the cc\_object when serializing. An example of a custom cc\_object serialization function is the one from the cc\_linked\_list object:
 
 \begin{lstlisting}[label=custom-serialization,caption=Example of how to implement custom serialization]
 // cc_linked_list.h
@@ -390,7 +407,7 @@ This is illustrated nicely with \highlight{cc\_set} implementation of a set of u
 
 	When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as \highlight{cc\_linked\_list\_get\_enumerator}. That function should then return a new enumerator, with the \highlight{move\_next} function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a \highlight{cc\_object}, which should be set to the item that is the current item in the iteration, and which is returned from the \highlight{get\_current} function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
 	
-	\begin{lstlisting}[label=cc_enumerator-impl-example,caption=Implementation of linked list's get_enumerator]	
+	\begin{lstlisting}[label=cc_enumerator-impl-example,caption=Implementation of linked list's get\_enumerator]	
 	cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list) {
 	  cc_enumerator *e = cc_enumerator_new(&list->c.enumerable);
 	  e->data = NULL;
