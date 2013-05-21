@@ -20,7 +20,7 @@
 \contentsline {subsection}{\numberline {3.3.2}Linked List}{23}{subsection.3.3.2}
 \contentsline {subsection}{\numberline {3.3.3}Sorted List}{24}{subsection.3.3.3}
 \contentsline {subsection}{\numberline {3.3.4}Set}{25}{subsection.3.3.4}
-\contentsline {subsection}{\numberline {3.3.5}Stack}{26}{subsection.3.3.5}
+\contentsline {subsection}{\numberline {3.3.5}Stack}{25}{subsection.3.3.5}
 \contentsline {subsection}{\numberline {3.3.6}Queue}{26}{subsection.3.3.6}
 \contentsline {subsection}{\numberline {3.3.7}Dictionary}{26}{subsection.3.3.7}
 \contentsline {subsection}{\numberline {3.3.8}Binary Tree}{26}{subsection.3.3.8}
