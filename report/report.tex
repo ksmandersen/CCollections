@@ -471,7 +471,11 @@ struct cc_dictionary_struct {
 
 	All the basic dictionary operation implementations are pretty straight forward: adding a value for a key searches for that key, and if it exists overwrites the value, otherwise inserts the new value in the heap and the key in the keys list. Get looks at the place in the heap equal to the hash value of the key. Contains checks if the key exists in the keys list.
 
-	One thing that works a bit different is the handling of enumerators. Getting an enumerator just enumerates over the keys in the dictionary, and the user can just get the value for the current key to get the corresponding item. Creating a dictionary from enumerators is not as simple. It wouldn't make much sense to create a dictionary from a list-enumerator. That's why the dictionary has a constructor function that takes two enumerators: one for the keys and one for the items. This will expect two enumerators with the same item count, and one of them containing strings. This will create the new dictionary with each value from the item-enumerator matched to a key from the key-enumerator.
+	One thing that works a bit different is the handling of enumerators. Getting an enumerator just enumerates over the keys in the dictionary, and the user can just get the value for the current key to get the corresponding item. Creating a dictionary from enumerators is not as simple. It wouldn't make much sense to create a dictionary from a list-enumerator. That's why the dictionary has a constructor function that takes two enumerators: one for the keys and one for the items. This will create the new dictionary with each value from the item-enumerator matched to a key from the key-enumerator.
+	
+	\subsubsection{Hashing}
+	
+	In the same way that every object should be able to register a comparator for its type, each object should also be able to specify a hashing function. The library will have built-in functions for hashing (in cc_hash.h), but for complex data structures, it will be necessary to specify a custom hashing function. This can still use the built in hashing functions for getting the hash of each data field, and then hash those together into a single value. When a data type has registered its hash function with \highlight{cc\_object\_register\_hash\_func\_for\_type}, it's as easy as calling \highlight{cc\_object\_hash} to get the hash of an object of that data type.
 	
 	\subsection{Binary Tree}
 	
