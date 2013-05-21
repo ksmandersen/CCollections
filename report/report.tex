@@ -112,7 +112,7 @@ Languages like Java and C\# are highly regarded in part because of their extensi
 The overall purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C\#.
 
 \section{Existing solutions}\label{sec:existing_solutions}
-There is a large number of libraries with data structures available for C. The table below is lists some of  the most commonly known by C developers.
+There is a large number of libraries with data structures available for C. The table below is lists some of the most commonly known by C developers.
 
 \begin{table}
 	\begin{center}
@@ -186,11 +186,11 @@ In the following sections, we will go more in depth with the different design ch
 
 \section{Memory Management}\label{sec:arch_memory_management}
 
-Manual memory management is often a big hurdle for people coming from garbage collected languages. With the right techniques and code structure, it can become less of a problem, but it's still something that can cause headaches. This is especially in collections, where programmers are often tempted to just create a static array instead of something that is dynamically expanding, because of the trouble of having to keep track of when you don't need it any more, leading to buffer overflow issues. And, apart from direct code problems, garbage collection is just a convenience that many high-level programmers expects to have. This is why we want our collections to be garbage collected.
+Manual memory management is often a big hurdle for people coming from garbage collected languages. With the right techniques and code structure, it can become less of a problem, but it's still something that can cause not only headaches during development and debugging, but also commonly causes stability- and security problems when release, if not all bugs are found. This is especially in collections, where programmers are often tempted to just create a static array instead of something that is dynamically expanding, because of the trouble of having to keep track of when you don't need it any more, leading to buffer overflow issues. And, apart from direct code problems, garbage collection is just a convenience that many high-level programmers expects to have. This is why we want our collections to be garbage collected.
 
-Since there is no support for garbage collection in the C runtime, it has to run on top of the standard memory allocation. there are a number of libraries to do this, the most popular of these being the Boehm-Demers-Weiser conservative garbage collector (also known just as Boehm's garbage collector), which is used as the garbage collector in Mono and as a leak detector in the Mozilla project. It has replacement functions for malloc and realloc, which will instead allocate memory in heap blocks, allocated by the garbage collector, and associate mark- ing bits. For collecting memory, it uses mark-sweep to find unused memory blocks and free them. Finalizers can also be registered for a block of memory, which could be used to replicate the functionality of deconstructors.
+Since there is no support for garbage collection in the C runtime, it has to run on top of the standard memory allocation. there are a number of libraries to do this, the most popular of these being the Boehm-Demers-Weiser conservative garbage collector (also known just as Boehm's garbage collector), which is used as the garbage collector in Mono and as a leak detector in the Mozilla project. It has replacement functions for malloc and realloc, which will instead allocate memory in heap blocks allocated by the garbage collector, and associate mark-ing bits. For collecting memory, it uses mark-sweep to find unused memory blocks and free them. Finalizers can also be registered for a block of memory, which could be used to replicate the functionality of deconstructors.
 
-For use in a C program, the mark-sweep method has the advantage of being able to be made conservative. This ensures that there will be no problems in trying to differentiate pointers and integers, since there is no harm done by retaining a block of memory, that isn't in use, but has an integer —which can be interpreted as a pointer, but really is just a value —pointing to it. Non-conservative garbage collectors, such as stop-and-copy, would have to make a choice wether to move the block, and update the potentially false pointer, or garbage collect the memory.
+For use in a C program, the mark-sweep method has the advantage of being able to be made conservative. This ensures that there will be no problems in trying to differentiate pointers and integers, since there is no harm done by retaining a block of memory, that isn't in use, but has an integer — which can be interpreted as a pointer, but really is just a value — pointing to it. Non-conservative garbage collectors, such as stop-and-copy, would have to make a choice wether to move the block, and update the potentially false pointer, or garbage collect the memory.
 
 In regards to performance, the mark-sweep collector can be slow for larger allocations, but is generally fast for smaller ones. Boehm's garbage collector claims to be on-par or faster than regular C memory management for smaller allocations, but slower for larger ones.
 
@@ -222,7 +222,7 @@ The next problem is how to do this in C. In an object oriented language, we woul
 
 With this approach, a collection can have a method to return an enumerator, and the enumerator will be able to crawl through the objects of the collection by calling that collection's move next function, which it will have, since it incapsulates an enumerable struct.
 
-The approach of using enumerators as an interexchangable collection format allows us to do something else, which is in many other collection libraries, but traditionally would be difficult to implement in C. In C\# and especially many functional languages, you easily filter, map, sort and take elements from a collection. With the enumerators as a standard "collection", we can implement this functionality as well. We can make functions that takes an enumerator and returns a new, which will then create a chain of move next implementations, where each link can filter out items, map items to different types, or whatever the function does. This allows us very easily create chains of collection modifiers, in a way that is typically only seen in higher level languages.
+The approach of using enumerators as an interexchangable collection format allows us to do something else, which is in many other collection libraries, but traditionally would be difficult to implement in C. In C\# and especially many functional languages, you can easily filter, map, sort and take elements from a collection. With the enumerators as a standard "collection", we can implement this functionality as well. We can make functions that takes an enumerator and returns a new, which will then create a chain of move next implementations, where each link can filter out items, map items to different types, or whatever the function does. This allows us very easily create chains of collection modifiers, in a way that is typically only seen in higher level languages.
 
 \section{Code Structure}\label{sec:arch_code_structure}
 
@@ -356,7 +356,7 @@ struct cc_array_list_struct {
 };
 \end{lstlisting}
 
-	Above is the internal representation of an array list. Like all other data structures in the library it has a reference to its \highlight{cc\_collection}. The structure also tracks the number of elements currently in the structure and what the limit is (\highlight{heap\_size}). When the structure reaches its limit, the next call to the add function will reallocate \highlight{heap} using \highlight{GC\_REALLOC}.
+	Above is the internal representation of an array list. Like all other data structures in the library it has a reference to its \highlight{cc\_collection}. The structure also tracks the number of elements currently in the structure (\highlight{count}) and what the currently allocated heap size is (\highlight{heap\_size}). When the structure reaches the heap limit, the next call to the add function will reallocate \highlight{heap} using \highlight{GC\_REALLOC}.
 
 	As the name implies Array List has almost identical time complexity to native arrays. Because arrays are used for storing, and the array doubles its size, the complexity of one insertion at the end of the list is \highlight{$O(1)$}. Insertions at the beginning and the middle is \highlight{$O(n)$} because all subsequent items needs to be moved one item at a time.
 
@@ -411,7 +411,7 @@ struct cc_sorted_list_struct {
 };
 \end{lstlisting}
 
-	All calls for creating, getting, removing, clearing and enumerating the sorted list is forwarded to the internal linked list using an public functions exposed as the sorted list. The only function that needs to have significant code content is the insertion function. This function then uses an insertion sort algorithm to find the proper place in the linked list to insert the new item. It does so by enumerating the linked list, comparing each item in it with the new item until it finds the correct place.
+	All calls for creating, getting, removing, clearing and enumerating the sorted list is forwarded to the internal linked list using an public functions exposed as the sorted list. The only function that needs to have significant code content is the insertion function. This function then uses an insertion sort algorithm to find the proper place in the linked list to insert the new item. It does so by enumerating the linked list, comparing each item in it with the new item until it finds the correct place. We use a linked list for the implementation because it allows fast modification of the list, which will be done a lot, if it's constantly sorted.
 	
 	\subsection{Set}
 	
@@ -451,9 +451,9 @@ struct cc_sorted_list_struct {
 	
 	\subsection{Queue}
 	
-	The Queue collection type also uses Linked lists internally and is extremely similar to the Stack. It has also has public functions with naming conventions that match queues. New items are added to the list with \highlight{cc\_queue\_enqueue}, removed from the queue with \highlight{cc\_queue\_dequeue} and peeked at with \highlight{cc\_queue\_peek}.
+	The Queue collection type also uses Linked lists internally and is extremely similar to the Stack. It also has public functions with naming conventions that matches queues. New items are added to the list with \highlight{cc\_queue\_enqueue} and removed from the queue with \highlight{cc\_queue\_dequeue}. Additionally, the first element in the queue can be peeked at with \highlight{cc\_queue\_peek}.
 
-	The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the FILO principle. Just like the stack the complexity of enqueues, dequeues and peeks are \highlight{$O(1)$}.
+	The queue uses the pointer to the first item in the linked list as the pointer to the start of the queue. It uses the pointer to the last item in the linked list as the pointer to the end of the queue. Again, a linked list is used because of the fast modification. If we used an array list, each dequeing would need to move the data of all the remaining objects in memory. Items being enqueued are added to the end of the list and items being dequeued are removed from the top of the list. This way the queue follows the FILO principle. Just like the stack the complexity of enqueues, dequeues and peeks are \highlight{$O(1)$}.
 	
 	\subsection{Dictionary}
 	\subsection{Binary Tree}
