@@ -2,7 +2,7 @@
 \ProvidesClass{ituthesis}[2012/09/06 A document class for IT University of Copenhagen theses and reports]
 
 %% This document class is based on memoir
-\LoadClass[a4paper, showtrims, 12pt, twoside, openright, onecolumn, final]{memoir}
+\LoadClass[a4paper, 12pt, twoside, openright, onecolumn, final]{memoir}
 
 \RequirePackage[danish,english]{babel}
 \RequirePackage{csquotes}

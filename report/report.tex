@@ -88,7 +88,7 @@ This report has been written in May 2013 in a 15 ECTS project at the IT Universi
 
 During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for modern Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation that is customary for \ac{OO}-language collection libraries but uncommon for C libraries. The library has been tested with Unit tests for all public API functions. In the library are Array List, Linked List, Sorted List, Set, Stack, Queue, Dictionary and Binary Tree.\\
 
-The entire source, with tests and documentation, for the project is available for download on \href{GitHub}{https://github.com/ksmandersen/CCollections} at \href{github.com/ksmandersen/CCollections}{https://github.com/ksmandersen/CCollections}.
+The entire source, with tests and documentation, for the project is available for download on GitHub at \\\url{github.com/ksmandersen/CCollections}.
 \clearpage
 
 \tableofcontents*
@@ -183,7 +183,7 @@ An example of the difference could be a function to calculate the weight of a ca
 
 Newer languages with focus on object oriented programming makes the decision of which to use very easy. In pre-object languages, such as C, the choice is a bit harder. The easy answer is to use the classic way, since this is what the language is built for; however, there are ways to build functionality which replicates some object-oriented functions in a procedural way, which makes object composition available.
 
-One other difference between the two approaches is execution speed. The newer, more dynamic ways of programming uses a lot of dynamic lookup at runtime, which has a performance impact, compared to more static programming. If you compare the same code written in C and C++, the C++ code will most likely be a bit slower, since dynamic features like method calls uses runtime table lookups. A more extreme example is languages like JavaScript, which, even when compiled to bytecode, runs at half the speed of the same C program.\footnote{http://ejohn.org/blog/asmjs-javascript-compile-target/}
+One other difference between the two approaches is execution speed. The newer, more dynamic ways of programming uses a lot of dynamic lookup at runtime, which has a performance impact, compared to more static programming. If you compare the same code written in C and C++, the C++ code will most likely be a bit slower, since dynamic features like method calls uses runtime table lookups. A more extreme example is languages like JavaScript, which, even when compiled to bytecode, runs at half the speed of the same C program.\footnote{\url{http://ejohn.org/blog/asmjs-javascript-compile-target/}}
 
 There isn't a single general answer to, which method is the best to use. It depends on the specific situation. What we can do, is that we can set a general style for the project as a guideline, not a rule. The general style should be prioritized over the other, but if one of them doesn't make sense to use in a situation, the other should be used.
 
@@ -296,7 +296,7 @@ The library for this project will be using unit tests with coverage of all colle
 
 Computer Science is a field in constant movement. A lot of that movement can be credited to the movement of open source software. Developers sharing their code with the public drives the field forward. Letting other developers learn from their code, enabling them to contribute and improve existing software as well os innovate. It is in this spirit this library will released as open source software. Although it would seem that this topic is more philosophical than architectural it does have benefits other than attribution and openness. Releasing the library as open source software will allow users to peek inside the depths of the library. This brings a sense of transparency to the user of the library. It also allows the community to give back to other users by extending and improve the library.
 
-As mention in \autoref{sec:preface} the library will be made publicly available on \\\href{https://github.com/ksmandersen/CCollections}{github.com/ksmandersen/CCollections}. The library will be licensed under the GPL v3 license\footnote{More information on \url{http://www.tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)}}, making the software free to modify, distribute and use commercially.
+As mention in \autoref{sec:preface} the library will be made publicly available on \\\href{https://github.com/ksmandersen/CCollections}{github.com/ksmandersen/CCollections}. The library will be licensed under the BSD-2 license\footnote{More information on \url{http://www.tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)}}, making the software free to modify, distribute and use commercially.
 
 \section{Error handling}\label{sec:arch_error_handling}
 
@@ -384,6 +384,7 @@ This shows how to implement dynamic functionality on top of the cc\_objects. The
 
 As a side effect of great architectured extensibility of the library it becomes very easy and convenient to reuse code across the library. All collections of course share the cc\_objects and enumerators code. But a collection can be built as extension of other collections.
 
+\clearpage
 \begin{lstlisting}[label=cc_set-struct,caption=Example of internal code reuse]
 struct cc_set_struct {
   cc_collection c;
@@ -399,14 +400,15 @@ This is illustrated nicely with the \highlight{cc\_set} implementation of a set 
 	The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C\#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
 
 	An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actual functionality is implemented by the collection being looped. The enumerators doesn't even have a public constructor function; it is each collections responsibility to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
-	
-	\begin{lstlisting}[label=cc_enumerator-struct,caption=The enumerator struct]
-	struct cc_enumerator_struct {
-		cc_enumerable *enumerable;
-		void *data;
-		cc_object *current;
-	};
-	\end{lstlisting}
+
+\clearpage	
+\begin{lstlisting}[label=cc_enumerator-struct,caption=The enumerator struct]
+struct cc_enumerator_struct {
+	cc_enumerable *enumerable;
+	void *data;
+	cc_object *current;
+};
+\end{lstlisting}
 
 	When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as \highlight{cc\_linked\_list\_get\_enumerator}. That function should then return a new enumerator, with the \highlight{move\_next} function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a \highlight{cc\_object}, which should be set to the item that is the current item in the iteration, and which is returned from the \highlight{get\_current} function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
 	
@@ -654,7 +656,7 @@ It is also possible to get an enumerator for the tree. The only thing making thi
 
 	As noted in \autoref{sec:arch_testing} this project will be covering its implementation with functional unit tests. For the implementation of the unit tests a framework called Unity\footnote{\url{https://github.com/ThrowTheSwitch/Unity}} has ben chosen. It was picked from a list of 45 competing libraries \footnote{\url{http://en.wikipedia.org/wiki/List\_of\_unit\_testing\_frameworks\#C}}. It features xUnit\footnote{\url{http://en.wikipedia.org/wiki/XUnit}} compliant unit tests and is very light weight. This means that it can easily be bundled with library src and does not have to be installed separately from the source like some of the other choices.
 
-	The library features a total of 137 unit tests across all public functions for both the data structures and the cc\_objects and enumerators. The tests can easily be compiled and run straight from the command line using the Makefile. When the command \highlight{make test} is run it will run all unit tests for library and tell how many tests failed or passed.
+	The library features a total of 147 unit tests across all public functions for both the data structures and the cc\_objects and enumerators. The tests can easily be compiled and run straight from the command line using the Makefile. When the command \highlight{make test} is run it will run all unit tests for library and tell how many tests failed or passed.
 	
 	\begin{figure}[ht!]
 		\begin{center}
