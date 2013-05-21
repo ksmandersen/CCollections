@@ -338,7 +338,7 @@ bool cc_linked_list_equals(cc_linked_list *a_list, cc_linked_list *b_list) {
 }
 
 cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list) {
-	cc_enumerator *e = cc_enumerator_new(&list->c.enumerable);
+  cc_enumerator *e = cc_enumerator_new(&list->c.enumerable);
   e->data = NULL;
 
   return e;
