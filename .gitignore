@@ -4,8 +4,16 @@ html/
 
 .DS_Store
 
-*.out
+*.pdf
+*.bbl
+*.blg
+*.bbf
+*.toc
 *.aux
-*.fdb_latexmk
+*.lof
 *.log
+*.lot
+*.nlo
+*.out
 *.synctex.gz
+*.fdb_latexmk
