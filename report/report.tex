@@ -548,6 +548,8 @@ struct cc_dictionary_struct {
 	
 	In the same way that every object should be able to register a comparator for its type, each object should also be able to specify a hashing function. The library will have built-in functions for hashing (in cc\_hash.h), but for complex data structures, it will be necessary to specify a custom hashing function. This can still use the built in hashing functions for getting the hash of each data field, and then hash those together into a single value. When a data type has registered its hash function with \highlight{cc\_object\_register\_hash\_func\_for\_type}, it's as easy as calling \highlight{cc\_object\_hash} to get the hash of an object of that data type.
 	
+	As for the hashing algorithm we use, it's a very simple one, and really not a very good one. The ideal solution would to include a hashing library in the project, to be sure that the algorithm is fast and has as few collisions as possible. Some libraries to consider could be CMPH - C Minimal Perfect Hashing Library (CMPH - C Minimal Perfect Hashing Library) or gperf - GNU Perfect hashing] (http://www.gnu.org/software/gperf/#TOCintroduction).
+	
 	\subsection{Binary Tree}
 	
 	The project has a binary tree implementation. The binary tree is a simple structure, where each node has a left branch and a right branch, and data can be associated with each node. The binary tree structure represents such a node. The only fields it has is references to its parent node, the left branch node, the right branch node, and the associated cc\_object.
