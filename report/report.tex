@@ -454,13 +454,46 @@ struct cc_sorted_list_struct {
 	
 	\subsection{Dictionary}
 	\subsection{Binary Tree}
+	
+  We have a simple implementation of a binary tree. It allows to create a tree node, set its left and right branches, and attach a cc_object to each node. The implementation is essentially very simple: there's a single structure for a node in tree, cc_binary_tree_struct, which has a pointer to a parent tree, a left branch tree, a right branch tree, and the cc_object.
+	
+\begin{lstlisting}[label=cc_binary_tree-struct,caption=Internal representation of Binary Tree]
+struct cc_binary_tree_struct {
+	cc_collection c;
+	
+	cc_object *obj;
+	cc_binary_tree *parent;
+	cc_binary_tree *left_branch;
+	cc_binary_tree *right_branch;
+};
+\end{lstlisting}
+
+  For enumeration, a tree isn't as simple to implement as a list. It is not obvious how a tree would be iterated by a default enumerator. That's why we have to functions for the binary tree to get an enumerator: a depth first enumerator and a breadth first enumerator. This is implemented by having two different getter functions and two different move next functions. Still, when the enumerator wants to move to the next object, it still just makes a call to cc_binary_tree_enumerator_move_next. To find out which move next function to call from here, we save the enumerator type in the enumerators data field.
+	
 \section{Enumerators}
 
 	The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C\#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
 
 	An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actual functionality is implemented by the collection being looped. The enumerators doesn't even have a public constructor function; it is each collections responsibility to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
 
-	When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as \highlight{cc\_linked\_list\_get\_enumerator}. That function should then return a new enumerator, with the \highlight{move\_next} function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a \highlight{cc\_object}, which should be set to the item that is the current item in the iteration, and which is returned from the \highlight{get\_current} function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
+\begin{lstlisting}[label=cc_enumerator-struct,caption=The enumerator struct]
+struct cc_enumerator_struct {
+	cc_enumerable *enumerable;
+	void *data;
+	cc_object *current;
+};
+\end{lstlisting}
+
+	When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as \highlight{cc\_linked\_list\_get\_enumerator}. That function should then return a new enumerator, with the \highlight{move\_next} function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: the first field, current, is a \highlight{cc\_object}, which should be set to the item that is the current item in the iteration, and which is returned from the \highlight{get\_current} function. The other field, data, is a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily create an enumerator and iterate over a collection:
+
+\begin{lstlisting}[label=cc_enumerator-impl-example,caption=Implementation of linked list's get_enumerator]	
+cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list) {
+  cc_enumerator *e = cc_enumerator_new(&list->c.enumerable);
+  e->data = NULL;
+
+  return e;
+}
+\end{lstlisting}
 
 \begin{lstlisting}[label=cc_enumerator-example,caption=Using enumerators in CCollections]
 cc_enumerator *e = cc_linked_list_get_enumerator(list);
@@ -482,10 +515,18 @@ cc_linked list *b_list = cc_linked_list_new_with_enumerator(e);
 	Another feature we then can implement is running code on each element in an enumerator. This would allow us to do things like filter, map and fold a collection. The way this is implemented is by doing something very much alike what we do in the collections' enumerator functions: we create an enumerator and specify a move next function. The move next function would then call the move next on the "parent" enumerator and setting the parents current object to the childs current object. This would create a completely transparent enumerator, in which we can implement some custom functionality. An example of this is a filter move next function:
 	
 \begin{lstlisting}[label=cc_enumerator-filter-move_next,caption=Custom enumerator filter]
+typedef bool (*cc_enumerator_filter_func)(cc_object *obj);
+
+typedef struct {
+	cc_enumerator *parent;
+	cc_enumerator_filter_func filter;
+} filter_enumerator_data;
+
 bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
   filter_enumerator_data *data = e->data;
   cc_enumerator *parent_e = data->parent;
 
+  // enumerate through the parent enumerator until an item that shouldn't be filtered is found
   while (cc_enumerator_move_next(parent_e)) {
     cc_object *obj = cc_enumerator_current(parent_e);
   
@@ -497,6 +538,16 @@ bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
 
   return false;
 }
+
+cc_enumerator *cc_enumerator_filter(cc_enumerator *e, cc_enumerator_filter_func filter) {
+  // create a new enumerator and set the original one as the parent enumerator
+	cc_enumerator *en = cc_enumerator_new(cc_enumerable_new(cc_enumerator_filter_move_next));
+	filter_enumerator_data *data = GC_malloc(sizeof(filter_enumerator_data));
+	data->parent = e;
+	data->filter = filter;
+	en->data = data;
+	return en;
+}
 \end{lstlisting}	    
 
 	With this filter function, we can now apply a filter to any enumerator:
@@ -507,12 +558,13 @@ bool odd_filter(cc_object *obj) {
 }
 
 cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
+// set the data field to 0
 e->data = GC_MALLOC(sizeof(int));
 *((int *)e->data) = 0;
 cc_enumerator *odd_numbers = cc_enumerator_filter(e, odd_filter);
 \end{lstlisting}	
 
-	Other than just being pretty simple to both use and implement, this approach also follows our philosiphy of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns the reverse enumerator.
+	Other than just being pretty simple to both use and implement, this approach also follows our philosophy of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns and enumerator that loops through the objects in reverse.
 	
 
 \section{Performance}

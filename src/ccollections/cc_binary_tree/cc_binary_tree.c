@@ -36,7 +36,7 @@
 const char * const cc_binary_tree_type = "cc_binary_tree_type";
 
 static bool cc_binary_tree_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
-static int cc_queue_compare(cc_object *obj1, cc_object *obj2);
+static int cc_binary_tree_compare(cc_object *obj1, cc_object *obj2);
 static void cc_binary_tree_register_comparator();
 
 static bool cc_binary_tree_depth_first_enumerator_move_next(cc_enumerable *c, cc_enumerator *e);
