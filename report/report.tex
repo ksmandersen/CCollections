@@ -37,26 +37,9 @@
 \hypersetup{
  colorlinks=true,
  citecolor=Violet,
- linkcolor=darkGray,
+ linkcolor=black,
  urlcolor=blue
 }
-
-% configure code listings
-% \lstset{
-%     language=C,
-%     % numbers=left,
-%     % frame=l,
-%     % frameround=tttt,
-%     tabsize=2,
-%     showspaces=false,
-%     showstringspaces=false,
-%     breaklines=true
-% }
-% 
-% \usepackage{caption}
-% \DeclareCaptionFont{white}{\color{white}}
-% \DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
-% \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
 \usepackage{caption}
 \usepackage{listings} % code listings
 \lstset{
@@ -86,33 +69,46 @@
 % \highlight command to replace markdowns ``
 \newcommand{\highlight}[1]{\colorbox{lightGray}{$\displaystyle \texttt{#1}$}}
 
+\usepackage{acronym}
+% \acsetup{first-style=short}
+% \DeclareAcronym{
+% 	short		= OO,
+% 	long		= Object Oriented,
+% 	class		= abbrev
+% }
+
 \begin{document}
 
 \thetitlepage
 \clearpage
 
-\tableofcontents
-\clearpage
-
-\section{Preface}\label{sec:preface}
+\section*{Preface}\label{sec:preface}
 
 This report has been written in May 2013 in a 15 ECTS project at the IT University of Copenhagen under the supervision of Peter Sestoft and Hans Henrik S\o{}rensen.\\
 
-During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for modern Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation that is customary for OO-language collection libraries but uncommon for C libraries.\\
+During the project we developed a collection library for the programming language C. The library is strongly inspired by standard libraries found on the .NET and Java platforms. The library mimics characteristics and concepts traditionally only found in collection libraries for modern Object Oriented programming languages. These traits include garbage collected data structures, enumerations, collection filters and more. The library also adheres to the same level of consistency and documentation that is customary for \ac{OO}-language collection libraries but uncommon for C libraries. The library has been tested with Unit tests for all public API functions. In the library are Array List, Linked List, Sorted List, Set, Stack, Queue, Dictionary and Binary Tree.\\
 
 The entire source, with tests and documentation, for the project is available for download on \href{GitHub}{https://github.com/ksmandersen/CCollections} at \href{github.com/ksmandersen/CCollections}{https://github.com/ksmandersen/CCollections}.
+\clearpage
+
+\tableofcontents*
+\clearpage
+
+\listoffigures*
+\listoftables*
+\clearpage
 
 \chapter{Introduction}\label{sec:introduction}
-Data structures are a natural asset in the development of any application. Unlike many languages, C does not come with a full range of data structures, neatly packaged together into a collection library. In fact there is not a single data structure in the standard library. Developers find themselves faced with two options. Either write the implementation you need from scratch or go online and find an existing implementation that looks usable.
+Data structures are a natural asset in the development of any application. Unlike many languages, C does not come with a full range of data structures, neatly packaged together into a collection library. In fact there is not a single data structure in the standard library. Developers find themselves faced with two options. Either write the implementation they need from scratch or go online and find an existing implementation that looks usable.
 
-Developers find themselves scouring the web for good libraries and are left with a number of choices. None of the many options available are very much alike the typical modern OO-language collection library. 
+Developers find themselves scouring the web for good libraries and are left with a number of choices. None of the many options available are very much like the typical modern OO-language collection library. 
 
-Languages like Java and C\# are highly regarded in part because of their extensive, well-documented and loved collection libraries that come as part of their standard libraries. Developers who primarily develop with languages like these are left with no similar options in C.
+Languages like Java and C\# are highly regarded in part because of their extensive, well-documented and loved collection libraries that come as part of their standard libraries. Developers who primarily develop using languages like these are left with no similar options in C.
 
-The overall purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C\#.
+The overall purpose of this project is to investigate how a collection library written for C might be inspired by other libraries from object-oriented programming languages like C\#. During the project such alibrary will be implemented.
 
 \section{Existing solutions}\label{sec:existing_solutions}
-There is a large number of libraries with data structures available for C. The table below is lists some of the most commonly known by C developers.
+There is a large number of libraries with data structures available for C. In \autoref{tab:existing_solutins_adts} is listed some of the most commonly known by C developers.
 
 \begin{table}
 	\begin{center}
@@ -131,6 +127,7 @@ There is a large number of libraries with data structures available for C. The t
 	    \end{tabular}
 	\end{center}
 	\caption{Existing solutions for ADT's}
+	\label{tab:existing_solutins_adts}
 \end{table}
 
 Most of the libraries listed here are not strictly collection libraries but larger libraries where a small part of it is data structures. This is the case for APR, NPR, Glib and Gnulib. 
@@ -141,7 +138,7 @@ An intricate part of any library is testing. The libraries from our research hav
 
 All the libraries have varying quality of documentation and naming conventions. These two qualities are crucial factors for the entire quality of a library.
 
-Many leaps has happened in computer science since C had its peak, let alone was invented. However it seems that not many of the advancements made in collection libraries in newer programming languages has found their way into C. There could be several explanations for this. Consider this: many of the newer features doesn't mix well with the non-object-oriented nature of C.
+Many leaps has happened in computer science since C had its peak, let alone was invented. However it seems that not many of the advancements made in collection libraries in newer programming languages has found their way into C. In this project we will aim to introduce some of these advancements.
 
 \section{Vision}\label{sec:vision}
 
@@ -577,7 +574,7 @@ void test_can_create_linked_linked_list_from_array_list(void) {
 
 As mentioned in \autoref{sec:vision} the importance of good documentation for this project is very high. The programming language Java spawned a new era of well documented code with its contestant to the market, JavaDoc. JavaDoc is a documentation generator that takes code documentation and generates browsable HTML documentation for the codes API. JavaDoc defines a syntax that can be used in the comments of code declarations that will help generate well formed API documentation. Other similar libraries have existed before but JavaDoc seemed to really start the movement. Since then other languages has found inspiration and has adopted similar features.
 
-One of the long running contestants is Doxygen. With very similar features to JavaDoc it brings its code documentation syntax to multiple languages. It was originally engineered for C++ but works just as well for other languages like C. Doxygen, like JavaDoc, defines a syntax that can be used to generate browsable API documentation. An example snippet for documentation is listed below.
+One of the long running contestants is Doxygen. With very similar features to JavaDoc it brings its code documentation syntax to multiple languages. It was originally engineered for C++ but works just as well for other languages like C. Doxygen, like JavaDoc, defines a syntax that can be used to generate browsable API documentation. An example snippet for documentation is listed Below.
 
 
 \begin{lstlisting}[label=documentation-example,caption=Example of Doxygen comment]
@@ -610,6 +607,20 @@ This generates the following entry in the browsable HTML API documentation:
 	\section{Discussion}
 	\label{sec:discussion}
 	Text
+
+\chapter{Abbreviations \& Definitions}
+\begin{acronym}
+	\acro{ADT}{Abstract Data Structure}
+	\acro{API}{Application Programming Interface}
+	\acro{APR}{Apache Portable Runtime,\\ see \url{http://apr.apache.org/}}
+	\acro{GDSL}{The Generic Data Structures Library,\\ see \url{http://home.gna.org/gdsl/}}
+	\acro{Glib}{Gnome Library,\\ see \url{https://developer.gnome.org/glib/2.34/}}
+	\acro{LibDS}{A Portable Data Structures Library,\\ see \url{http://libds.sourceforge.net/doc/index.html}}
+	\acro{NPR}{Netscape Portable Runtime,\\ see \url{http://www.mozilla.org/projects/nspr/}}
+	\acro{OO}{Object Oriented}
+	\acro{SGLib}{A Simple Generic Library for C,\\ see \url{http://sglib.sourceforge.net/}}
+	
+\end{acronym}
 
 \chapter{Appendix}
 \appendix
