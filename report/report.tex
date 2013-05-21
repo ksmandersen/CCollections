@@ -643,16 +643,27 @@ This generates the following entry in the browsable HTML API documentation:
 			
 			In \autoref{sec:linked_list} we demonstrated how we implemented the functionality to create a Linked List using an argument list as seed. This feature makes the creation of collection types much easier. Even though we wished to, we did not get to implement that feature for the rest of the collection types. We did however get to demonstrate how it can be done, which means it will be fairly easy to implement for the rest of the collection types.
 			
-			
 		
 		\subsection{Wish list}\label{sec:wishlist}
+			
+			Having spent a lot of time figuring out how to properly architecture a modern collection library for C and implemnting such a library with basic collection types leaves us with many features we still wish to implement. Here is a few of the features that we would love to have had implemented but did not have time to.
+			
+			Since this project is completely open source and hosted with version control on GitHub it is hoped that other developers will contribute. Contributers may take inspiration from this section and implement features that we did not have time to implement.
+			
+			\begin{itemize}
+				\item \textbf{More collection types:} There are still a lot of collection types that could be useful to have in a collection library. Common collection types from other modern libraries that we did not implement are \textit{Hash Tables, Hash Sets, Hash Lists and Priority Queues}.
+				\item \textbf{Better sorting:} A more unified interface for sorting collections that would not leave each collection type implementation up to providing its own sorting meachanism. In general more sorted collection types are missing.
+				\item \textbf{Test coverage:} Because we chose to use Unity instead of other libraries like Check or CUnit we did not have test code coverage statistics. This would have been a great tool to have for eliminating bugs.
+				\item \textbf{Performance testing:} Even though performance never was in focus in this project it would be great to have benchmarks. Just simple test showing the overhead of using our cc\_objects would be great.
+			\end{itemize}
 
 		% - What we didn't get to
 		% 	- The remaining collection types
-		% 	- Proper use of hashing functions like comparators
+		% 	
 		% 	- sorting for more collection types
 		% 	- collections with argument lists for all collection types
 		% - Wish list
+		% - Proper use of hashing functions like comparators
 		% 	- More collection types
 		% 		- Hash tables
 		% 		- hash set
