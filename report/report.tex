@@ -475,7 +475,7 @@ struct cc_dictionary_struct {
 	
 	\subsubsection{Hashing}
 	
-	In the same way that every object should be able to register a comparator for its type, each object should also be able to specify a hashing function. The library will have built-in functions for hashing (in cc_hash.h), but for complex data structures, it will be necessary to specify a custom hashing function. This can still use the built in hashing functions for getting the hash of each data field, and then hash those together into a single value. When a data type has registered its hash function with \highlight{cc\_object\_register\_hash\_func\_for\_type}, it's as easy as calling \highlight{cc\_object\_hash} to get the hash of an object of that data type.
+	In the same way that every object should be able to register a comparator for its type, each object should also be able to specify a hashing function. The library will have built-in functions for hashing (in cc\_hash.h), but for complex data structures, it will be necessary to specify a custom hashing function. This can still use the built in hashing functions for getting the hash of each data field, and then hash those together into a single value. When a data type has registered its hash function with \highlight{cc\_object\_register\_hash\_func\_for\_type}, it's as easy as calling \highlight{cc\_object\_hash} to get the hash of an object of that data type.
 	
 	\subsection{Binary Tree}
 	
