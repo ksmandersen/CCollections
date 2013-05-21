@@ -132,9 +132,9 @@ There is a large number of libraries with data structures available for C. In \a
 
 Most of the libraries listed here are not strictly collection libraries but larger libraries where a small part of it is data structures. This is the case for APR, NPR, Glib and Gnulib. 
 
-Finding libraries purely dedicated to data structures is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact, but it is very uncommon for developers using OO-languages to manage memory themselves.
+Finding libraries purely dedicated to collections is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact, but it is very uncommon for developers using OO-languages to manage memory themselves.
 
-An intricate part of any library is testing. The libraries from our research have varying degrees of testing implemented. Some have a few tests per data structure. A few have full-blown test suites with all public functionality tested. A single claims to have high-coverage unit tests, but is closed source. A lot of have no tests or no tests checked in to the public source.
+An intricate part of any library is testing. The libraries from our research have varying degrees of testing implemented. Some have a few tests per collection. A few have full-blown test suites with all public functionality tested. A single claims to have high-coverage unit tests, but is closed source. A lot of have no tests or no tests checked in to the public source.
 
 All the libraries have varying quality of documentation and naming conventions. These two qualities are crucial factors for the entire quality of a library.
 
@@ -142,9 +142,9 @@ Many leaps has happened in computer science since C had its peak, let alone was 
 
 \section{Vision}\label{sec:vision}
 
-In examining the existing libraries containing data structures available for C, it is found that there is room for improvement.  This project will aim to describe and implement a dedicated collection library for C that fills some of the gap between existing solutions for C and the OO-languages.
+In examining the existing libraries containing collections available for C, it is found that there is room for improvement.  This project will aim to describe and implement a dedicated collection library for C that fills some of the gap between existing solutions for C and the OO-languages.
 
-This library will consist of a small selection of commonly used data structures. The data structures that will be implemented are as follows:
+This library will consist of a small selection of commonly used collections. The collections that will be implemented are as follows:
 
 \begin{itemize}
 	\item Linked list
@@ -159,7 +159,7 @@ This library will consist of a small selection of commonly used data structures.
 	\item Binary tree
 \end{itemize}
 
-In addition to the features that would normally be associated with common data structures like those mentioned above, the library will aim to implement a number of concepts and features inspired by other OO libraries. Most notably the data structures will all have support for enumeration, something that none of the existing libraries for C has. The library will also aim to be very easy to extend with additional features, types and structures. This will be done with the means of solid code conventions, good documentation and unit testing.
+In addition to the features that would normally be associated with common collections like those mentioned above, the library will aim to implement a number of concepts and features inspired by other OO libraries. Most notably the collections will all have support for enumeration, something that none of the existing libraries for C has. The library will also aim to be very easy to extend with additional features, types and structures. This will be done with the means of solid code conventions, good documentation and unit testing.
 
 Following code conventions is always good sense when writing library code but it becomes even more important with C because of the lack of modularity in C. There are no namespaces, packages or classes into which functions can be neatly organized.
 
@@ -179,7 +179,7 @@ There are generally two different approaches to designing a system in procedural
 		\label{fig:approaches}
 	\end{figure}
 
-An example of the difference could be a method, which will calculate the weight of a car: the classic method would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each approach has pros and cons. If you want to add a car type, in the classic method, you would have to find every place in the code where car-type-specific calculations were made, while in the object oriented, you would only need to implement the functions for the new car type. On the other hand, if you wanted to have a function to calculate the height of a car, in the classic approach, you would need to implement just one function, where in the object-oriented approach, you would have to find all car types, and implement a function for each.
+An example of the difference could be a function to calculate the weight of a car: the classic approach would have a single function with support for all known types of cars; the object-oriented would have one specialized function on each car type. Each approach has pros and cons. If you want to add a car type with the classic approach, you would have to find every place in the code where car-type-specific calculations were made, while with the object approeach, you would only need to implement the functions for the new car type. On the other hand, if you in addition wanted to have a function to calculate the height of a car, in the classic approach, you would need to implement just one function, where in the object-oriented approach, you would have to find all car types, and implement a function for each.
 
 Newer languages with focus on object oriented programming makes the decision of which to use very easy. In pre-object languages, such as C, the choice is a bit harder. The easy answer is to use the classic way, since this is what the language is built for; however, there are ways to build functionality which replicates some object-oriented functions in a procedural way, which makes object composition available.
 
@@ -379,8 +379,25 @@ This is illustrated nicely with \highlight{cc\_set} implementation of a set of u
 	The enumerators are supposed to be a unified way to loop through elements of a collection. In languages like C\#, their main use is in the foreach loop, which is an easy syntax for looping through a collection. The foreach loop has some advantages over the traditional ways of looping through collections, such as a unified interface (you can have same code for looping over both an array list and a linked list. In the traditional way, you would need a for loop for the array list and a while loop for the linked list), and it's less likely to have bugs (it's common to have one-off errors in code that loops over indexes). While we cannot recreate the foreach (at least without getting into some ugly preprocessor code), we can recreate the functionality.
 
 	An enumerator is in of itself pretty simple. It actually only has two functions: getting the current item, and moving to the next item, and the actual functionality is implemented by the collection being looped. The enumerators doesn't even have a public constructor function; it is each collections responsibility to both declare and implement that. The enumerator is left pretty simple, since it's only supposed to act as an interface to the collections.
+	
+	\begin{lstlisting}[label=cc_enumerator-struct,caption=The enumerator struct]
+	struct cc_enumerator_struct {
+		cc_enumerable *enumerable;
+		void *data;
+		cc_object *current;
+	};
+	\end{lstlisting}
 
 	When a collection wants to implement support for enumerators, they just need to create a function for getting an enumerator for that specific collection, such as \highlight{cc\_linked\_list\_get\_enumerator}. That function should then return a new enumerator, with the \highlight{move\_next} function pointer set to that collection's move next function. The enumerator's move next function will call that when it needs to move on the next element. The enumerator has two data fields: one is a \highlight{cc\_object}, which should be set to the item that is the current item in the iteration, and which is returned from the \highlight{get\_current} function, the other is just a void pointer, which the collection can use to keep track is its progress. With these few things in place, we can now very easily iterate over collections:
+	
+	\begin{lstlisting}[label=cc_enumerator-impl-example,caption=Implementation of linked list's get_enumerator]	
+	cc_enumerator *cc_linked_list_get_enumerator(cc_linked_list *list) {
+	  cc_enumerator *e = cc_enumerator_new(&list->c.enumerable);
+	  e->data = NULL;
+
+	  return e;
+	}
+	\end{lstlisting}
 
 \begin{lstlisting}[label=cc_enumerator-example,caption=Using enumerators in CCollections]
 cc_enumerator *e = cc_linked_list_get_enumerator(list);
@@ -402,10 +419,18 @@ cc_linked list *b_list = cc_linked_list_new_with_enumerator(e);
 	Another feature we then can implement is running code on each element in an enumerator. This would allow us to do things like filter, map and fold a collection. The way this is implemented is by doing something very much alike what we do in the collections' enumerator functions: we create an enumerator and specify a move next function. The move next function would then call the move next on the "parent" enumerator and setting the parents current object to the childs current object. This would create a completely transparent enumerator, in which we can implement some custom functionality. An example of this is a filter move next function:
 	
 \begin{lstlisting}[label=cc_enumerator-filter-move_next,caption=Custom enumerator filter]
+typedef bool (*cc_enumerator_filter_func)(cc_object *obj);
+
+typedef struct {
+	cc_enumerator *parent;
+	cc_enumerator_filter_func filter;
+} filter_enumerator_data;
+
 bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
   filter_enumerator_data *data = e->data;
   cc_enumerator *parent_e = data->parent;
 
+  // enumerate through the parent enumerator until an item that shouldn't be filtered is found
   while (cc_enumerator_move_next(parent_e)) {
     cc_object *obj = cc_enumerator_current(parent_e);
   
@@ -417,7 +442,17 @@ bool cc_enumerator_filter_move_next(cc_enumerable *c, cc_enumerator *e) {
 
   return false;
 }
-\end{lstlisting}	    
+
+cc_enumerator *cc_enumerator_filter(cc_enumerator *e, cc_enumerator_filter_func filter) {
+  // create a new enumerator and set the original one as the parent enumerator
+	cc_enumerator *en = cc_enumerator_new(cc_enumerable_new(cc_enumerator_filter_move_next));
+	filter_enumerator_data *data = GC_malloc(sizeof(filter_enumerator_data));
+	data->parent = e;
+	data->filter = filter;
+	en->data = data;
+	return en;
+}
+\end{lstlisting}    
 
 	With this filter function, we can now apply a filter to any enumerator:
 
@@ -427,12 +462,13 @@ bool odd_filter(cc_object *obj) {
 }
 
 cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
+// set the data field to 0
 e->data = GC_MALLOC(sizeof(int));
 *((int *)e->data) = 0;
 cc_enumerator *odd_numbers = cc_enumerator_filter(e, odd_filter);
 \end{lstlisting}	
 
-	Other than just being pretty simple to both use and implement, this approach also follows our philosiphy of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns the reverse enumerator.
+	Other than just being pretty simple to both use and implement, this approach also follows our philosophy of being extendable and customizable: the user of the library can very easily make custom enumerators, just like the default ones. If you, in your project, often needs to reverse collections, you could implement your own function which takes an enumerator, and returns and enumerator that loops through the objects in reverse.
 
 \section{Collections}\label{sec:impl_collections}
 	In this section the various collection types implemented in the library will be briefly described. Their description will only be high-level and brief while unique features of the individual collections will be discussed at greater length.
