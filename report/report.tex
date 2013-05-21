@@ -1,4 +1,4 @@
-\documentclass[table]{ituthesis}
+\documentclass[table,nottoc]{ituthesis}
 % \usepackage{xcolor}    % loads also »colortbl«
 
 \settitle{C\#{} Inspired Collection Library for C}
@@ -82,7 +82,7 @@
 \thetitlepage
 \clearpage
 
-\section*{Preface}\label{sec:preface}
+\section*{Abstract}\label{sec:preface}
 
 This report has been written in May 2013 in a 15 ECTS project at the IT University of Copenhagen under the supervision of Peter Sestoft and Hans Henrik S\o{}rensen.\\
 
@@ -99,7 +99,7 @@ The entire source, with tests and documentation, for the project is available fo
 \clearpage
 
 \chapter{Introduction}\label{sec:introduction}
-Data structures are a natural asset in the development of any application. Unlike many languages, C does not come with a full range of data structures, neatly packaged together into a collection library. In fact there is not a single data structure in the standard library. Developers find themselves faced with two options. Either write the implementation they need from scratch or go online and find an existing implementation that looks usable.
+Data structures are a natural asset in the development of any application. Unlike many languages, C does not come with a full range of collections, neatly packaged together into a collection library. In fact there is not a single collection type in the standard library. Developers find themselves faced with two options. Either write the implementation needed from scratch or go online and find an existing implementation that looks usable.
 
 Developers find themselves scouring the web for good libraries and are left with a number of choices. None of the many options available are very much like the typical modern OO-language collection library. 
 
@@ -132,17 +132,17 @@ There is a large number of libraries with data structures available for C. In \a
 
 Most of the libraries listed here are not strictly collection libraries but larger libraries where a small part of it is data structures. This is the case for APR, NPR, Glib and Gnulib. 
 
-Finding libraries purely dedicated to collections is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact, but it is very uncommon for developers using OO-languages to manage memory themselves.
+All the libraries have varying quality of documentation and naming conventions. These two qualities are crucial factors for the entire quality of a library.
 
 An intricate part of any library is testing. The libraries from our research have varying degrees of testing implemented. Some have a few tests per collection. A few have full-blown test suites with all public functionality tested. A single claims to have high-coverage unit tests, but is closed source. A lot of have no tests or no tests checked in to the public source.
 
-All the libraries have varying quality of documentation and naming conventions. These two qualities are crucial factors for the entire quality of a library.
+Finding libraries purely dedicated to collections is not very easy. We were only able to locate GDSL, SGLIB and LibDS. All of these have one thing in common; no memory management. In fact most of the libraries have no memory management support, which means the developer has to manage the memory manually. All C developers are used to this fact, but it is very uncommon for developers using OO-languages to manage memory themselves.
 
 Many leaps has happened in computer science since C had its peak, let alone was invented. However it seems that not many of the advancements made in collection libraries in newer programming languages has found their way into C. In this project we will aim to introduce some of these advancements.
 
 \section{Vision}\label{sec:vision}
 
-In examining the existing libraries containing collections available for C, it is found that there is room for improvement.  This project will aim to describe and implement a dedicated collection library for C that fills some of the gap between existing solutions for C and the OO-languages.
+In examining the existing collection libraries available for C, it is found that there is room for improvement.  This project will aim to describe and implement a dedicated collection library for C that fills some of the gap between existing solutions for C and the OO-languages.
 
 This library will consist of a small selection of commonly used collections. The collections that will be implemented are as follows:
 
@@ -169,7 +169,7 @@ To further mimic the trades of libraries from other libraries the library of thi
 
 \chapter{Architecture}
 
-There are generally two different approaches to designing a system in procedural programming languages. The first is the "classic" way, where you would have a single function doing one task on all the supported data types. The other is the more modern object-oriented way of having one implementation of a task for each supported data type.
+There are generally two different approaches to designing a system in procedural programming languages. The first is the "classic" way, where you would have a single function doing one task on all the supported data types. The other is the more modern object-oriented way of having one implementation of a task for each supported data type (see \autoref{fig:approaches} for illustration).
 
 	\begin{figure}[ht!]
 		\begin{center}
@@ -195,9 +195,9 @@ In the following sections, we will go more in depth with the different design ch
 
 Manual memory management is often a big hurdle for people coming from garbage collected languages. With the right techniques and code structure, it can become less of a problem, but it's still something that can cause not only headaches during development and debugging, but also commonly causes stability- and security problems when released, if not all bugs are found. Especially in collections are programmers more often tempted to just create a static array instead of something that is dynamically expanding, because of the trouble of having to keep track of when you don't need it any more. This leads to both worse code, but also buffer overflow issues. And, apart from direct code problems, garbage collection is just a convenience that many high-level programmers expects to have. This is why we want our collections to be garbage collected.
 
-Since there is no support for garbage collection in the C runtime, it has to run on top of the standard memory allocation. There are a number of libraries to do this, the most popular of these being the Boehm-Demers-Weiser conservative garbage collector\footnote{\url{http://www.hpl.hp.com/personal/Hans_Boehm/gc/}} (also known just as Boehm's garbage collector), which is used as the garbage collector in Mono and as a leak detector in the Mozilla project. It has replacement functions for malloc and realloc, which will instead allocate memory in heap blocks allocated by the garbage collector, and associate mark-ing bits. For collecting memory, it uses mark-sweep to find unused memory blocks and free them \cite[chap. 10]{Sestoft2012}. Finalizers can also be registered for a block of memory, which could be used to replicate the functionality of deconstructors.
+Since there is no support for garbage collection in the C runtime, it has to run on top of the standard memory allocation. There are a number of libraries to do this, the most popular of these being the Boehm-Demers-Weiser conservative garbage collector\footnote{\url{http://www.hpl.hp.com/personal/Hans_Boehm/gc/}} (also known just as Boehm's garbage collector), which is used as the garbage collector in Mono and as a leak detector in the Mozilla project. It has replacement functions for \highlight{malloc} and \highlight{realloc}, which will instead allocate memory in heap blocks allocated by the garbage collector, and associate mark-ing bits. For collecting memory, it uses mark-sweep to find unused memory blocks and free them \cite[chap. 10]{Sestoft2012}. Finalizers can also be registered for a block of memory, which could be used to replicate the functionality of deconstructors.
 
-For use in a C program, the mark-sweep method has the advantage of being able to be made conservative. This ensures that there will be no problems in trying to differentiate pointers and integers, since there is no harm done by retaining a block of memory, that isn't in use, but has an integer – which can be interpreted as a pointer, but really is just a value – pointing to it. Non-conservative garbage collectors, such as stop-and-copy, would have to make a choice wether to move the block, and update the potentially false pointer, or garbage collect the memory \cite[chap. 10]{Sestoft2012}.
+For use in a C program, the mark-sweep method has the advantage of being able to be made conservative. This ensures that there will be no problems in trying to differentiate pointers and integers, since there is no harm done by retaining a block of memory, that isn't in use, but has an integer - which can be interpreted as a pointer, but really is just a value - pointing to it. Non-conservative garbage collectors, such as stop-and-copy, would have to make a choice whether to move the block, and update the potentially false pointer, or garbage collect the memory \cite[chap. 10]{Sestoft2012}.
 
 In regards to performance, the mark-sweep collector can be slow for larger allocations, but is generally fast for smaller ones. Boehm's garbage collector claims to be on-par or faster than regular C memory management for smaller allocations, but slower for larger ones\footnote{As stated in the documentation for GC on the website}.
 
@@ -219,11 +219,11 @@ The approach we have chosen is to delegate the task of handling different types 
 		\label{fig:types}
 	\end{figure}
 
-The cc\_object works by having a data structure, which supports each item type, and has special insert functions for each. The difference from having a lot of insert functions on the collection is that when you add a new data type, you only have to add one new function to the cc\_object, instead of adding a new function to each collection. This is the same idea as used in Objective-C, where the collection classes cannot contain primitive data types, so numbers gets wrapped in NSNumber instances, and various structures in NSValue instances. If you would save an integer in a collection, you would make an \highlight{NSNumber} with the \highlight{-numberWithInteger:} method, and the other way around call the \highlight{-integerValue} method to get the primitive value back. Likewise, with cc\_objects, you would create a new object with the \highlight{cc\_object\_with\_int} function, and to get the value back, use the \highlight{cc\_object\_int\_value} function. When using custom data types, the user can just make a custom cc\_object initializer method, to keep everything type-safe.
+The cc\_object works by having a data structure, which supports each item type, and has special insert functions for each. The difference from having a lot of insert functions on the collection is that when you add a new data type, you only have to add one new function to the cc\_object, instead of adding a new function to each collection. This is the same idea as used in Objective-C, where the collection classes cannot contain primitive data types, so numbers gets wrapped in NSNumber instances, and various structures in NSValue instances. If you would save an integer in a collection, you would make an \highlight{NSNumber} with the \highlight{-numberWithInteger:} method, and the other way around call the \highlight{-integerValue} method to get the primitive value back. Likewise, with cc\_objects, you would create a new item with the \highlight{cc\_object\_with\_int} function, and to get the value back, use the \highlight{cc\_object\_int\_value} function. When using custom data types, the user can just make a custom cc\_object initializer method, to keep everything type-safe.
 
 A very useful feature of object-oriented languages, which is difficult to replicate in C, is the concept of interfaces. Suppose that you want to be able to compare two cc\_objects. If they were objects, you would just make a comparable-interface, and have each object-subclass implement a compare method. In C, we'll have to use a slightly different method.
 
-To handle different types of cc\_objects (which in object oriented languages would be to make subclasses of an abstract superclass), we use a string identifier on each object, to indicate its type. The CCollections library has a few built-in types, such as \highlight{cc\_object\_type\_int} and \highlight{cc\_object\_type\_string}, and it is possible to define custom types. Allowing us to identify the type of an object, allows us to get the same result as using an interface. With a function call, a function can be registered as the comparator function for a specific type. When the user calls \highlight{cc\_object\_compare}, the function will first compare the types of the two objects. If they are not the same type, we can already say that they're not equal. If they are, we call that type's comparator function.
+To handle different types of cc\_objects (which in object oriented languages would be to make subclasses of an abstract superclass), we use a string identifier on each cc\_object, to indicate its type. The CCollections library has a few built-in types, such as \highlight{cc\_object\_type\_int} and \highlight{cc\_object\_type\_string}, and it is possible to define custom types. Allowing us to identify the type of an object, allows us to get the same result as using an interface. With a function call, a function can be registered as the comparator function for a specific type. When the user calls \highlight{cc\_object\_compare}, the function will first compare the types of the two objects. If they are not the same type, we can already say that they're not equal. If they are, we call that type's comparator function.
 
 With the cc\_object-approach, we have, in normal C code, replicated some of the functionality from more modern languages, making the code more dynamic and extensible.
 
@@ -231,7 +231,7 @@ With the cc\_object-approach, we have, in normal C code, replicated some of the 
 
 We want our collections to be architectured in a way so that they have a common interface for data exchange. We want it to be easy to convert between different data structures, and to get data in and out of the different kinds of collections. We already have a uniform way of storing different data types with our object structures, and we need something like that for our collections.
 
-The way to have all data structures be interchangeable is to have a common structure, that each can convert to and from. In this collection, we have chosen enumerators to be that common data structure. All collections should be able to return an enumerator, and all collections should be able to be created with an enumerator as argument.
+The way to have all data structures be interchangeable is to have a common structure, that each can convert to and from. In this library, we have chosen enumerators to be that common data structure. All collections should be able to return an enumerator, and all collections should be able to be created with an enumerator as argument.
 
 The next problem is how to do this in C. In an object oriented language, we would be able to make an enumerable interface, which all collection subclasses could implement. We do not have this feature in C. What we can do have is the ability in incapsulate structures in other structures. This allows us to make something not unlike inheritance from object oriented languages. By defining a \highlight{cc\_enumerable} struct, we can place this inside of a \highlight{cc\_collection} struct to "implement it" in the collection. We will then be able to add function pointers, which each type of collection can override, to provide their own implementation. This approach is necessary for functions to be called automatically by the library. In this case, it's the move next function, which should take a step in the enumeration. Getting an enumerator from a collection is not something that needs to be done automatically, but rather something the user of the library should do, so we don't need to define it this strongly, but rather just ensure that the collections follow a specific style for getting enumerators.
 
@@ -251,16 +251,13 @@ The approach of using enumerators as an interexchangable collection format allow
 
 To have a well structured source code is very important in regards to debugging, testing and maintainability of the project. That's why we are strictly following some basic rules regarding structure, information hiding and naming.
 
-One of the most fundamental structural decisions is to enforce information hiding through the idea of the black box: a potentially decoupled interface and implementation, and only exposure of the interface to the user of the module \cite{Gelder2001}. In Java-like languages, you would implement a black box like this with the public and private keywords, for selecting which parts of a class should be exposed, and which should not. In addition, things can be marked as not visible to a user, but visible to the rest of the package. In C, such levels of visibility is implemented with header files. Typically, you will have one header file and one implementation file per black box, with the header file being the public interface. Other projects have a single header file for all public interface code in a library. The one-header-per-module approach is the most common in C, and also what we will use. In addition to this, to implement a package-private like behavior, modules may also have a header file for use internally in the project, which should not be exposed to the user. This allows the user to "leak" some implementation details internally. This should be used for details relating to the internal structure of the project's data structures, not the implementation of the specific algorithm or data structure.
+One of the most fundamental structural decisions is to enforce information hiding through the idea of the black box: a potentially decoupled interface and implementation, and only exposure of the interface to the user of the module \cite{Gelder2001}. In Java-like languages, you would implement a black box like this with the public and private keywords, for selecting which parts of a class should be exposed, and which should not. In addition, things can be marked as not visible to a user, but visible to the rest of the package. In C, such levels of visibility is implemented with header files. Typically, you will have one header file and one implementation file per black box, with the header file being the public interface. Other projects have a single header file for all public interface code in a library\footnote{The one-header-per-library method is mostly used when the product of the project is an API, and not an implementation. An example of this is OpenGL, which is an API implemented differently across platforms, with the whole public interface in the gl.h header file}. The one-header-per-module approach is the most common in C, and also what we will use. In addition to this, to implement a package-private like behavior, modules may also have a header file for use internally in the project, which should not be exposed to the user. This allows the library to "leak" some implementation details internally. This should be used for details relating to the internal structure of the project's data structures, not the implementation of the specific algorithm or data structure.
 
-In addition to keeping a minimally exposed interface, it should also be documented with a description of each function, along with pre- and post conditions. See the documentation chapter for more.
+In addition to keeping a minimally exposed interface, it should also be documented with a description of each function. See \autoref{sec:impl_documentation} for more.
 
-% [^headernote]: the one-header-per-library method is mostly used when the product of the project is an API, and not an implementation. An example of this is OpenGL, which is an API implemented differently across platforms, with the whole public interface in the gl.h header file.
+One of the problems with a lot of C libraries is the API design. If you don't put some thought into making a consistent and readable interface, it will make the whole project seem messy. Functions will have many paramters which may lead them to be more prone to errors.
 
-\section{API}\label{sec:arch_api}
-	One of the problems with a lot of C libraries is the API design. If you don't put some thought into making a consistent and readable interface, it will make the whole project seem messy. Functions will have many paramters which may lead them to be more prone to errors.
-
-	One of the goals in this project is to have consistent and well organized interfaces to our collections. We have made a style guide, that all code should follow, that is inspired both by classic C-style naming and more Java-style method naming.
+One of the goals in this project is to have consistent and well organized interfaces to our collections. We have made a style guide, that all code should follow, that is inspired both by classic C-style naming and more Java-style method naming.
 
 	We have defined a style guide for both public interfaces and internal function implementations.
 
@@ -271,7 +268,7 @@ In addition to keeping a minimally exposed interface, it should also be document
 			\item All objects must have a constructor function called new (e.g. \\\highlight{cc\_set\_new()}). All other "methods" to this object should take an instance pointer as the first parameter (e.g. \\\highlight{cc\_set\_add(cc\_set *set, cc\_object *obj)}). If the function returns anything through a parameter, it should be at the end of the parameter list. Furthermore, all objects must define a type string as a global constant, whose value should be the name of the object (any prefixes included).
 			\item All global constants must be defined in the interface as an extern const pointer, and be implemented in the belonging implementation file (e.g. \highlight{extern const char * const cc\_set\_type}).
 			\item No struct should be defined in the public interface. All interaction with the object should be done through functions. The definition of the struct should be in the private or package private interface.
-			\item Everything defined in a public interface should have Doxygen documentation.
+			\item Everything defined in a public interface should have documentation.
 		\end{description}
 	
 	\subsection{Style guide for internal implementation}\label{sec:arch_style_internal}
@@ -285,13 +282,13 @@ In addition to keeping a minimally exposed interface, it should also be document
 		
 \section{Testing}\label{sec:arch_testing}
 
-As noted earlier only some of the libraries encountered in our search on the internet had testing implemented. Some had a few tests per data structure to make sure that the data structure sort-of worked. A few had full-blown test suites with all public functionality tested. A lot of had no tests or no tests checked in to the public source at least.
+As noted earlier only some of the libraries encountered in our search on the internet had testing implemented. Some had a few tests per collection type to make sure that the collection sort-of worked. A few had full-blown test suites with all public functionality tested. A lot of had no tests or no tests checked in to the public source at least.
 
-The library for this project will be using unit tests with coverage of all data structures and all public API functions. This will serve three main goals of the library.
+The library for this project will be using unit tests with coverage of all collections and all public API functions. This will serve three main goals of the library.
 
 \begin{enumerate}
-\item The library is well-tested. Every time a change is made to a data structure or another part of the library, which may affect several data structure, all the tests can be run to check nothing breaks. This dramatically lowers the chance of small bugs creeping in.
-\item Tests drive forward implementation. This is also known as Test-Driven Development; TDD for short. Once the general structure of the library has been determined features can be fleshed out by writing the tests first and then the implementation. This will both ensure all API is tested but also that there is no API features that has not been tested.
+\item The library is well-tested. Every time a change is made to a collection or another part of the library, which may affect several collections, all the tests can be run to check nothing breaks. This dramatically lowers the chance of small bugs creeping in.
+\item Tests drive implementation forward. This is also known as Test-Driven Development; TDD for short. Once the general structure of the library has been determined features can be fleshed out by writing the tests first and then the implementation. This will both ensure all API is tested but also that there is no API features that has not been tested.
 \item A well tested library will encourage third-party developers, who wish to extend and contribute their code to the library, to write tests for their code. Looking at the existing tests will also make it easier for the developer to write matching tests for their code.
 \end{enumerate}
 
@@ -306,15 +303,15 @@ As mention in \autoref{sec:preface} the library will be made publicly available 
 Libraries like C\# and Java has native support for Exceptions which makes it really easy for developers to determine whether something went wrong and then take proper actions. Since C doesn't have any native support for handling errors we'll have to deal with them in other ways. There are several approaches to the problem.
 
 \begin{itemize}
-	\item Return values (-1, -2, etc. corresponding to an error)
-	\item out parameters. functions have a last parameter that will contain an error message or code that must be checked.
-	\item callbacks. functions have a callback parameter that takes a function pointer to a function that will be called with a error message or code.
-	\item global callbacks. like callbacks but there is only a global function that will be called no matter where the error occurs.
-	\item error state. each instance of a data structure holds a state which indicates whether an error has occurred along with an error code or an error message. Developers will have to check to check the error state for each call.
-	\item long jump. this can be used to create something like the try..catch pattern.
+	\item Using return values from functions (-1, -2, etc. corresponding to an error)
+	\item With out parameters. Functions have a last parameter that will contain an error message or code that must be checked by the calling code.
+	\item With callbacks. Functions have a callback parameter that takes a function pointer to a function that will be called with a error message or code.
+	\item With global callbacks. Like callbacks but there is only a global function that will be called no matter where the error occurs.
+	\item Using an error state. Each instance of a collection holds a state which indicates whether an error has occurred along with an error code or an error message. Developers will have to check to check the error state for each call.
+	\item Using a long jump. This can be used to create something like the try..catch pattern.
 \end{itemize}
 
-The optimal solution for a project like this would be the last option. With a setjmp/longjmp wrapper and an exception object, we could make something that would very much resemble the try..catch pattern, which is known from newer languages. This approach allows both checking for errors after a single function call, jumping out of a block of code on error, and having a global handler for uncaught exceptions. An example of a try..catch implementation in C is [insert example link and description here].
+The optimal solution for a project like this would be the last option. With a setjmp/longjmp wrapper and an exception object, we could make something that would very much resemble the try..catch pattern, which is known from newer languages. This approach allows both checking for errors after a single function call, jumping out of a block of code on error, and having a global handler for uncaught exceptions. Multiple libraries for replicating this functionality exists. One of the more popular choices is exceptions4c\footnote{\url{https://code.google.com/p/exceptions4c/}}.
 
 \chapter{Implementation}
 
@@ -340,9 +337,9 @@ cc_object *number = cc_object_with_int(42);
 int in_val = cc_object_int_value(number);
 \end{lstlisting}
 
-The way we, in the cc_object struct, supports multiple different types of values, is via a union declaration. The cc_object structs value field is a union of all the different types it supports. A union in C works by allocating space in the struct for the largest type, and each of the types points to this allocated memory. There's type safe access to all the different types, but they share the memory, so that only one of them can be valid at a time. This keeps the cc_object struct as small as possible, while retaining type safety. Other than the value, we also have a string, which is used to identify the objects type, like gettings its class name.
+The way we, in the cc\_object struct, supports multiple different types of values, is via a union declaration. The cc\_object structs value field is a union of all the different types it supports. A union in C works by allocating space in the struct for the largest type, and each of the types points to this allocated memory. There's type safe access to all the different types, but they share the memory, so that only one of them can be valid at a time. This keeps the cc\_object struct as small as possible, while retaining type safety. Other than the value, we also have a string, which is used to identify the objects type, like gettings its class name.
 
-\begin{lstlisting}[label=cc_object-struct,caption=Internal structure of the cc_object]
+\begin{lstlisting}[label=cc_object-struct,caption=Internal structure of the cc\_object]
 struct cc_object_struct {
 	const char *type;
 	cc_object_hash_func hash_func;
@@ -379,13 +376,13 @@ cc_linked_list *cc_linked_list_from_object(cc_object *object) {
 
 In this example we use the pointer type to save the linked list to a cc\_object, since it's quite complex and a lot slower to serialize it to a block of data, and store a copy of it that way. The main difference between the pointer and data block types is that the pointer references the item, while the data block copies the item. Which one to use varies, and it is up to the writer of the specific data type to choose. Optionally both functions for making referenced and copied objects can be implemented. In this case, they should have a different data type string, since they will no longer be comparable.
 
-Apart from using the cc\_objects for saving data, we can, as previously mentioned, implement functionality on top of them. An example of this is the built-in object comparators. The comparator functionality allows us to compare to cc\_objects. To be able to compare objects, we need to have a comparator function for each data type. For this, we have the \highlight{cc\_object\_register\_comparator\_for\_type} function, which takes a type string and a function pointer. When creating a custom cc\_object type, you can implement a custom comparator function, and register it with this function. For comparing two cc\_objects, you use the \highlight{cc\_object\_compare} function. This function will first compare the types of the two objects: if they're not the same type, we can already say that they're not equal. If they are, we will find the comparator function registered for that type, and return the result of that. The CC library comes with comparators for the built-in types already registered.
+Apart from using the cc\_objects for saving data, we can, as previously mentioned, implement functionality on top of them. An example of this is the built-in object comparators. The comparator functionality allows us to compare to cc\_objects. To be able to compare items, we need to have a comparator function for each data type. For this, we have the \highlight{cc\_object\_register\_comparator\_for\_type} function, which takes a type string and a function pointer. When creating a custom cc\_object type, you can implement a custom comparator function, and register it with this function. For comparing two cc\_objects, you use the \highlight{cc\_object\_compare} function. This function will first compare the types of the two objects: if they're not the same type, we can already say that they're not equal. If they are, we will find the comparator function registered for that type, and return the result of that. The CC library comes with comparators for the built-in types already registered.
 
 This shows how to implement dynamic functionality on top of the cc\_objects. The point of doing it this way is that users of the library can create their own functionality like this, just as we do it internally. An example of custom functionality could be a cc\_object to JSON function. If the user want this in his or her program, it's as easy as defining a function prototype, which will encode a cc\_object to a JSON string, and write an implementation for each object type. This way, it would also work recursively: the implementation function for a list type would just need to call the JSON serialization function on all it's contained cc\_objects. When implementing such custom functionality, one would need to write implementations for all object types in the CC library, as well as all custom data types. This works just like extensible classes in an object oriented language, except that it's in completely standard C code.
 
 \section{Code Reuse}\label{sec:impl_code_reuse}
 
-As a side effect of great architectured extensibility of the library it becomes very easy and convenient to reuse code across the library. All data structures of course share the cc\_objects and enumerators code. But data structures can be built as extension of another data structure.
+As a side effect of great architectured extensibility of the library it becomes very easy and convenient to reuse code across the library. All collections of course share the cc\_objects and enumerators code. But a collection can be built as extension of other collections.
 
 \begin{lstlisting}[label=cc_set-struct,caption=Example of internal code reuse]
 struct cc_set_struct {
@@ -395,7 +392,7 @@ struct cc_set_struct {
 };
 \end{lstlisting}
 
-This is illustrated nicely with \highlight{cc\_set} implementation of a set of unique items. The set data structures is built on top of the \\\highlight{cc\_linked\_list} data structure, reusing all the code for insertion, deletion, enumeration and more. All that the set implementation needs to do is to forward calls to the linked list and provide a new insertion function that checks if an item is already in the linked list. Thus building on the 400+ lines of code long linked list implementation and just providing a mere 140 lines of set implementation code.
+This is illustrated nicely with the \highlight{cc\_set} implementation of a set of unique items. The set data structures is built on top of the \\\highlight{cc\_linked\_list} data structure, reusing all the code for insertion, deletion, enumeration and more. All that the set implementation needs to do is to forward calls to the linked list and provide a new insertion function that checks if an item is already in the linked list. Thus building on the 400+ lines of code long linked list implementation and just providing a mere 140 lines of set implementation code.
 
 \section{Enumerators}
 
@@ -431,7 +428,7 @@ while (cc_enumerator_move_next(e)) {
 
 	It should be noted that when creating the enumerator, the current object is not the first object in the collection, but just a null object, and the first object is retrieved with the first call to \highlight{cc\_enumerator\_move\_next}. This is for practical rather than technical reasons, because it allows for a simpler syntax (this way, we can start the while loop right after getting the enumerator. The other way, we would have to validate the return value of \highlight{get\_current}, and then use a do..while).
 
-	The other thing we can use enumerators for, apart from implementing foreach-like iteration, is, as mentioned in the architecture section, to be able to convert between collections, by using the enumerators as an interexchangable collection type. For all collection supporting enumerators, it it possible to get an item-enumerator. All these should also have a designated constructor for taking an enumerator, and filling the collection with the items from that. This would allow us to very easily convert between collection types, no matter how they're implemented. Say that we wanted to convert a collection from an array list to a linked list, we would just use this short piece of code:
+	The other thing we can use enumerators for, apart from implementing foreach-like iteration, is, as mentioned in \autoref{sec:arch_collections}, to be able to convert between collections, by using the enumerators as an interexchangable collection type. For all collection supporting enumerators, it it possible to get an item-enumerator. All these should also have a designated constructor for taking an enumerator, and filling the collection with the items from that. This would allow us to very easily convert between collection types, no matter how they're implemented. Say that we wanted to convert a collection from an array list to a linked list, we would just use this short piece of code:
 
 \begin{lstlisting}[label=cc_enumerator-new-with,caption=Creating collections with enumerators]
 cc_array_list *a_list = ...
@@ -655,7 +652,7 @@ It is also possible to get an enumerator for the tree. The only thing making thi
 
 \section{Testing}
 
-	As noted in \autoref{sec:arch_testing} this project will be covering its implementation with functional unit tests. For the implementation of the unit tests a framework called \href{Unity}{https://github.com/ThrowTheSwitch/Unity} has ben chosen. It was picked from a list of 45 competing libraries \footnote{\href{http://en.wikipedia.org/wiki/List\_of\_unit\_testing\_frameworks\#C}{http://en.wikipedia.org/wiki/List\_of\_unit\_testing\_frameworks\#C}}. It features \href{xUnit}{http://en.wikipedia.org/wiki/XUnit} compliant unit tests and is very light weight. This means that it can easily be bundled with library src and does not have to be installed separately from the source like some of the other choices.
+	As noted in \autoref{sec:arch_testing} this project will be covering its implementation with functional unit tests. For the implementation of the unit tests a framework called Unity\footnote{\url{https://github.com/ThrowTheSwitch/Unity}} has ben chosen. It was picked from a list of 45 competing libraries \footnote{\url{http://en.wikipedia.org/wiki/List\_of\_unit\_testing\_frameworks\#C}}. It features xUnit\footnote{\url{http://en.wikipedia.org/wiki/XUnit}} compliant unit tests and is very light weight. This means that it can easily be bundled with library src and does not have to be installed separately from the source like some of the other choices.
 
 	The library features a total of 137 unit tests across all public functions for both the data structures and the cc\_objects and enumerators. The tests can easily be compiled and run straight from the command line using the Makefile. When the command \highlight{make test} is run it will run all unit tests for library and tell how many tests failed or passed.
 	
