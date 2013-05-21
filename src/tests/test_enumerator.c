@@ -39,8 +39,7 @@ cc_object *string_concat(cc_object *agg, cc_object *obj) {
 	return cc_object_with_string(buffer);
 }
 
-void test_can_create_enumerator(void)
-{
+void test_can_create_enumerator(void) {
 	cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_three));
 	e->data = GC_MALLOC(sizeof(int));
 	*((int *)e->data) = 0;
@@ -48,8 +47,7 @@ void test_can_create_enumerator(void)
 	TEST_ASSERT_NOT_EQUAL(e, NULL);
 }
 
-void test_enumerator_can_enumerate(void)
-{
+void test_enumerator_can_enumerate(void) {
 	cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_three));
 	e->data = GC_MALLOC(sizeof(int));
 	*((int *)e->data) = 0;
@@ -63,8 +61,7 @@ void test_enumerator_can_enumerate(void)
 	TEST_ASSERT_EQUAL(cc_enumerator_move_next(e), false);
 }
 
-void test_enumerator_can_filter(void)
-{
+void test_enumerator_can_filter(void) {
 	cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_ten));
 	e->data = GC_MALLOC(sizeof(int));
 	*((int *)e->data) = 0;
@@ -84,8 +81,7 @@ void test_enumerator_can_filter(void)
 	TEST_ASSERT_EQUAL(cc_enumerator_move_next(odd_numbers), false);
 }
 
-void test_enumerator_can_sort(void)
-{
+void test_enumerator_can_sort(void) {
 	cc_linked_list *list = cc_linked_list_new();
 	cc_linked_list_add_last(list, cc_object_with_int(4));
 	cc_linked_list_add_last(list, cc_object_with_int(2));
@@ -121,8 +117,7 @@ void test_enumerator_can_sort(void)
 	TEST_ASSERT_EQUAL(cc_enumerator_move_next(sorted), false);
 }
 
-void test_enumerator_can_map(void)
-{
+void test_enumerator_can_map(void) {
 	cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_three));
 	e->data = GC_MALLOC(sizeof(int));
 	*((int *)e->data) = 0;
@@ -138,8 +133,7 @@ void test_enumerator_can_map(void)
 	TEST_ASSERT_EQUAL(cc_enumerator_move_next(strings), false);
 }
 
-void test_can_convert_enumerator_to_list(void)
-{
+void test_can_convert_enumerator_to_list(void) {
 	cc_enumerator *e = cc_enumerator_new(cc_enumerable_new(one_to_three));
 	e->data = GC_MALLOC(sizeof(int));
 	*((int *)e->data) = 0;
@@ -153,8 +147,7 @@ void test_can_convert_enumerator_to_list(void)
 	TEST_ASSERT_EQUAL(cc_linked_list_equals(list, expected), true);
 }
 
-void test_enumerator_can_stack_enumerators(void)
-{
+void test_enumerator_can_stack_enumerators(void) {
 	cc_linked_list *list = cc_linked_list_new_with_values(cc_object_type_int, 4, 2, 7, 9, 1, 3, 6, 5, 8, CC_END);
 	
 	cc_enumerator *e = cc_linked_list_get_enumerator(list);
@@ -167,8 +160,7 @@ void test_enumerator_can_stack_enumerators(void)
 	TEST_ASSERT_EQUAL(cc_linked_list_equals(expected, result), true);
 }
 
-void test_enumerator_can_fold(void)
-{
+void test_enumerator_can_fold(void) {
 	cc_linked_list *list = cc_linked_list_new_with_values(cc_object_type_string, "good", "artists", "copy,", "great", "artists", "steal");
 	cc_object *result = cc_enumerator_fold(cc_linked_list_get_enumerator(list), cc_object_with_string(""), string_concat);
 	TEST_ASSERT_EQUAL(strcmp("good artists copy, great artists steal", cc_object_string_value(result)), 0);

@@ -37,13 +37,13 @@
 */
 
 #ifndef CC_ARRAY_LIST_H
-  #define CC_ARRAY_LIST_H
+#define CC_ARRAY_LIST_H
 
 #include "../shared/cc_private.h"
 #include "../shared/cc_object.h"
 #include "../shared/cc_enumerator.h"
 
-extern const char *const cc_array_list_type;
+extern const char * const cc_array_list_type;
 
 struct cc_array_list_struct;
 typedef struct cc_array_list_struct cc_array_list;

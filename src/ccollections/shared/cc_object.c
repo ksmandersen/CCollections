@@ -120,7 +120,6 @@ cc_object *cc_object_with_data(const void *data, size_t len, const char *typeid)
 	return obj;
 }
 
-
 const char *cc_object_get_type(cc_object *obj) {
 	return obj->type;
 }
@@ -181,7 +180,7 @@ cc_object_comparator cc_get_comperator_for_object(cc_object *obj) {
 
 	const char *type = obj->type;
 
-  int i;
+	int i;
 	for (i = 0; i < registered_comparators_count; i++) {
 		cc_object_registered_comparator reg = registered_comparators[i];
 		
@@ -189,8 +188,8 @@ cc_object_comparator cc_get_comperator_for_object(cc_object *obj) {
 			return reg.comparator;
 		}
 	}
-  
-  return NULL;
+	
+	return NULL;
 }
 
 void cc_object_register_hash_func_for_type(const char *type, cc_object_hash_func hash_func) {
@@ -203,7 +202,6 @@ void cc_object_register_hash_func_for_type(const char *type, cc_object_hash_func
 		.hash_func = hash_func,
 	};
 }
-
 
 const char *cc_object_string_value(cc_object *obj) {
 	return obj->value.str;
@@ -225,14 +223,13 @@ void *cc_object_pointer_value(cc_object *obj) {
 	return obj->value.ptr;
 }
 
-
 cc_hash cc_object_hash(cc_object *obj) {
 	const char *type = obj->type;
 	
 	int i;
 	for (i = 0; i < registered_hash_funcs_count; i++) {
 		cc_object_registered_hash_func reg = registered_hash_funcs[i];
-    
+		
 		if (strcmp(reg.type, type) == 0) {
 			return reg.hash_func(obj);
 		}
@@ -268,23 +265,23 @@ void cc_object_register_default_comparators() {
 // 1 for a larger than b
 
 int cc_object_int_compare(cc_object *obj1, cc_object *obj2) {
-    int obj1_val = cc_object_int_value(obj1);
-    int obj2_val = cc_object_int_value(obj2);
-    
-    if (obj1_val > obj2_val) return -1;
-    if (obj1_val < obj2_val) return 1;
-    
-    return 0;
+	int obj1_val = cc_object_int_value(obj1);
+	int obj2_val = cc_object_int_value(obj2);
+	
+	if (obj1_val > obj2_val) return -1;
+	if (obj1_val < obj2_val) return 1;
+	
+	return 0;
 }
 
 int cc_object_float_compare(cc_object *obj1, cc_object *obj2) {
 	float obj1_val = cc_object_float_value(obj1);
-    float obj2_val = cc_object_float_value(obj2);
-    
-    if (obj1_val > obj2_val) return -1;
-    if (obj1_val < obj2_val) return 1;
-    
-    return 0;
+	float obj2_val = cc_object_float_value(obj2);
+	
+	if (obj1_val > obj2_val) return -1;
+	if (obj1_val < obj2_val) return 1;
+	
+	return 0;
 }
 
 int cc_object_string_compare(cc_object *obj1, cc_object *obj2) {
@@ -297,12 +294,13 @@ int cc_object_string_compare(cc_object *obj1, cc_object *obj2) {
 // Equals methods
 
 bool cc_object_int_equals(cc_object *obj1, cc_object *obj2) {
-    return (cc_object_int_compare(obj1, obj2) == 0);
+	return (cc_object_int_compare(obj1, obj2) == 0);
 }
 
 bool cc_object_float_equals(cc_object *obj1, cc_object *obj2) {
-    return (cc_object_float_compare(obj1, obj2) == 0);
+	return (cc_object_float_compare(obj1, obj2) == 0);
 }
+
 bool cc_object_string_equals(cc_object *obj1, cc_object *obj2) {
 	return cc_object_string_compare(obj1, obj2) == 0;
 }

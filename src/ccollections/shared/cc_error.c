@@ -35,17 +35,17 @@
 static cc_error_handler cc_current_error_handler;
 
 void cc_error(int error_code, char *error_message) {
-  cc_current_error_handler(error_code, error_message);
+	cc_current_error_handler(error_code, error_message);
 }
 
 void cc_set_error_handler(cc_error_handler handler) {
-  cc_current_error_handler = handler;
+	cc_current_error_handler = handler;
 }
 
 void cc_set_default_error_handler() {
-  cc_set_error_handler(cc_default_error_handler);
+	cc_set_error_handler(cc_default_error_handler);
 }
 
 void cc_default_error_handler(int error_code, char *error_message) {
-  printf("==== CC Error! ====\nCode: %i\nMessage: %s\n===================\n", error_code, error_message);
+	printf("==== CC Error! ====\nCode: %i\nMessage: %s\n===================\n", error_code, error_message);
 }

@@ -30,7 +30,7 @@
  */
 
 #ifndef CC_SORTED_LIST_H
-  #define CC_SORTED_LIST_H
+#define CC_SORTED_LIST_H
 
 #include "../shared/cc_private.h"
 #include "../shared/cc_object.h"

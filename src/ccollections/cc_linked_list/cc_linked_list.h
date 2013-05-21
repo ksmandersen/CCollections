@@ -30,7 +30,7 @@
  */
 
 #ifndef CC_LINKED_LIST_H
-  #define CC_LINKED_LIST_H
+#define CC_LINKED_LIST_H
 
 #include "../shared/cc_private.h"
 #include "../shared/cc_object.h"

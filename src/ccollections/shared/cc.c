@@ -33,8 +33,8 @@
 #include "cc_object_private.h"
 
 void cc_init() {
-  GC_INIT();
-  
-  cc_set_default_error_handler();
+	GC_INIT();
+	
+	cc_set_default_error_handler();
 	cc_object_register_default_comparators();
 }

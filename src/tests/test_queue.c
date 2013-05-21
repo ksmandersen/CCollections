@@ -1,25 +1,12 @@
 #include "../ccollections/shared/cc.h"
 #include "../lib/unity/src/unity.h"
 
-// void setUp(void)
-// {
-//   GC_INIT();
-//   cc_init();
-// }
-
-// void tearDown(void)
-// {
-	
-// }
-
-void test_can_create_queue(void)
-{
+void test_can_create_queue(void) {
 	cc_queue *q = cc_queue_new();
 	TEST_ASSERT_NOT_EQUAL(q, NULL);
 }
 
-void test_can_add_objects_to_queue(void)
-{
+void test_can_add_objects_to_queue(void) {
 	cc_queue *q = cc_queue_new();
 	cc_queue_enqueue(q, cc_object_with_int(1));
 	cc_queue_enqueue(q, cc_object_with_int(2));
@@ -37,8 +24,7 @@ void test_can_add_objects_to_queue(void)
 	TEST_ASSERT_EQUAL(cc_enumerator_move_next(e), false);
 }
 
-void test_can_dequeue_objects_from_queue(void)
-{
+void test_can_dequeue_objects_from_queue(void) {
 	cc_queue *q = cc_queue_new();
 	cc_queue_enqueue(q, cc_object_with_int(1));
 	cc_queue_enqueue(q, cc_object_with_int(2));
@@ -52,8 +38,7 @@ void test_can_dequeue_objects_from_queue(void)
 	TEST_ASSERT_EQUAL(cc_queue_count(q), 0);
 }
 
-void test_can_peek_at_queue(void)
-{
+void test_can_peek_at_queue(void) {
 	cc_queue *q = cc_queue_new();
 	cc_queue_enqueue(q, cc_object_with_int(1));
 	cc_queue_enqueue(q, cc_object_with_int(2));
@@ -63,8 +48,7 @@ void test_can_peek_at_queue(void)
 	TEST_ASSERT_EQUAL(cc_object_int_value(cc_queue_peek(q)), 1);
 }
 
-void test_can_clear_queue(void)
-{
+void test_can_clear_queue(void) {
 	cc_queue *q = cc_queue_new();
 	cc_queue_enqueue(q, cc_object_with_int(1));
 	cc_queue_enqueue(q, cc_object_with_int(2));
@@ -74,8 +58,7 @@ void test_can_clear_queue(void)
 	TEST_ASSERT_EQUAL(cc_queue_count(q), 0);
 }
 
-void test_queue_contains_object(void)
-{
+void test_queue_contains_object(void) {
 	cc_queue *q = cc_queue_new();
 	cc_queue_enqueue(q, cc_object_with_int(1));
 	cc_queue_enqueue(q, cc_object_with_int(2));
