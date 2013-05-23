@@ -1,0 +1,7 @@
+Enumerators should have a function called cc_enumerator_has_next()
+Pre and post conditions
+Does cc_object_is_equal check hash values?
+byte identifier as type identifier for objects for better performance
+unsigned integers maybe yes?
+shuffle can have % 0 which gives a zero-division-error
+cc_linked_list_new can return null but cc_linked_list_new_with_enumerator does not check for null
